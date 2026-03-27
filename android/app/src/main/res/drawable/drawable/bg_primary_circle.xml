@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_primary_circle.xml
+     Filled primary-orange circle. Used for FAB-style action buttons,
+     notification badges, and active step indicators in order tracking.
+     Color: #A04100 (primary). Icon/text inside should be #FFFFFF.
+     For high-CTA contexts, swap solid color for bg_primary_pill gradient logic. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid android:color="#A04100" />
+
+</shape>

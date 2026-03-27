@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_card_white.xml
+     Clean white card with a softer corner radius (16dp) for secondary panels
+     like stat boxes and dashboard summaries. Uses "Whisper Shadow" elevation
+     via XML layer-list to maintain tonal depth without heavy drop shadows.
+     Background: #FFFFFF. Shadow color: #1A1C1A at ~4% opacity. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Whisper shadow layer -->
+    <item
+        android:top="4dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:bottom="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#0A1A1C1A" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- White card surface -->
+    <item android:bottom="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+</layer-list>

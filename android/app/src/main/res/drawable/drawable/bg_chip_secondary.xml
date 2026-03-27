@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_chip_secondary.xml
+     Vendor/tag chip background used inside product cards.
+     Uses secondary_fixed #FFDBD0 — a soft, earthy peach tone —
+     for warm contrast against the white card background.
+     Full pill shape. No border. Text: #5A4136. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#FFDBD0" />
+
+    <corners android:radius="999dp" />
+
+</shape>

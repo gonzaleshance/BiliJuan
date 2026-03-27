@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_role_selected.xml
+     Selected state for role-picker cards (Customer / Seller) on the
+     registration screen. XL rounded corners (20dp). Background: #FFF3EE
+     (a very light warm tint). Uses "Ghost Border" rule with primary at
+     20% opacity — the only permitted stroke in the system.
+     Stroke color #A04100 at ~33 hex opacity = #55A04100. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#FFF3EE" />
+
+    <stroke
+        android:width="2dp"
+        android:color="#55A04100" />
+
+    <corners android:radius="20dp" />
+
+</shape>

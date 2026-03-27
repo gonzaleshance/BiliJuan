@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_card_rounded.xml
+     Surface-container card background. Used for product cards and feed items.
+     No border (enforces the No-Line Rule). XL corner radius for organic feel.
+     Background: #FFFFFF (surface-container-lowest) pops against #FAF9F5 base. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#FFFFFF" />
+
+    <corners android:radius="20dp" />
+
+</shape>

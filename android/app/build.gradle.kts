@@ -38,24 +38,20 @@ android {
 }
 
 dependencies {
-    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 
-    // UI
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation("androidx.recyclerview:recyclerview:1.4.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
 
-    // Image Loading
     implementation("com.github.bumptech.glide:glide:5.0.5")
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
-    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_tertiary_chip.xml
+     "Freshness" chip for New/Just Picked badges on product cards.
+     Uses tertiary_container #059EFF — a cool blue — to create a
+     deliberate cool-vs-warm contrast against the orange primary palette.
+     Full pill. No stroke. Text color: #FFFFFF. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#059EFF" />
+
+    <corners android:radius="999dp" />
+
+</shape>

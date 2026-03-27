@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_arrow_back.xml
+     Back navigation arrow. 24x24dp. Uses on_surface #1A1C1A as default tint.
+     Standard Material chevron-left path. Tint can be overridden in XML via
+     android:tint="#A04100" for branded back buttons. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#1A1C1A">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M19,12 L5,12 M5,12 L12,19 M5,12 L12,5" />
+
+</vector>

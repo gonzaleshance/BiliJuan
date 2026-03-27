@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_chip_inactive.xml
+     Unselected/inactive filter chip background. Full pill shape.
+     Background: surface-container-low #F4F4F0. No stroke (No-Line Rule).
+     Text on this chip should be #77574D (secondary earth tone). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#F4F4F0" />
+
+    <corners android:radius="999dp" />
+
+</shape>

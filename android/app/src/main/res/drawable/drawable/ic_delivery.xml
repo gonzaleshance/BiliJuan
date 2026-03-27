@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_delivery.xml
+     Delivery box/package icon. Used in the bottom navigation bar for the
+     Orders tab and in order tracking headers to represent a package in transit.
+     24x24dp. Tint: #1A1C1A default; override to #A04100 when tab is active. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#1A1C1A">
+
+    <!-- Box body -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M21,16 V8 A2,2 0,0,0 19.28,6.1 L12.72,3.1 A2,2 0,0,0 11.28,3.1 L4.72,6.1 A2,2 0,0,0 3,8 V16 A2,2 0,0,0 4.72,17.9 L11.28,20.9 A2,2 0,0,0 12.72,20.9 L19.28,17.9 A2,2 0,0,0 21,16 Z" />
+
+    <!-- Center vertical line -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M12,3.13 L12,22" />
+
+    <!-- Left diagonal -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M3.27,6.96 L12,12.01 L20.73,6.96" />
+
+</vector>

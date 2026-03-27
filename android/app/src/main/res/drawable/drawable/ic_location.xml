@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_location.xml
+     Map pin / location marker. Used on the order tracking screen map
+     progress bar to indicate pickup/dropoff points, and on product cards
+     to display distance metadata ("5 mins away").
+     24x24dp. Tint: #A04100 for seller/origin pin; #059EFF for destination. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#A04100">
+
+    <!-- Pin body -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M21,10 C21,17 12,23 12,23 C12,23 3,17 3,10 A9,9 0,0,1 21,10 Z" />
+
+    <!-- Center dot -->
+    <path
+        android:fillColor="#A04100"
+        android:pathData="M14,10 A2,2 0,1,1 10,10 A2,2 0,1,1 14,10 Z" />
+
+</vector>

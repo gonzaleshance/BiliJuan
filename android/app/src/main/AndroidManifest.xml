@@ -12,14 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BiliJuan">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity android:name=".activities.LoginActivity" android:exported="false"/>
+        <activity android:name=".activities.RegisterActivity" android:exported="false"/>
+        <activity android:name=".activities.admin.AdminDashboardActivity" android:exported="false"/>
+        <activity android:name=".activities.customer.HomeActivity" android:exported="false"/>
+        <activity android:name=".activities.seller.SellerDashboardActivity" android:exported="false"/>
+</application>
 </manifest>

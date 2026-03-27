@@ -2,29 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="#FAF9F5">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="BiliJuan"
-        android:textColor="#E65100"
-        android:textSize="36sp"
-        android:textStyle="bold" />
+    <!-- ViewPager for onboarding slides -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerOnboarding"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Bottom Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Your Local Food Marketplaces"
-        android:textColor="#757575"
-        android:textSize="14sp" />
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="48dp"
+        android:paddingTop="16dp"
+        android:background="#FAF9F5">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"/>
+        <!-- Dot Indicators -->
+        <LinearLayout
+            android:id="@+id/dotsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Get Started Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGetStarted"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Get Started"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#A04100"
+            app:cornerRadius="28dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Login Link -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? "
+                android:textColor="#77574D"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="#A04100"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

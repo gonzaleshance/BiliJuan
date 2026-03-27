@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bg_circle_button.xml
+     Circular icon-button background. Used for action buttons
+     (e.g., phone call, back navigation, map pin actions).
+     White fill on surface base creates a clean floating icon appearance
+     consistent with the Tonal Layering principle.
+     Ensure the view is constrained to equal width/height for perfect circle. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid android:color="#FFFFFF" />
+
+</shape>

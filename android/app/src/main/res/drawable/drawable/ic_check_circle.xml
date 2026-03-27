@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_check_circle.xml
+     Checkmark inside a circle. Used for order confirmation success states,
+     completed step indicators in order tracking, and form validation feedback.
+     24x24dp. Default tint: #A04100 (primary) to signal positive completion. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#A04100">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M22,11.08 V12 A10,10 0,1,1 5.93,7.28" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M22,4 L12,14.01 L9,11.01" />
+
+</vector>

@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/colors.xml
+     All BiliJuan design system color tokens.
+     @color/surface_container_low is referenced directly in activity_order_tracking.xml
+     as android:src on an ImageView (used as a placeholder color).
+     Add this file to res/values/ — it works alongside your existing colors.xml
+     or replaces it entirely. -->
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary — high-intent CTAs, active states, brand identity -->
+    <color name="primary">#A04100</color>
+
+    <!-- Primary Container — gradient start, warm orange glow -->
+    <color name="primary_container">#FF6B00</color>
+
+    <!-- On Primary — text/icons on primary-colored surfaces -->
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary — metadata labels, muted text, subheadings -->
+    <color name="secondary">#77574D</color>
+
+    <!-- On Secondary -->
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Secondary Fixed — vendor tag chips, earthy peach -->
+    <color name="secondary_fixed">#FFDBD0</color>
+
+    <!-- Tertiary Container — Freshness chip, cool blue contrast -->
+    <color name="tertiary_container">#059EFF</color>
+
+    <!-- Surface / Background — base layer, food photography hero -->
+    <color name="surface">#FAF9F5</color>
+    <color name="background">#FAF9F5</color>
+
+    <!-- Surface Container Low — content section backgrounds, inactive chips -->
+    <!-- Also used as android:src placeholder color in activity_order_tracking.xml -->
+    <color name="surface_container_low">#F4F4F0</color>
+
+    <!-- Surface Container — neutral placeholder (avatar backgrounds) -->
+    <color name="surface_container">#E8E8E4</color>
+
+    <!-- Surface Container High — elevated panels, stat boxes -->
+    <color name="surface_container_high">#E8E8E4</color>
+
+    <!-- Surface Container Lowest — pure white card surfaces -->
+    <color name="surface_container_lowest">#FFFFFF</color>
+
+    <!-- On Surface — all body text, warm near-black (never pure black) -->
+    <color name="on_surface">#1A1C1A</color>
+
+    <!-- Outline Variant — ghost border at 20% opacity for focus rings only -->
+    <color name="outline_variant">#E2BFB0</color>
+
+    <!-- Deep warm brown — used for form labels -->
+    <color name="on_surface_variant">#5A4136</color>
+
+    <!-- Bottom nav: active tab -->
+    <color name="nav_active">#A04100</color>
+
+    <!-- Bottom nav: inactive tab -->
+    <color name="nav_inactive">#77574D</color>
+
 </resources>

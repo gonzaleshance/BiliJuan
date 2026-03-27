@@ -1,16 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="#FAF9F5">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Customer Home"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#E65100"/>
+    <!-- Sticky Header -->
+    <LinearLayout
+        android:id="@+id/stickyHeader"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:background="#B3FAF9F5"
+        android:elevation="4dp">
 
-</LinearLayout>
+        <!-- Location + Title -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_location"
+                    app:tint="#A04100"/>
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saranay Phase 2"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#A04100"
+                    android:layout_marginStart="4dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BiliJuan"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#A04100"
+                android:letterSpacing="-0.02"/>
+        </LinearLayout>
+
+        <!-- Search Icon -->
+        <ImageButton
+            android:id="@+id/btnSearch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_search"
+            android:background="@drawable/bg_circle_button"
+            app:tint="#A04100"/>
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Greeting Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Magandang Araw!"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1C1A"
+                    android:letterSpacing="-0.02"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Find the freshest local goods today."
+                    android:textSize="13sp"
+                    android:textColor="#77574D"/>
+            </LinearLayout>
+
+            <!-- Category Filter Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingVertical="8dp">
+
+                <LinearLayout
+                    android:id="@+id/categoryChipsContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="24dp">
+
+                    <!-- Lahat Chip (Active) -->
+                    <TextView
+                        android:id="@+id/chipAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Lahat"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:gravity="center"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_chip_active"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/chipHomemade"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Homemade"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#77574D"
+                        android:gravity="center"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_chip_inactive"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/chipHarvest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Harvest"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#77574D"
+                        android:gravity="center"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_chip_inactive"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/chipKakanin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Kakanin"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#77574D"
+                        android:gravity="center"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_chip_inactive"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/chipGulayan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Gulayan"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#77574D"
+                        android:gravity="center"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_chip_inactive"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Super Deals Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Super Deals"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1C1A"
+                    android:letterSpacing="-0.02"/>
+
+                <TextView
+                    android:id="@+id/tvSeeAllDeals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See All"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#A04100"/>
+            </LinearLayout>
+
+            <!-- Horizontal Deals RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDeals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"/>
+
+            <!-- All Listings Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="All Listings"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1C1A"
+                    android:letterSpacing="-0.02"/>
+
+                <TextView
+                    android:id="@+id/tvSeeAllListings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See All"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#A04100"/>
+            </LinearLayout>
+
+            <!-- Grid Listings RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvListings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="24dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        android:background="#CCFFFFFF"
+        app:menu="@menu/bottom_nav_customer"
+        app:itemIconTint="@color/bottom_nav_tint"
+        app:itemTextColor="@color/bottom_nav_tint"
+        app:labelVisibilityMode="labeled"
+        android:elevation="8dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

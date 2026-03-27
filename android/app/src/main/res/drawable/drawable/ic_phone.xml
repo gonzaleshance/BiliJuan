@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_phone.xml
+     Phone handset icon. Used exclusively on the order tracking screen
+     inside the "Call Seller" circular action button (bg_circle_button).
+     Tapping this icon initiates a tel: intent to the seller's phone number.
+     24x24dp. Tint: #A04100 to make the CTA warm and inviting. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#A04100">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M22,16.92 V19.92 A2,2 0,0,1 19.71,21.92 C8.98,21.92 0.25,13.19 0.25,2.46 A2,2 0,0,1 2.25,0.25 H5.25 A2,2 0,0,1 7.25,2 C7.37,3.68 7.76,5.32 8.38,6.87 A2,2 0,0,1 7.9,8.93 L6.62,10.21 C8.5,13.54 10.71,15.75 14.04,17.63 L15.32,16.35 A2,2 0,0,1 17.38,15.87 C18.93,16.49 20.57,16.88 22.25,17 A2,2 0,0,1 24,19 Z" />
+
+</vector>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_search.xml
+     Magnifying glass search icon. Used as the leading icon inside the
+     search TextInputLayout on the home marketplace screen. Also used
+     as a top bar action button for search-on-scroll behavior.
+     24x24dp. Tint: #77574D (secondary) inside fields; #1A1C1A in app bars. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#77574D">
+
+    <!-- Circle -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#77574D"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M11,19 A8,8 0,1,0 11,3 A8,8 0,1,0 11,19 Z" />
+
+    <!-- Handle -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#77574D"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M21,21 L16.65,16.65" />
+
+</vector>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_menu.xml
+     Hamburger menu icon (3 horizontal lines). Used in the seller dashboard
+     and admin layout to open the navigation drawer. Also used in the
+     home screen top app bar for the side menu trigger.
+     24x24dp. Tint: #1A1C1A. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#1A1C1A">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M3,6 H21" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M3,12 H21" />
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#1A1C1A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M3,18 H21" />
+
+</vector>

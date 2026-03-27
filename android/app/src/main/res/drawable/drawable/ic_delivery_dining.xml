@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_delivery_dining.xml
+     Motorbike/scooter delivery icon. Used in the order tracking screen to
+     represent the courier in transit between seller and customer.
+     Also used as a visual marker on the live map progress bar.
+     24x24dp. Tint: #A04100 to indicate active delivery state. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#A04100">
+
+    <!-- Helmet/rider -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M17,5 A2,2 0,1,1 17,9 A2,2 0,1,1 17,5 Z" />
+
+    <!-- Scooter body -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M5,17 H3 L3,14 L8,9 L15,9 L18,14 L21,14" />
+
+    <!-- Rear wheel -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M5,17 A2.5,2.5 0,1,0 5,22 A2.5,2.5 0,1,0 5,17 Z" />
+
+    <!-- Front wheel -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M19,17 A2.5,2.5 0,1,0 19,22 A2.5,2.5 0,1,0 19,17 Z" />
+
+    <!-- Bag/parcel on back -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#A04100"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M9,9 L9,6 L14,6 L14,9" />
+
+</vector>
