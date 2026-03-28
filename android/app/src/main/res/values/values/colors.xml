@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BiliJuan Design System — Editorial Organicism -->
+    <color name="market_background">#FAF9F5</color>
+    <color name="market_surface">#FFFFFF</color>
+    <color name="market_surface_low">#F4F4F0</color>
+    <color name="market_surface_high">#E8E8E4</color>
+    <color name="market_surface_variant">#E2E3DF</color>
+    <color name="market_primary">#A04100</color>
+    <color name="market_primary_container">#FF6B00</color>
+    <color name="market_secondary">#77574D</color>
+    <color name="market_secondary_container">#FED3C7</color>
+    <color name="market_chip">#FFDBD0</color>
+    <color name="market_tertiary">#0062A1</color>
+    <color name="market_fresh_chip">#059EFF</color>
+    <color name="market_text">#1A1C1A</color>
+    <color name="market_text_soft">#5A4136</color>
+    <color name="market_outline_soft">#33E2BFB0</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

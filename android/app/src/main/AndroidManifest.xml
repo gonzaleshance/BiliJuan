@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Internet & network -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Location — needed for Maps & delivery tracking -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,6 +19,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BiliJuan">
+
+        <!--
+            ╔══════════════════════════════════════════════════════════╗
+            ║  REPLACE  YOUR_GOOGLE_MAPS_API_KEY_HERE  with your       ║
+            ║  actual key from Google Cloud Console.                   ║
+            ║  Enable: Maps SDK for Android + Directions API           ║
+            ║  Restrict key to: com.appdev.bilijuan                    ║
+            ╚══════════════════════════════════════════════════════════╝
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE"/>
+
+        <!-- Activities -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
@@ -20,10 +42,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.LoginActivity" android:exported="false"/>
-        <activity android:name=".activities.RegisterActivity" android:exported="false"/>
-        <activity android:name=".activities.admin.AdminDashboardActivity" android:exported="false"/>
-        <activity android:name=".activities.customer.HomeActivity" android:exported="false"/>
-        <activity android:name=".activities.seller.SellerDashboardActivity" android:exported="false"/>
-</application>
+        <activity android:name=".activities.LoginActivity"                          android:exported="false"/>
+        <activity android:name=".activities.RegisterActivity"                       android:exported="false"/>
+        <activity android:name=".activities.admin.AdminDashboardActivity"           android:exported="false"/>
+        <activity android:name=".activities.customer.HomeActivity"                  android:exported="false"/>
+        <activity android:name=".activities.seller.SellerDashboardActivity"         android:exported="false"/>
+        <activity android:name=".activities.customer.PinLocationActivity"           android:exported="false"/>
+        <activity android:name=".activities.customer.OrderTrackingActivity"         android:exported="false"/>
+
+    </application>
+
 </manifest>

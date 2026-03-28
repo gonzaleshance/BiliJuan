@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_overview"
+            android:icon="@drawable/ic_home"
+            android:title="Overview"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/drawer_users"
+            android:icon="@drawable/ic_location"
+            android:title="Manage Users"/>
+
+        <item
+            android:id="@+id/drawer_orders"
+            android:icon="@drawable/ic_receipt"
+            android:title="All Orders"/>
+
+        <item
+            android:id="@+id/drawer_sellers"
+            android:icon="@drawable/ic_restaurant"
+            android:title="Sellers"/>
+
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/drawer_logout"
+            android:icon="@drawable/ic_arrow_back"
+            android:title="Logout"/>
+    </group>
+
+</menu>

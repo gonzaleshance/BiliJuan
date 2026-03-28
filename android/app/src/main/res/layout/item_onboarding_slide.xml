@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingHorizontal="40dp"
+    android:paddingBottom="24dp"
+    android:background="#FAF9F5">
+
+    <TextView
+        android:id="@+id/tvSlideEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🛒"
+        android:textSize="80sp"
+        android:layout_marginBottom="40dp"/>
+
+    <TextView
+        android:id="@+id/tvSlideTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#1A1C1A"
+        android:gravity="center"
+        android:letterSpacing="-0.02"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvSlideDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="15sp"
+        android:textColor="#77574D"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5"/>
+
+</LinearLayout>

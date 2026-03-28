@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary — high-intent CTAs, active states, brand identity -->
+    <color name="primary">#A04100</color>
+
+    <!-- Primary Container — gradient start, warm orange glow -->
+    <color name="primary_container">#FF6B00</color>
+
+    <!-- On Primary — text/icons on primary-colored surfaces -->
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary — metadata labels, muted text, subheadings -->
+    <color name="secondary">#77574D</color>
+
+    <!-- On Secondary -->
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Secondary Fixed — vendor tag chips, earthy peach -->
+    <color name="secondary_fixed">#FFDBD0</color>
+
+    <!-- Tertiary Container — Freshness chip, cool blue contrast -->
+    <color name="tertiary_container">#059EFF</color>
+
+    <!-- Surface / Background -->
+    <color name="surface">#FAF9F5</color>
+    <color name="background">#FAF9F5</color>
+
+    <!-- Surface Container Low -->
+    <color name="surface_container_low">#F4F4F0</color>
+
+    <!-- Surface Container -->
+    <color name="surface_container">#E8E8E4</color>
+
+    <!-- Surface Container High -->
+    <color name="surface_container_high">#E8E8E4</color>
+
+    <!-- Surface Container Lowest -->
+    <color name="surface_container_lowest">#FFFFFF</color>
+
+    <!-- On Surface — all body text -->
+    <color name="on_surface">#1A1C1A</color>
+
+    <!-- Outline Variant -->
+    <color name="outline_variant">#E2BFB0</color>
+
+    <!-- Deep warm brown — form labels -->
+    <color name="on_surface_variant">#5A4136</color>
+
+    <!-- Bottom nav colors (used directly, not as a selector here) -->
+    <color name="nav_active">#A04100</color>
+    <color name="nav_inactive">#77574D</color>
+
+    <!-- Convenience alias used by bottom nav tint selector -->
+    <color name="bottom_nav_active">#A04100</color>
+    <color name="bottom_nav_inactive">#B0877A</color>
+
+</resources>

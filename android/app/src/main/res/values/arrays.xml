@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="zones">
-        <item>Zone A</item>
-        <item>Zone B</item>
-        <item>Zone C</item>
-        <item>Zone D</item>
+
+    <!-- Actual subdivisions/areas along Saranay Road, Caloocan -->
+    <string-array name="saranay_subdivisions">
+        <item>Saranay Homes</item>
+        <item>Ugnayan Saranay Phase 1</item>
+        <item>Ugnayan Saranay Phase 2</item>
+        <item>Tierra Nova Royale</item>
+        <item>Nova Hills Subdivision</item>
+        <item>Northville</item>
+        <item>Along Saranay Road</item>
+        <item>Other / Not Listed</item>
     </string-array>
+
 </resources>

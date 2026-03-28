@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="zones">
+        <item>Zone A</item>
+        <item>Zone B</item>
+        <item>Zone C</item>
+        <item>Zone D</item>
+    </string-array>
+</resources>

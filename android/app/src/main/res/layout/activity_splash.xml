@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FAF9F5">
 
-    <!-- ViewPager for onboarding slides -->
+    <!-- Onboarding slides fill the upper portion -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerOnboarding"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- Bottom Controls -->
+    <!-- Bottom control panel -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
-        android:paddingBottom="48dp"
         android:paddingTop="16dp"
+        android:paddingBottom="48dp"
         android:background="#FAF9F5">
 
-        <!-- Dot Indicators -->
+        <!-- Dot indicators -->
         <LinearLayout
             android:id="@+id/dotsContainer"
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
             android:orientation="horizontal"
             android:layout_marginBottom="32dp"/>
 
-        <!-- Get Started Button -->
+        <!-- Get Started button — hidden until last slide -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGetStarted"
             android:layout_width="match_parent"
@@ -42,10 +43,10 @@
             android:textColor="#FFFFFF"
             android:backgroundTint="#A04100"
             app:cornerRadius="28dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:visibility="invisible"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Login Link -->
+        <!-- Already have an account -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,6 +68,7 @@
                 android:textColor="#A04100"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
+
         </LinearLayout>
 
     </LinearLayout>
