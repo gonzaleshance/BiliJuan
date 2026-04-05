@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Git: Setting Up and Cloning Repositories in Visual Studio</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm 2cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #fff;
+        }
+        
+        .page {
+            page-break-after: always;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .page:last-child {
+            page-break-after: auto;
+        }
+        
+        /* Cover Page */
+        .cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 3cm;
+        }
+        
+        .cover-icon {
+            font-size: 72pt;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .cover h1 {
+            font-size: 32pt;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .cover .subtitle {
+            font-size: 16pt;
+            color: #5a6c7d;
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+        
+        .cover .meta {
+            font-size: 12pt;
+            color: #7f8c8d;
+            margin-top: 60px;
+            border-top: 2px solid #2c3e50;
+            padding-top: 20px;
+        }
+        
+        /* Content Pages */
+        .content-page {
+            padding: 0;
+        }
+        
+        h2 {
+            font-size: 20pt;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        h3 {
+            font-size: 14pt;
+            font-weight: 600;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h4 {
+            font-size: 12pt;
+            font-weight: 600;
+            color: #5a6c7d;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        .intro-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .analogy-box {
+            background: #fff9e6;
+            border: 2px solid #f39c12;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .analogy-box strong {
+            color: #d68910;
+            font-size: 12pt;
+        }
+        
+        .step-container {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14pt;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        ol.numbered-steps {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+        
+        ol.numbered-steps li {
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+        
+        ul.bullet-points {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        ul.bullet-points li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 5px;
+        }
+        
+        ul.bullet-points li::marker {
+            color: #3498db;
+            font-size: 12pt;
+        }
+        
+        .note-box {
+            background: #e8f6f3;
+            border-left: 4px solid #1abc9c;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 10.5pt;
+        }
+        
+        .note-box::before {
+            content: "💡 TIP: ";
+            font-weight: bold;
+            color: #16a085;
+        }
+        
+        .warning-box {
+            background: #fdedec;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 10.5pt;
+        }
+        
+        .warning-box::before {
+            content: "⚠️ IMPORTANT: ";
+            font-weight: bold;
+            color: #c0392b;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 10pt;
+            color: #c0392b;
+            border: 1px solid #ddd;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 10pt;
+            margin: 15px 0;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        
+        .code-block .comment {
+            color: #95a5a6;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            width: 100%;
+            margin: 25px 0;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5pt;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        thead {
+            background: #2c3e50;
+            color: white;
+        }
+        
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10pt;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: top;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background: #e8f4f8;
+        }
+        
+        .cmd-cell {
+            font-family: 'Consolas', monospace;
+            font-weight: 600;
+            color: #c0392b;
+            white-space: nowrap;
+            background: #f4f4f4;
+            border-radius: 3px;
+            padding: 4px 8px;
+            display: inline-block;
+        }
+        
+        /* Troubleshooting */
+        .trouble-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff5f5;
+            border-left: 4px solid #e74c3c;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .trouble-item h4 {
+            color: #c0392b;
+            margin-top: 0;
+        }
+        
+        .solution {
+            background: #e8f8f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .solution::before {
+            content: "✓ Solution: ";
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        /* Visual indicators */
+        .icon {
+            font-size: 14pt;
+            margin-right: 8px;
+        }
+        
+        .workflow-diagram {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f0f3f4;
+            border-radius: 10px;
+        }
+        
+        .workflow-step {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #3498db;
+            color: white;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        
+        .workflow-arrow {
+            font-size: 20pt;
+            color: #7f8c8d;
+            margin: 0 10px;
+        }
+        
+        /* Footer for pages */
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 9pt;
+            color: #95a5a6;
+            padding: 10px 0;
+        }
+        
+        @media print {
+            .page {
+                page-break-after: always;
+            }
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="page cover">
+    <div class="cover-icon">📚</div>
+    <h1>Mastering Git</h1>
+    <div class="subtitle">Setting Up and Cloning Repositories<br>in Visual Studio</div>
+    <div class="meta">
+        A Beginner's Guide to Version Control<br>
+        <strong>Visual Studio 2022 & GitHub</strong>
+    </div>
+</div>
+
+<!-- INTRODUCTION PAGE -->
+<div class="page content-page">
+    <h2>Introduction: Understanding the Basics</h2>
+    
+    <div class="intro-box">
+        <p><strong>Welcome!</strong> This guide will walk you through setting up Git repositories and cloning them using Visual Studio. Whether you're a student, hobbyist, or professional developer, mastering these fundamentals is essential for modern software development.</p>
+    </div>
+    
+    <h3>What is a Repository?</h3>
+    
+    <div class="analogy-box">
+        <strong>🏛️ The Library Analogy</strong><br><br>
+        Think of a <strong>Repository (Repo)</strong> as a <em>specialized library</em> for your code. Just as a library doesn't just store books—it tracks who borrowed what, when changes were made, and keeps every version of every book— a Git repository does the same for your code.<br><br>
+        <strong>Key Features:</strong>
+        <ul class="bullet-points">
+            <li><strong>Storage:</strong> Holds all your project files and their history</li>
+            <li><strong>Version Control:</strong> Tracks every change made to every file</li>
+            <li><strong>Collaboration:</strong> Allows multiple people to work simultaneously without overwriting each other's work</li>
+            <li><strong>Backup:</strong> Acts as a safety net—you can always return to previous working versions</li>
+        </ul>
+    </div>
+    
+    <h3>What is Cloning?</h3>
+    
+    <div class="analogy-box">
+        <strong>☁️ The Cloud Storage Analogy</strong><br><br>
+        Imagine your repository is a <em>master blueprint</em> stored in a secure cloud vault (GitHub). <strong>Cloning</strong> is like downloading a complete, working copy of that blueprint to your local workshop (your computer).<br><br>
+        <strong>Why Clone?</strong>
+        <ul class="bullet-points">
+            <li><strong>Local Access:</strong> Work on code without internet connection</li>
+            <li><strong>Personal Workspace:</strong> Make changes safely without affecting the master copy</li>
+            <li><strong>Synchronization:</strong> Keep your local copy updated with changes from teammates</li>
+            <li><strong>Complete History:</strong> The clone includes the entire project history, not just current files</li>
+        </ul>
+    </div>
+    
+    <div class="note-box">
+        Git is a <strong>Distributed Version Control System</strong>, meaning every cloned copy is a full backup of the entire project history. This makes it incredibly resilient compared to older systems!
+    </div>
+</div>
+
+<!-- STEP 1: THE CLOUD SETUP -->
+<div class="page content-page">
+    <h2>Step 1: The Cloud Setup — Creating Your Repository</h2>
+    
+    <div class="step-container">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <div class="step-title">Create a Repository on GitHub</div>
+        </div>
+        
+        <p>Before you can clone anything, you need a repository to clone from. GitHub hosts your repository in the cloud, making it accessible from anywhere.</p>
+        
+        <h4>Prerequisites</h4>
+        <ul class="bullet-points">
+            <li>A <strong>GitHub account</strong> (free at github.com)</li>
+            <li>Basic familiarity with web browsers</li>
+        </ul>
+        
+        <h4>Detailed Instructions</h4>
+        <ol class="numbered-steps">
+            <li><strong>Log into GitHub</strong> — Navigate to <code>github.com</code> and sign in to your account.</li>
+            
+            <li><strong>Initiate New Repository</strong> — Click the <strong>"+"</strong> icon in the top-right corner of the screen, then select <strong>"New repository"</strong> from the dropdown menu.</li>
+            
+            <li><strong>Name Your Repository</strong> — In the <strong>"Repository name"</strong> field, enter a descriptive name:
+                <ul class="bullet-points">
+                    <li>Use lowercase letters and hyphens (e.g., <code>my-first-project</code>)</li>
+                    <li>Keep it concise but descriptive</li>
+                    <li>Avoid spaces and special characters</li>
+                </ul>
+            </li>
+            
+            <li><strong>Add a Description (Optional but Recommended)</strong> — Write a brief explanation of what this project does. This helps collaborators understand the purpose immediately.</li>
+            
+            <li><strong>Set Visibility</strong> — Choose between:
+                <ul class="bullet-points">
+                    <li><strong>Public:</strong> Anyone can see the repository (recommended for open source)</li>
+                    <li><strong>Private:</strong> Only you and invited collaborators can access it</li>
+                </ul>
+            </li>
+            
+            <li><strong>Initialize with README</strong> — <em>Crucial step!</em> Check the box labeled <strong>"Add a README file"</strong>. This:
+                <ul class="bullet-points">
+                    <li>Creates an initial commit, making the repository immediately cloneable</li>
+                    <li>Provides a space to document your project</li>
+                    <li>Prevents "empty repository" errors</li>
+                </ul>
+            </li>
+            
+            <li><strong>Create Repository</strong> — Click the green <strong>"Create repository"</strong> button.</li>
+        </ol>
+        
+        <div class="warning-box">
+            Do not skip the README initialization! Without it, your repository will be empty, and Visual Studio may display errors when attempting to clone.
+        </div>
+        
+        <h4>Copying the Clone URL</h4>
+        <p>Once created, you'll see a green <strong>"Code"</strong> button. Click it and copy the HTTPS URL (it looks like <code>https://github.com/username/repository-name.git</code>). Save this URL—you'll need it in Step 2.</p>
+    </div>
+</div>
+
+<!-- STEP 2: THE HANDSHAKE -->
+<div class="page content-page">
+    <h2>Step 2: The Handshake — Cloning in Visual Studio</h2>
+    
+    <div class="step-container">
+        <div class="step-header">
+            <div class="step-number">2</div>
+            <div class="step-title">Clone Repository in Visual Studio</div>
+        </div>
+        
+        <p>Now that your repository exists in the cloud, you'll "shake hands" with it by cloning it to your local machine through Visual Studio.</p>
+        
+        <h4>Prerequisites</h4>
+        <ul class="bullet-points">
+            <li><strong>Visual Studio 2022</strong> installed (Community, Professional, or Enterprise)</li>
+            <li><strong>Git for Windows</strong> (usually included with Visual Studio installation)</li>
+            <li>The <strong>Clone URL</strong> from Step 1 copied to your clipboard</li>
+        </ul>
+        
+        <h4>Detailed Instructions</h4>
+        <ol class="numbered-steps">
+            <li><strong>Launch Visual Studio</strong> — Open the application. You'll see the Start Window.</li>
+            
+            <li><strong>Select Clone Option</strong> — Click on <strong>"Clone a repository"</strong> on the right side of the Start Window. If Visual Studio is already open, go to <strong>File → Clone Repository</strong>.</li>
+            
+            <li><strong>Enter Repository Location</strong> — In the dialog box:
+                <ul class="bullet-points">
+                    <li><strong>Repository location:</strong> Paste the URL you copied from GitHub (e.g., <code>https://github.com/username/my-first-project.git</code>)</li>
+                    <li><strong>Path:</strong> Choose where on your computer to save the project (e.g., <code>C:\Users\YourName\Source\Repos\</code>)</li>
+                </ul>
+            </li>
+            
+            <li><strong>Authentication (First Time Only)</strong> — If prompted:
+                <ul class="bullet-points">
+                    <li>Visual Studio may ask you to sign in to GitHub</li>
+                    <li>Use your browser to authenticate—this is secure and recommended</li>
+                    <li>Alternatively, use a Personal Access Token if required by your organization</li>
+                </ul>
+            </li>
+            
+            <li><strong>Clone</strong> — Click the <strong>"Clone"</strong> button. Visual Studio will:
+                <ul class="bullet-points">
+                    <li>Download all files from the repository</li>
+                    <li>Create a local Git repository linked to the remote one</li>
+                    <li>Open the project in Solution Explorer</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <div class="note-box">
+            Visual Studio automatically configures Git settings for the cloned repository. You can verify the connection by going to <strong>Git → Manage Remotes</strong> to see that "origin" points to your GitHub URL.
+        </div>
+        
+        <h4>Verifying the Clone</h4>
+        <p>After cloning:</p>
+        <ul class="bullet-points">
+            <li>The <strong>Solution Explorer</strong> (right panel) shows your files</li>
+            <li>The <strong>Git Changes</strong> window (View → Git Changes) displays repository status</li>
+            <li>The <strong>branch name</strong> appears in the bottom-right corner (usually "main" or "master")</li>
+        </ul>
+    </div>
+</div>
+
+<!-- STEP 3: THE WORKFLOW -->
+<div class="page content-page">
+    <h2>Step 3: The Workflow — Commit, Push, and Pull</h2>
+    
+    <p>Understanding the daily workflow is crucial. This cycle is how you'll save work, share it with others, and receive updates.</p>
+    
+    <div class="workflow-diagram">
+        <span class="workflow-step">Edit Files</span>
+        <span class="workflow-arrow">→</span>
+        <span class="workflow-step">Stage (Add)</span>
+        <span class="workflow-arrow">→</span>
+        <span class="workflow-step">Commit</span>
+        <span class="workflow-arrow">→</span>
+        <span class="workflow-step">Push</span>
+        <span class="workflow-arrow">→</span>
+        <span class="workflow-step">Pull Updates</span>
+    </div>
+    
+    <h3>The Complete Cycle Explained</h3>
+    
+    <div class="step-container">
+        <h4><span class="icon">✏️</span>Phase 1: Making Changes (Edit)</h4>
+        <p>Work on your code normally. Create new files, modify existing ones, or delete unnecessary files. Visual Studio tracks all changes automatically.</p>
+        <ul class="bullet-points">
+            <li>Modified files show a <strong>checkmark</strong> in Solution Explorer</li>
+            <li>New files show a <strong>plus icon</strong></li>
+            <li>Deleted files show a <strong>red minus</strong></li>
+        </ul>
+    </div>
+    
+    <div class="step-container">
+        <h4><span class="icon">📦</span>Phase 2: Staging (git add)</h4>
+        <p>Staging prepares your changes for a snapshot. Think of it as selecting which photos to include in an album.</p>
+        <ol class="numbered-steps">
+            <li>Open the <strong>Git Changes</strong> window (<strong>View → Git Changes</strong> or <strong>Ctrl+0, G</strong>)</li>
+            <li>You'll see lists of <strong>Changes</strong> (modified files) and <strong>Untracked files</strong> (new files)</li>
+            <li>Hover over a file and click the <strong>"+"</strong> icon to stage individual files, or click <strong>"+ All"</strong> to stage everything</li>
+            <li>Staged files move to the <strong>Staged Changes</strong> area</li>
+        </ol>
+        <div class="note-box">
+            Staging allows you to commit only specific changes. If you've fixed a bug and added a new feature, you can stage and commit them separately with different messages for cleaner history.
+        </div>
+    </div>
+    
+    <div class="step-container">
+        <h4><span class="icon">💾</span>Phase 3: Committing (git commit)</h4>
+        <p>Committing creates a permanent snapshot of your staged changes in your <em>local</em> repository.</p>
+        <ol class="numbered-steps">
+            <li>Ensure your desired changes are in the <strong>Staged Changes</strong> section</li>
+            <li>Enter a <strong>commit message</strong> in the text box:
+                <ul class="bullet-points">
+                    <li>First line: Short summary (50 characters or less)</li>
+                    <li>Press Enter twice, then add detailed description if needed</li>
+                    <li>Use present tense: "Add login feature" not "Added login feature"</li>
+                </ul>
+            </li>
+            <li>Click the <strong>Commit Staged</strong> button (checkmark icon)</li>
+        </ol>
+        <div class="warning-box">
+            Committing only saves to your LOCAL repository. Your changes are not yet on GitHub! You must push to share them.
+        </div>
+    </div>
+</div>
+
+<!-- WORKFLOW CONTINUED -->
+<div class="page content-page">
+    <div class="step-container" style="margin-top: 0;">
+        <h4><span class="icon">☁️</span>Phase 4: Pushing (git push)</h4>
+        <p>Pushing uploads your local commits to the remote repository on GitHub, making them available to collaborators.</p>
+        <ol class="numbered-steps">
+            <li>After committing, look for the <strong>up arrow</strong> with a number in the Git Changes window or status bar</li>
+            <li>This number indicates how many commits are "ahead" of the remote repository</li>
+            <li>Click <strong>Push</strong> (up arrow icon) or go to <strong>Git → Push</strong></li>
+            <li>Visual Studio uploads your commits to GitHub</li>
+            <li>The status indicators reset to zero</li>
+        </ol>
+        <div class="note-box">
+            You can commit multiple times before pushing. This is useful for saving incremental progress locally before sharing a complete feature.
+        </div>
+    </div>
+    
+    <div class="step-container">
+        <h4><span class="icon">🔄</span>Phase 5: Pulling (git pull)</h4>
+        <p>Pulling downloads changes from GitHub that others have made, keeping your local repository synchronized.</p>
+        <ol class="numbered-steps">
+            <li>Click the <strong>Pull</strong> button (down arrow) in the Git Changes window</li>
+            <li>Or use <strong>Git → Pull</strong> from the menu</li>
+            <li>Visual Studio fetches remote changes and merges them into your current branch</li>
+            <li>Your local files are updated automatically</li>
+        </ol>
+        
+        <div class="warning-box">
+            Always pull before starting work and before pushing! If someone else pushed changes while you were working, you'll need to pull their changes first to avoid conflicts.
+        </div>
+    </div>
+    
+    <h3>Daily Workflow Summary</h3>
+    <div class="code-block">
+        <span class="comment"># Start of work session</span><br>
+        Pull latest changes ← <span class="comment">Always start here!</span><br><br>
+        <span class="comment"># Work and save progress</span><br>
+        Edit files → Stage changes → Commit locally<br><br>
+        <span class="comment"># End of work session</span><br>
+        Pull again ← <span class="comment">Check for teammates' updates</span><br>
+        Push commits ← <span class="comment">Share your work</span>
+    </div>
+</div>
+
+<!-- REFERENCE TABLE -->
+<div class="page content-page">
+    <h2>Git Command Reference Guide</h2>
+    
+    <p style="margin-bottom: 20px;">While Visual Studio provides a graphical interface, understanding the underlying Git commands helps you troubleshoot issues and work in any environment.</p>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Command</th>
+                    <th style="width: 35%;">Description</th>
+                    <th style="width: 45%;">Why Use It?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="cmd-cell">git clone [url]</span></td>
+                    <td>Creates a local copy of a remote repository</td>
+                    <td><strong>Getting Started:</strong> Use this to download an existing project from GitHub to your computer for the first time. It preserves all history and branches.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git pull</span></td>
+                    <td>Downloads changes from remote and merges them</td>
+                    <td><strong>Staying Current:</strong> Essential for collaboration. Pull before starting work to get teammates' latest changes, and pull before pushing to avoid conflicts.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git add [file]</span></td>
+                    <td>Stages specific files for the next commit</td>
+                    <td><strong>Selective Saving:</strong> Allows you to choose exactly which changes to include in your next snapshot. Use <code>git add .</code> to stage all changes at once.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git commit -m "msg"</span></td>
+                    <td>Saves staged changes to local repository</td>
+                    <td><strong>Creating History:</strong> Records a permanent snapshot with a descriptive message. Commits are local until pushed, allowing you to save progress frequently.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git push</span></td>
+                    <td>Uploads local commits to remote repository</td>
+                    <td><strong>Sharing Work:</strong> Makes your commits visible to teammates on GitHub. Required to backup your work to the cloud and collaborate with others.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git log</span></td>
+                    <td>Displays commit history with messages</td>
+                    <td><strong>Investigation:</strong> View what changed, when, and by whom. Essential for finding when bugs were introduced or understanding project evolution.</td>
+                </tr>
+                <tr>
+                    <td><span class="cmd-cell">git revert [commit]</span></td>
+                    <td>Creates a new commit that undoes a previous commit</td>
+                    <td><strong>Safe Undo:</strong> When you need to undo changes but keep the history (unlike reset). Perfect for undoing mistakes without rewriting shared history.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="note-box">
+        In Visual Studio, these commands correspond to: Clone (Start Window), Pull/Push (Git Changes window arrows), Add (Staging "+"), Commit (Commit button), and View History (Git menu).
+    </div>
+    
+    <h3>Additional Useful Commands</h3>
+    <ul class="bullet-points">
+        <li><code>git status</code> — Check which files are modified, staged, or untracked</li>
+        <li><code>git diff</code> — See exactly what changes you've made before staging</li>
+        <li><code>git branch</code> — List available branches in your repository</li>
+        <li><code>git checkout [branch]</code> — Switch to a different branch</li>
+    </ul>
+</div>
+
+<!-- TROUBLESHOOTING -->
+<div class="page content-page">
+    <h2>Troubleshooting Common Issues</h2>
+    
+    <p>Even experienced developers encounter Git issues. Here are solutions to the most common beginner problems:</p>
+    
+    <div class="trouble-item">
+        <h4>🔴 Merge Conflicts</h4>
+        <p><strong>Symptom:</strong> Error message "Merge conflict in [filename]" when pulling or pushing.</p>
+        <p><strong>Cause:</strong> You and another person edited the same lines of the same file simultaneously.</p>
+        <div class="solution">
+            Visual Studio highlights conflicts with red markers. Open the file, look for <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> markers, choose which version to keep (yours, theirs, or both), delete the marker lines, stage the file, and commit. Then push.
+        </div>
+    </div>
+    
+    <div class="trouble-item">
+        <h4>🔴 "Failed to Push" / "Rejected: Non-fast-forward"</h4>
+        <p><strong>Symptom:</strong> Push fails with error about updates being rejected.</p>
+        <p><strong>Cause:</strong> Someone pushed changes after your last pull. Your local history is behind.</p>
+        <div class="solution">
+            <strong>Pull first!</strong> Click Pull to download the latest changes, resolve any conflicts if prompted, then push again. Never force push unless you're absolutely certain.
+        </div>
+    </div>
+    
+    <div class="trouble-item">
+        <h4>🔴 Authentication Failed</h4>
+        <p><strong>Symptom:</strong> "Authentication failed" or "403 Forbidden" when cloning or pushing.</p>
+        <p><strong>Cause:</strong> Incorrect credentials, expired token, or missing permissions.</p>
+        <div class="solution">
+            Go to <strong>Git → Settings → Global Settings</strong> in Visual Studio, or Windows Credential Manager, and update your GitHub credentials. For GitHub, use a Personal Access Token instead of your password.
+        </div>
+    </div>
+    
+    <div class="trouble-item">
+        <h4>🔴 "Not a Git Repository" Error</h4>
+        <p><strong>Symptom:</strong> Commands fail with "fatal: not a git repository."</p>
+        <p><strong>Cause:</strong> You're running Git commands in a folder that isn't tracked by Git.</p>
+        <div class="solution">
+            Ensure you opened the correct folder in Visual Studio (the one containing the hidden <code>.git</code> folder). If you only see files but no Git integration, you may need to clone again or initialize with <code>git init</code>.
+        </div>
+    </div>
+    
+    <div class="trouble-item">
+        <h4>🔴 Large Files Won't Push</h4>
+        <p><strong>Symptom:</strong> Error about file size limits (usually >100MB).</p>
+        <p><strong>Cause:</strong> GitHub has a 100MB file size limit for regular files.</p>
+        <div class="solution">
+            Use <strong>Git Large File Storage (LFS)</strong> for large files, or add the file to <code>.gitignore</code> if it shouldn't be tracked (like build outputs or dependencies).
+        </div>
+    </div>
+    
+    <div class="trouble-item">
+        <h4>🔴 Forgot to Add README on Creation</h4>
+        <p><strong>Symptom:</strong> Cloned an empty repository and Visual Studio shows errors or no solution.</p>
+        <p><strong>Cause:</strong> The repository has no commits yet.</p>
+        <div class="solution">
+            Create a README.md file in the folder, stage it, commit, and push. Or delete the local folder and re-clone after adding a file via GitHub's web interface.
+        </div>
+    </div>
+    
+    <div class="note-box" style="margin-top: 30px;">
+        <strong>Golden Rule:</strong> When in doubt, <strong>commit your work locally first</strong> before trying to fix issues. This ensures you never lose changes while troubleshooting.
+    </div>
+</div>
+
+<!-- FINAL PAGE -->
+<div class="page content-page" style="text-align: center; padding-top: 100px;">
+    <h2 style="border: none; color: #3498db;">You're Ready to Go!</h2>
+    <p style="font-size: 14pt; margin-top: 40px;">
+        You now have the fundamental skills to:<br><br>
+        <strong>Create repositories</strong> on GitHub<br>
+        <strong>Clone</strong> them to Visual Studio<br>
+        <strong>Commit, Push, and Pull</strong> with confidence<br>
+        <strong>Troubleshoot</strong> common issues<br><br>
+    </p>
+    <div style="margin-top: 60px; padding: 30px; background: #ecf0f1; border-radius: 10px; display: inline-block;">
+        <p style="font-size: 12pt; color: #7f8c8d; margin: 0;">
+            <strong>Next Steps:</strong><br>
+            Explore branching strategies • Learn about Pull Requests<br>
+            Set up Continuous Integration • Collaborate with a team
+        </p>
+    </div>
+    <p style="margin-top: 80px; font-size: 10pt; color: #95a5a6;">
+        Manual Version 1.0 | Generated for PDF Export
+    </p>
+</div>
+
+</body>
+</html>

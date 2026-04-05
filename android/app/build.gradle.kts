@@ -37,15 +37,14 @@ android {
 }
 
 dependencies {
-    // Firebase BOM — controls all Firebase library versions together
+    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
 
-    // Google Maps SDK — for delivery tracking & address pinning inside Saranay
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    // OSMDroid — free OpenStreetMap, no API key needed
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
 
     // AndroidX
     implementation(libs.appcompat)
