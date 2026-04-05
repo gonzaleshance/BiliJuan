@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Actual subdivisions/areas along Saranay Road, Caloocan -->
+    <!-- Saranay subdivisions for registration -->
     <string-array name="saranay_subdivisions">
         <item>Saranay Homes</item>
         <item>Ugnayan Saranay Phase 1</item>
@@ -11,6 +11,17 @@
         <item>Northville</item>
         <item>Along Saranay Road</item>
         <item>Other / Not Listed</item>
+    </string-array>
+
+    <!-- Product categories (7) -->
+    <string-array name="product_categories">
+        <item>Ulam</item>
+        <item>Rice Meals</item>
+        <item>Meryenda</item>
+        <item>Pulutan</item>
+        <item>Panghimagas</item>
+        <item>Street Food</item>
+        <item>Specialty/Celebration</item>
     </string-array>
 
 </resources>

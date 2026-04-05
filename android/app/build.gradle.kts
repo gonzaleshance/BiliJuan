@@ -37,16 +37,15 @@ android {
 }
 
 dependencies {
-    // Firebase BOM
-    implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
+    // Firebase BOM — manages all Firebase versions
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
 
-    // OSMDroid — free OpenStreetMap, no API key needed
-    implementation("org.osmdroid:osmdroid-android:6.1.20")
+    // OSMDroid — open source maps (no API key needed)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
 
-    // AndroidX
+    // UI
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -56,8 +55,8 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     // Image loading
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("com.github.bumptech.glide:glide:5.0.5")
+    annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
     // Testing
     testImplementation(libs.junit)
