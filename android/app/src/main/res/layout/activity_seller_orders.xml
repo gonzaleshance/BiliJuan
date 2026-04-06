@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- Header -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/primary"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Order History"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center"/>
+
+            <View android:layout_width="48dp" android:layout_height="48dp"/>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:paddingBottom="80dp">
+
+        <!-- Filter Chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:paddingVertical="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="24dp">
+
+                <TextView
+                    android:id="@+id/chipActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Active"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_chip_active"
+                    android:gravity="center"
+                    android:paddingHorizontal="24dp"
+                    android:background="@drawable/bg_chip_active"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/chipHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="History"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_chip_inactive"
+                    android:gravity="center"
+                    android:paddingHorizontal="24dp"
+                    android:background="@drawable/bg_chip_inactive"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Empty State -->
+        <TextView
+            android:id="@+id/emptyOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No orders here yet."
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:paddingVertical="64dp"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrders"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="16dp"
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_seller_order_row"/>
+    </LinearLayout>
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        android:background="@color/surface"
+        app:menu="@menu/bottom_nav_seller"
+        app:itemIconTint="@color/nav_active"
+        app:itemTextColor="@color/nav_active"
+        app:labelVisibilityMode="labeled"
+        android:elevation="16dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,9 +1,57 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.BiliJuan" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary Brand Color -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/primary_dark</item>
+
+        <!-- Secondary Brand Color -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+
+        <!-- Background and Surface -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Navigation Bar -->
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Custom Shape Styling -->
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.BiliJuan.Large</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.BiliJuan.Medium</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.BiliJuan.Small</item>
     </style>
 
     <style name="Theme.BiliJuan" parent="Base.Theme.BiliJuan" />
+
+    <!-- Shape Appearances for rounded corners -->
+    <style name="ShapeAppearance.BiliJuan.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeAppearance.BiliJuan.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.BiliJuan.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <!-- Custom Button Style -->
+    <style name="Widget.BiliJuan.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.BiliJuan.Medium</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
 </resources>

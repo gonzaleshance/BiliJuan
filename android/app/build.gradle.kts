@@ -42,6 +42,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
     // OSMDroid — open source maps (no API key needed)
     implementation("org.osmdroid:osmdroid-android:6.1.18")
 

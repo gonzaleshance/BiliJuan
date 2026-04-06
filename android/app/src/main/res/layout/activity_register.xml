@@ -3,551 +3,400 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF9F5"
+    android:background="@color/background"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="80dp"
+        android:paddingHorizontal="32dp"
+        android:paddingTop="48dp"
         android:paddingBottom="48dp">
 
-        <!-- Brand -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BiliJuan"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#A04100"
+            android:textColor="@color/primary"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="32dp"/>
 
-        <!-- Badge -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="COMMUNITY DRIVEN"
-            android:textSize="11sp"
+            android:text="Create Account"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="#795950"
-            android:background="@drawable/bg_chip_secondary"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="6dp"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Join the Digital Hearth."
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#1A1C1A"
+            android:textColor="@color/text_primary"
             android:letterSpacing="-0.02"
             android:layout_marginBottom="8dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create your account to start buying or selling local."
+            android:text="Buy or sell local food in Saranay."
             android:textSize="14sp"
-            android:textColor="#77574D"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="32dp"/>
 
-        <!-- ── Full Name ── -->
+        <!-- Section: Personal -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Full Name"
-            android:textSize="12sp"
+            android:text="PERSONAL INFO"
+            android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
+            android:textColor="@color/text_secondary"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="20dp">
-
+            app:boxStrokeWidthFocused="1dp"
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="Juan dela Cruz"
+                android:hint="Full Name"
                 android:inputType="textPersonName"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
+                android:textColor="@color/text_primary"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ── Email ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="20dp">
-
+            app:boxStrokeWidthFocused="1dp"
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="hello@bilijuan.com"
+                android:hint="Email Address"
                 android:inputType="textEmailAddress"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
+                android:textColor="@color/text_primary"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ── Phone ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phone Number"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="20dp">
-
+            app:boxStrokeWidthFocused="1dp"
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="09XX XXX XXXX"
+                android:hint="Phone (09XX XXX XXXX)"
                 android:inputType="phone"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
+                android:textColor="@color/text_primary"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Password ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
-
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
+            app:boxStrokeWidthFocused="1dp"
+            app:hintEnabled="false"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="#8E7164"
-            android:layout_marginBottom="28dp">
-
+            android:layout_marginBottom="32dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="Min. 6 characters"
+                android:hint="Password (min. 6 characters)"
                 android:inputType="textPassword"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
+                android:textColor="@color/text_primary"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Address Section Header ── -->
+        <!-- Section: Address -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="YOUR ADDRESS IN SARANAY"
-            android:textSize="10sp"
+            android:text="DELIVERY ADDRESS"
+            android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="#77574D"
+            android:textColor="@color/text_secondary"
             android:letterSpacing="0.1"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="4dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Used by riders to find your exact location."
-            android:textSize="12sp"
-            android:textColor="#8E7164"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="4dp"/>
-
-        <!-- ── Subdivision Spinner ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subdivision / Area"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
-
-        <Spinner
-            android:id="@+id/spinnerSubdivision"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_role_unselected"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_marginBottom="20dp"/>
-
-        <!-- ── Block and Lot Row ── -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
-
-            <!-- Block -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Block"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#5A4136"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="4dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxBackgroundColor="#F4F4F0"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeColor="#A04100">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etBlock"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:hint="e.g. 4"
-                        android:inputType="text"
-                        android:paddingHorizontal="20dp"
-                        android:background="@null"
-                        android:textColor="#1A1C1A"
-                        android:textSize="14sp"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <!-- Lot -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lot"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#5A4136"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="4dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    app:boxBackgroundColor="#F4F4F0"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeColor="#A04100">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLot"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:hint="e.g. 12"
-                        android:inputType="text"
-                        android:paddingHorizontal="20dp"
-                        android:background="@null"
-                        android:textColor="#1A1C1A"
-                        android:textSize="14sp"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- ── Street ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Street"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
+            android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="20dp">
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
+            <AutoCompleteTextView
+                android:id="@+id/spinnerSubdivision"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Select Subdivision"
+                android:inputType="none"
+                android:paddingHorizontal="20dp"
+                android:textSize="14sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                app:boxBackgroundColor="@color/surface_variant"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeWidth="0dp"
+                app:hintEnabled="false"
+                android:layout_marginEnd="6dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Block"
+                    android:inputType="text"
+                    android:paddingHorizontal="20dp"
+                    android:textSize="14sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                app:boxBackgroundColor="@color/surface_variant"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeWidth="0dp"
+                app:hintEnabled="false"
+                android:layout_marginStart="6dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLot"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Lot"
+                    android:inputType="text"
+                    android:paddingHorizontal="20dp"
+                    android:textSize="14sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxStrokeWidth="0dp"
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etStreet"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="e.g. Ilang-Ilang St."
+                android:hint="Street (e.g. Ilang-Ilang St.)"
                 android:inputType="textPostalAddress"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ── Landmark ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Landmark (optional)"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="20dp">
-
+            app:hintEnabled="false"
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLandmark"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="e.g. near sari-sari store, blue gate"
+                android:hint="Landmark (optional)"
                 android:inputType="text"
                 android:paddingHorizontal="20dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
                 android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ── Full Address (auto-built) ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Full Address"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="4dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="#F4F4F0"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox"
+            app:boxBackgroundColor="@color/surface_variant"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="#A04100"
-            android:layout_marginBottom="8dp">
-
+            app:hintEnabled="false"
+            android:layout_marginBottom="32dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Full Address Preview"
                 android:minHeight="56dp"
-                android:hint="Auto-filled from fields above"
-                android:inputType="textMultiLine|textPostalAddress"
+                android:inputType="textMultiLine"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="16dp"
-                android:background="@null"
-                android:textColor="#1A1C1A"
-                android:textSize="14sp"
-                android:gravity="top"/>
+                android:paddingVertical="12dp"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:editable="false"
+                android:focusable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Section: Role -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📍 You can pin your exact spot on the map after signing up."
+            android:text="I WANT TO"
             android:textSize="11sp"
-            android:textColor="#8E7164"
-            android:layout_marginBottom="32dp"
-            android:layout_marginStart="4dp"
-            android:lineSpacingMultiplier="1.4"/>
-
-        <!-- ── Role Selection ── -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I want to"
-            android:textSize="12sp"
             android:textStyle="bold"
-            android:textColor="#5A4136"
-            android:layout_marginBottom="12dp"
-            android:layout_marginStart="4dp"/>
+            android:textColor="@color/text_secondary"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="32dp">
-
-            <LinearLayout
+            android:layout_marginBottom="40dp">
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnRoleCustomer"
                 android:layout_width="0dp"
-                android:layout_height="72dp"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_role_selected"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/primary"
+                app:cardBackgroundColor="@color/primary_light"
                 android:layout_marginEnd="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_home"
+                        app:tint="@color/primary"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buy Food"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🛒"
-                    android:textSize="20sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Buy Food"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#A04100"/>
-            </LinearLayout>
-
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnRoleSeller"
                 android:layout_width="0dp"
-                android:layout_height="72dp"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_role_unselected"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/surface_container"
+                app:cardBackgroundColor="@color/surface"
                 android:layout_marginStart="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🍳"
-                    android:textSize="20sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sell Food"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#77574D"/>
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_restaurant"
+                        app:tint="@color/text_secondary"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sell Food"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- Progress Bar -->
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center_horizontal"
-            android:indeterminateTint="#A04100"
+            android:indeterminateTint="@color/primary"
             android:visibility="gone"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Register Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
@@ -555,35 +404,32 @@
             android:text="Create Account"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#A04100"
-            app:cornerRadius="28dp"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@color/on_primary"
+            android:backgroundTint="@color/primary"
+            app:cornerRadius="16dp"
+            android:layout_marginBottom="32dp"
+            app:elevation="4dp"/>
 
-        <!-- Login Link -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
-                android:textColor="#77574D"
+                android:textColor="@color/text_secondary"
                 android:textSize="14sp"/>
-
             <TextView
                 android:id="@+id/tvLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign In"
-                android:textColor="#A04100"
+                android:textColor="@color/primary"
                 android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:padding="4dp"/>
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

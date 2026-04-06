@@ -3,7 +3,8 @@ package com.appdev.bilijuan.activities.customer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,11 +49,11 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private String sellerPhone;
 
     // UI
-    private TextView     tvOrderStatus;
-    private TextView     tvSellerName;
-    private TextView     tvSellerPhone;
-    private LinearLayout btnCallSeller;
-    private LinearLayout btnSmsCustomer;
+    private TextView    tvOrderStatus;
+    private TextView    tvSellerName;
+    private TextView    tvSellerPhone;
+    private ImageButton btnCallSeller;
+    private ImageButton btnSmsCustomer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

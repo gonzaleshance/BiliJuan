@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BiliJuan</string>
+    <!-- Replace this with your actual Web Client ID from Google Cloud Console / Firebase -->
+    <string name="default_web_client_id">1094927820369-dhpne4m2ffbt7iph74o95pfoag4em11j.apps.googleusercontent.com</string>
 </resources>

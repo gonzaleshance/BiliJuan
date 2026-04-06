@@ -39,10 +39,11 @@
         <activity android:name=".activities.RegisterActivity"                       android:exported="false"/>
         <activity android:name=".activities.admin.AdminDashboardActivity"           android:exported="false"/>
         <activity android:name=".activities.customer.HomeActivity"                  android:exported="false"/>
-        <activity android:name=".activities.seller.SellerDashboardActivity"         android:exported="false"/>
-        <activity android:name=".activities.customer.PinLocationActivity"           android:exported="false"/>
+        <activity android:name=".activities.seller.SellerDashboardActivity" android:exported="false"/>        <activity android:name=".activities.customer.PinLocationActivity"           android:exported="false"/>
         <activity android:name=".activities.customer.OrderTrackingActivity"         android:exported="false"/>
-
+        <activity android:name=".activities.seller.AddProductActivity"    android:exported="false"/>
+        <activity android:name=".activities.seller.SellerOrdersActivity"  android:exported="false"/>
+        <!-- SellerDashboardActivity already declared — rename its entry to match new layout binding -->
     </application>
 
 </manifest>

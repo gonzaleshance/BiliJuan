@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAF9F5">
+    android:background="@color/background">
 
     <!-- Main Content -->
     <LinearLayout
@@ -14,47 +14,53 @@
         android:orientation="vertical">
 
         <!-- Top App Bar -->
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="20dp"
-            android:background="#FAF9F5"
-            android:elevation="4dp">
+            android:layout_height="wrap_content"
+            android:background="@color/surface"
+            app:elevation="0dp">
 
-            <ImageButton
-                android:id="@+id/btnDrawer"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_menu"
-                android:background="@android:color/transparent"
-                app:tint="#A04100"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="BiliJuan Admin"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#A04100"
-                android:layout_marginStart="12dp"/>
+                <ImageButton
+                    android:id="@+id/btnDrawer"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_menu"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/primary"/>
 
-            <ImageButton
-                android:id="@+id/btnNotification"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_notifications"
-                android:background="@android:color/transparent"
-                app:tint="#A04100"/>
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="BiliJuan Admin"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginStart="12dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnNotification"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_notifications"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/primary"/>
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- Fragment Container -->
         <FrameLayout
             android:id="@+id/adminFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@color/background"/>
 
     </LinearLayout>
 
@@ -64,10 +70,13 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#FFFFFF"
+        android:background="@color/surface"
         app:menu="@menu/admin_drawer_menu"
         app:headerLayout="@layout/nav_header_admin"
-        app:itemIconTint="#A04100"
-        app:itemTextColor="#1A1C1A"/>
+        app:itemIconTint="@color/primary"
+        app:itemTextColor="@color/text_primary"
+        app:itemShapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Medium"
+        app:itemHorizontalPadding="24dp"
+        app:itemVerticalPadding="12dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

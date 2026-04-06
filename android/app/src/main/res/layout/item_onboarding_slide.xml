@@ -5,25 +5,24 @@
     android:orientation="vertical"
     android:gravity="center"
     android:paddingHorizontal="40dp"
-    android:paddingBottom="24dp"
-    android:background="#FAF9F5">
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/tvSlideEmoji"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🛒"
-        android:textSize="80sp"
-        android:layout_marginBottom="40dp"/>
+        android:textSize="100sp"
+        android:layout_marginBottom="48dp"/>
 
     <TextView
         android:id="@+id/tvSlideTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
-        android:textSize="26sp"
+        android:text="Freshness at Your Door"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#1A1C1A"
+        android:textColor="@color/text_primary"
         android:gravity="center"
         android:letterSpacing="-0.02"
         android:layout_marginBottom="16dp"/>
@@ -32,10 +31,10 @@
         android:id="@+id/tvSlideDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
-        android:textSize="15sp"
-        android:textColor="#77574D"
+        android:text="Discover local flavors and fresh harvests from sellers right in your neighborhood."
+        android:textSize="16sp"
+        android:textColor="@color/text_secondary"
         android:gravity="center"
-        android:lineSpacingMultiplier="1.5"/>
+        android:lineSpacingExtra="6dp"/>
 
 </LinearLayout>
