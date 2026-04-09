@@ -2,17 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Internet — required for OSMDroid map tiles -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Location — for delivery tracking -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- OSMDroid tile cache storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -25,7 +21,7 @@
         android:theme="@style/Theme.BiliJuan"
         android:usesCleartextTraffic="true">
 
-        <!-- Activities -->
+        <!-- ── Entry Point ── -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true">
@@ -35,15 +31,42 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.LoginActivity"                          android:exported="false"/>
-        <activity android:name=".activities.RegisterActivity"                       android:exported="false"/>
-        <activity android:name=".activities.admin.AdminDashboardActivity"           android:exported="false"/>
-        <activity android:name=".activities.customer.HomeActivity"                  android:exported="false"/>
-        <activity android:name=".activities.seller.SellerDashboardActivity" android:exported="false"/>        <activity android:name=".activities.customer.PinLocationActivity"           android:exported="false"/>
-        <activity android:name=".activities.customer.OrderTrackingActivity"         android:exported="false"/>
-        <activity android:name=".activities.seller.AddProductActivity"    android:exported="false"/>
-        <activity android:name=".activities.seller.SellerOrdersActivity"  android:exported="false"/>
-        <!-- SellerDashboardActivity already declared — rename its entry to match new layout binding -->
-    </application>
+        <!-- ── Auth ── -->
+        <activity android:name=".activities.LoginActivity"    android:exported="false"/>
+        <activity android:name=".activities.RegisterActivity" android:exported="false"/>
 
+        <!-- ── Admin ── -->
+        <activity android:name=".activities.admin.AdminDashboardActivity" android:exported="false"/>
+
+        <!-- ── Customer ── -->
+        <activity android:name=".activities.customer.HomeActivity"          android:exported="false"/>
+        <activity android:name=".activities.customer.ProductDetailActivity" android:exported="false"/>
+        <activity android:name=".activities.customer.OrderSummaryActivity"  android:exported="false"/>
+        <activity android:name=".activities.customer.OrderTrackingActivity" android:exported="false"/>
+        <activity android:name=".activities.customer.MyOrdersActivity"      android:exported="false"/>
+        <activity android:name=".activities.customer.AccountActivity"       android:exported="false"/>
+        <activity android:name=".activities.customer.EditProfileActivity"   android:exported="false"/>
+        <activity android:name=".activities.customer.SearchActivity"        android:exported="false"/>
+        <activity android:name=".activities.customer.StoreDetailActivity"   android:exported="false"/>
+        <activity android:name=".activities.customer.PinLocationActivity"   android:exported="false"/>
+        <activity android:name=".activities.customer.CategoryActivity"         android:exported="false"/>
+        <activity android:name=".activities.customer.CategoryFoodListActivity" android:exported="false"/>
+
+        <!-- ── Seller ── -->
+        <activity android:name=".activities.seller.SellerDashboardActivity"    android:exported="false"/>
+        <activity android:name=".activities.seller.SellerOrdersActivity"       android:exported="false"/>
+        <activity android:name=".activities.seller.AddProductActivity"         android:exported="false"/>
+        <activity android:name=".activities.seller.SellerAccountActivity"      android:exported="false"/>
+        <activity android:name=".activities.seller.EditSellerProfileActivity"  android:exported="false"/>
+
+        <!-- FCM Service -->
+        <service
+            android:name=".BiliJuanFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+    </application>
 </manifest>

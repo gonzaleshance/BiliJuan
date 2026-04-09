@@ -19,22 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.VH> {
+
+    public interface ClickListener { void onClick(Product product); }
 
     private List<Product> products = new ArrayList<>();
     private final boolean isHorizontal;
-    private OnProductClickListener listener;
+    private final ClickListener listener;
 
-    public interface OnProductClickListener {
-        void onProductClick(Product product);
-    }
-
-    public ProductAdapter(boolean isHorizontal) {
+    public ProductAdapter(boolean isHorizontal, ClickListener listener) {
         this.isHorizontal = isHorizontal;
-    }
-
-    public void setOnProductClickListener(OnProductClickListener listener) {
-        this.listener = listener;
+        this.listener      = listener;
     }
 
     public void setProducts(List<Product> products) {
@@ -42,80 +37,78 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         notifyDataSetChanged();
     }
 
-    @NonNull
-    @Override
-    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutRes = isHorizontal ? R.layout.item_listing_horizontal : R.layout.item_listing_grid;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
-        return new ProductViewHolder(view);
+    @NonNull @Override
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layout = isHorizontal
+                ? R.layout.item_listing_horizontal
+                : R.layout.item_listing_grid;
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        return new VH(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        holder.bind(products.get(position));
-    }
+    public void onBindViewHolder(@NonNull VH h, int position) {
+        Product p = products.get(position);
+        h.tvName.setText(p.getName());
+        h.tvRating.setText(String.format(Locale.getDefault(),
+                "%.1f (%d)", p.getStars(), p.getRatingCount()));
 
-    @Override
-    public int getItemCount() {
-        return products.size();
-    }
-
-    class ProductViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivProduct;
-        TextView tvName, tvPrice, tvRating, tvSeller, tvDescription, tvStatus;
-
-        ProductViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivProduct = itemView.findViewById(R.id.ivProduct);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
-            tvRating = itemView.findViewById(R.id.tvRating);
-            
-            if (isHorizontal) {
-                tvDescription = itemView.findViewById(R.id.tvDescription);
-                tvStatus = itemView.findViewById(R.id.tvStatus);
-            } else {
-                tvSeller = itemView.findViewById(R.id.tvSeller);
-            }
-
-            itemView.setOnClickListener(v -> {
-                int pos = getAdapterPosition();
-                if (listener != null && pos != RecyclerView.NO_POSITION) {
-                    listener.onProductClick(products.get(pos));
-                }
-            });
+        if (isHorizontal) {
+            // horizontal card uses tvPriceRange
+            if (h.tvPriceRange != null)
+                h.tvPriceRange.setText(String.format(Locale.getDefault(), "₱%.0f", p.getPrice()));
+            if (h.tvDescription != null)
+                h.tvDescription.setText(p.getCategory());
+            if (h.tvStatus != null)
+                h.tvStatus.setVisibility(p.isAvailable() ? View.VISIBLE : View.GONE);
+        } else {
+            // grid card uses tvPrice and tvSeller
+            if (h.tvPrice != null)
+                h.tvPrice.setText(String.format(Locale.getDefault(), "₱%.0f", p.getPrice()));
+            if (h.tvSeller != null)
+                h.tvSeller.setText(p.getSellerName());
         }
 
-        void bind(Product product) {
-            tvName.setText(product.getName());
-            tvPrice.setText(String.format(Locale.getDefault(), "₱%.2f", product.getPrice()));
-            tvRating.setText(String.format(Locale.getDefault(), "%.1f (%d)", product.getStars(), product.getRatingCount()));
-
-            if (isHorizontal) {
-                if (tvDescription != null) tvDescription.setText(product.getCategory());
-                if (tvStatus != null) {
-                    tvStatus.setVisibility(product.isAvailable() ? View.VISIBLE : View.GONE);
-                }
-            } else {
-                if (tvSeller != null) tvSeller.setText(product.getSellerName());
+        if (p.getImageBase64() != null && !p.getImageBase64().isEmpty()) {
+            try {
+                byte[] bytes = Base64.decode(p.getImageBase64(), Base64.DEFAULT);
+                Glide.with(h.itemView.getContext())
+                        .asBitmap().load(bytes)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.color.surface_variant)
+                        .into(h.ivProduct);
+            } catch (Exception e) {
+                h.ivProduct.setImageResource(R.color.surface_variant);
             }
+        } else {
+            h.ivProduct.setImageResource(R.color.surface_variant);
+        }
 
-            // Performance: Load image efficiently
-            if (product.getImageBase64() != null && !product.getImageBase64().isEmpty()) {
-                try {
-                    byte[] imageByteArray = Base64.decode(product.getImageBase64(), Base64.DEFAULT);
-                    Glide.with(itemView.getContext())
-                            .asBitmap()
-                            .load(imageByteArray)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .placeholder(R.color.surface_variant)
-                            .into(ivProduct);
-                } catch (Exception e) {
-                    ivProduct.setImageResource(R.color.surface_variant);
-                }
-            } else {
-                ivProduct.setImageResource(R.color.surface_variant);
-            }
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onClick(p);
+        });
+    }
+
+    @Override public int getItemCount() { return products.size(); }
+
+    static class VH extends RecyclerView.ViewHolder {
+        ImageView ivProduct;
+        TextView tvName, tvRating;
+        // horizontal only
+        TextView tvPriceRange, tvDescription, tvStatus;
+        // grid only
+        TextView tvPrice, tvSeller;
+
+        VH(@NonNull View v) {
+            super(v);
+            ivProduct     = v.findViewById(R.id.ivProduct);
+            tvName        = v.findViewById(R.id.tvName);
+            tvRating      = v.findViewById(R.id.tvRating);
+            tvPriceRange  = v.findViewById(R.id.tvPriceRange);
+            tvDescription = v.findViewById(R.id.tvDescription);
+            tvStatus      = v.findViewById(R.id.tvStatus);
+            tvPrice       = v.findViewById(R.id.tvPrice);
+            tvSeller      = v.findViewById(R.id.tvSeller);
         }
     }
 }

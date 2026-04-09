@@ -4,268 +4,248 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.appdev.bilijuan.R;
+import com.appdev.bilijuan.databinding.ActivityOrderTrackingBinding;
+import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.utils.FirebaseHelper;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
+
+import java.util.Arrays;
 
 public class OrderTrackingActivity extends AppCompatActivity {
 
-    // Intent extras — pass these when starting this activity
-    public static final String EXTRA_ORDER_ID     = "order_id";
-    public static final String EXTRA_SELLER_NAME  = "seller_name";
-    public static final String EXTRA_SELLER_PHONE = "seller_phone";
-
-    // Saranay default center
-    private static final double SARANAY_LAT  = 14.7548685;
-    private static final double SARANAY_LNG  = 121.0258531;
-    private static final double DEFAULT_ZOOM = 16.0;
-
-    // Map & markers
-    private MapView mapView;
-    private Marker  riderMarker;
-    private Marker  customerMarker;
-    private Marker  sellerMarker;
-
-    // Firestore real-time listener
-    private ListenerRegistration riderListener;
-
-    // Data from intent
+    private ActivityOrderTrackingBinding binding;
+    private ListenerRegistration orderListener;
     private String orderId;
-    private String sellerName;
-    private String sellerPhone;
-
-    // UI
-    private TextView    tvOrderStatus;
-    private TextView    tvSellerName;
-    private TextView    tvSellerPhone;
-    private ImageButton btnCallSeller;
-    private ImageButton btnSmsCustomer;
+    private Marker sellerMarker, customerMarker;
+    private Polyline routeLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Configuration.getInstance().setUserAgentValue(getPackageName());
-        setContentView(R.layout.activity_order_tracking);
+        binding = ActivityOrderTrackingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        // Get data passed from previous screen
-        orderId     = getIntent().getStringExtra(EXTRA_ORDER_ID);
-        sellerName  = getIntent().getStringExtra(EXTRA_SELLER_NAME);
-        sellerPhone = getIntent().getStringExtra(EXTRA_SELLER_PHONE);
+        orderId = getIntent().getStringExtra("orderId");
+        if (orderId == null) orderId = getIntent().getStringExtra("order_id");
+        if (orderId == null) { finish(); return; }
 
-        // Bind views
-        tvOrderStatus  = findViewById(R.id.tvOrderStatus);
-        tvSellerName   = findViewById(R.id.tvSellerName);
-        tvSellerPhone  = findViewById(R.id.tvSellerPhone);
-        btnCallSeller  = findViewById(R.id.btnCallSeller);
-        btnSmsCustomer = findViewById(R.id.btnSmsCustomer);
-        mapView        = findViewById(R.id.mapView);
-
-        if (sellerName  != null) tvSellerName.setText(sellerName);
-        if (sellerPhone != null) tvSellerPhone.setText(sellerPhone);
-
-        // Call button — opens phone dialer
-        btnCallSeller.setOnClickListener(v -> {
-            if (sellerPhone != null && !sellerPhone.isEmpty()) {
-                startActivity(new Intent(Intent.ACTION_DIAL,
-                        Uri.parse("tel:" + sellerPhone)));
-            } else {
-                Toast.makeText(this,
-                        "No seller phone number available.",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // SMS button — opens SMS app to message customer
-        btnSmsCustomer.setOnClickListener(v -> openSmsToCustomer());
-
+        binding.btnBack.setOnClickListener(v -> finish());
         setupMap();
-        loadOrderAndTrack();
+        listenOrder();
     }
-
-    // ── Map setup ─────────────────────────────────────────────────────────────
 
     private void setupMap() {
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setMultiTouchControls(true);
-        mapView.getZoomController().setVisibility(
-                org.osmdroid.views.CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT
-        );
-
-        IMapController controller = mapView.getController();
-        controller.setZoom(DEFAULT_ZOOM);
-        controller.setCenter(new GeoPoint(SARANAY_LAT, SARANAY_LNG));
+        binding.mapView.setTileSource(TileSourceFactory.MAPNIK);
+        binding.mapView.setMultiTouchControls(true);
+        binding.mapView.getController().setZoom(17.0);
     }
 
-    // ── Load order data ───────────────────────────────────────────────────────
-
-    private void loadOrderAndTrack() {
-        if (orderId == null) return;
-
-        FirebaseHelper.getDb()
-                .collection("orders")
-                .document(orderId)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) return;
-                    placeStaticMarkers(doc);
-                    updateStatusUI(doc.getString("status"));
-                    listenToRiderLocation();
-                });
-    }
-
-    /**
-     * Places fixed markers for the customer delivery pin
-     * and the seller's registered location.
-     */
-    private void placeStaticMarkers(DocumentSnapshot doc) {
-        android.graphics.drawable.Drawable defaultIcon =
-                getResources().getDrawable(
-                        org.osmdroid.library.R.drawable.marker_default, getTheme()
-                );
-
-        // Customer marker
-        Double custLat = doc.getDouble("customerLat");
-        Double custLng = doc.getDouble("customerLng");
-        if (custLat != null && custLat != 0) {
-            customerMarker = new Marker(mapView);
-            customerMarker.setPosition(new GeoPoint(custLat, custLng));
-            customerMarker.setTitle("📦 Delivery Address");
-            customerMarker.setSnippet(doc.getString("customerAddress"));
-            customerMarker.setIcon(defaultIcon);
-            customerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            mapView.getOverlays().add(customerMarker);
-        }
-
-        // Seller marker
-        Double sellLat = doc.getDouble("sellerLat");
-        Double sellLng = doc.getDouble("sellerLng");
-        if (sellLat != null && sellLat != 0) {
-            sellerMarker = new Marker(mapView);
-            sellerMarker.setPosition(new GeoPoint(sellLat, sellLng));
-            sellerMarker.setTitle("🍳 " + (sellerName != null ? sellerName : "Seller"));
-            sellerMarker.setIcon(defaultIcon);
-            sellerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            mapView.getOverlays().add(sellerMarker);
-        }
-
-        mapView.invalidate();
-    }
-
-    /**
-     * Listens in real-time to riderLat + riderLng in Firestore.
-     * The seller updates these from their Seller Dashboard
-     * while they are delivering. The marker moves on the map live.
-     */
-    private void listenToRiderLocation() {
-        if (orderId == null) return;
-
-        riderListener = FirebaseHelper.getDb()
+    private void listenOrder() {
+        orderListener = FirebaseHelper.getDb()
                 .collection("orders")
                 .document(orderId)
                 .addSnapshotListener((snap, e) -> {
-                    if (snap == null || !snap.exists()) return;
+                    if (e != null || snap == null || !snap.exists()) return;
+                    Order order = snap.toObject(Order.class);
+                    if (order == null) return;
+                    order.setOrderId(snap.getId());
 
-                    updateStatusUI(snap.getString("status"));
-
-                    Double lat = snap.getDouble("riderLat");
-                    Double lng = snap.getDouble("riderLng");
-                    if (lat == null || lng == null || lat == 0) return;
-
-                    GeoPoint riderPos = new GeoPoint(lat, lng);
-
-                    if (riderMarker == null) {
-                        // First appearance — create marker
-                        riderMarker = new Marker(mapView);
-                        riderMarker.setTitle("🛵 Rider on the way");
-                        riderMarker.setIcon(
-                                getResources().getDrawable(
-                                        org.osmdroid.library.R.drawable.marker_default,
-                                        getTheme()
-                                )
-                        );
-                        riderMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                        mapView.getOverlays().add(riderMarker);
-                        // Fly camera to rider
-                        mapView.getController().animateTo(riderPos);
-                    }
-
-                    riderMarker.setPosition(riderPos);
-                    mapView.invalidate();
+                    updateHeader(order);
+                    updateProgressSteps(order.getStatus());
+                    updateOrderDetails(order);
+                    updateMapVisibility(order);
                 });
     }
 
-    // ── Order status label ────────────────────────────────────────────────────
+    private void updateHeader(Order order) {
+        String shortId = orderId.length() >= 6
+                ? "Order #" + orderId.substring(0, 6).toUpperCase()
+                : "Order #" + orderId;
+        binding.tvOrderId.setText(shortId);
+        binding.tvSellerName.setText(order.getSellerName());
+        binding.tvCurrentStatus.setText(order.getStatus());
 
-    private void updateStatusUI(String status) {
-        if (status == null) return;
-        String label;
-        switch (status) {
-            case "confirmed":  label = "✅ Order Confirmed — Preparing your food"; break;
-            case "picked_up":  label = "🛵 Rider picked up your order";            break;
-            case "on_the_way": label = "🛵 On the way — Watch the map!";           break;
-            case "delivered":  label = "🎉 Delivered! Enjoy your meal.";            break;
-            default:           label = "⏳ Waiting for confirmation…";              break;
+        binding.tvEta.setText("10-20 min"); 
+
+        int pct = progressForStatus(order.getStatus());
+        binding.progressDelivery.setProgress(pct);
+        binding.tvProgressPct.setText(pct + "% complete");
+
+        binding.btnCallSeller.setOnClickListener(v -> {
+            FirebaseHelper.getDb().collection("users")
+                    .document(order.getSellerId()).get()
+                    .addOnSuccessListener(doc -> {
+                        String sp = doc.getString("phone");
+                        if (sp != null && !sp.isEmpty()) {
+                            startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + sp)));
+                        } else {
+                            Toast.makeText(this, "No phone available", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+    }
+
+    private void updateProgressSteps(String status) {
+        // FIXED: Use .getRoot() because binding.stepConfirmed is an include binding
+        setStep(binding.stepConfirmed.getRoot(), binding.lineConfirmed,
+                "Order Confirmed", "Completed",
+                isDone(status, "CONFIRMED"),
+                isActive(status, "CONFIRMED"));
+
+        setStep(binding.stepPreparing.getRoot(), binding.linePreparing,
+                "Preparing Your Food", "Completed",
+                isDone(status, "PREPARING"),
+                isActive(status, "PREPARING"));
+
+        setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay,
+                "Out for Delivery", "In Progress...",
+                isDone(status, "ON_THE_WAY"),
+                isActive(status, "ON_THE_WAY"));
+
+        setStep(binding.stepDelivered.getRoot(), null,
+                "Delivered", "Waiting...",
+                "DELIVERED".equals(status), false);
+    }
+
+    private void setStep(View stepView, View lineView,
+                         String title, String subtitle,
+                         boolean done, boolean active) {
+        View circle       = stepView.findViewById(R.id.stepCircle);
+        ImageView icon    = stepView.findViewById(R.id.stepIcon);
+        TextView tvTitle  = stepView.findViewById(R.id.stepTitle);
+        TextView tvSub    = stepView.findViewById(R.id.stepSubtitle);
+        TextView tvLive   = stepView.findViewById(R.id.stepLiveBadge);
+
+        tvTitle.setText(title);
+
+        if (done) {
+            circle.setBackgroundResource(R.drawable.bg_primary_circle);
+            icon.setImageResource(R.drawable.ic_check_circle);
+            icon.setColorFilter(ContextCompat.getColor(this, R.color.primary));
+            tvTitle.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            tvSub.setText("✓ Completed");
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.primary));
+            tvLive.setVisibility(View.GONE);
+            if (lineView != null)
+                lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.primary));
+        } else if (active) {
+            circle.setBackgroundResource(R.drawable.bg_primary_pill);
+            icon.setColorFilter(ContextCompat.getColor(this, R.color.on_primary));
+            tvTitle.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            tvSub.setText("In Progress...");
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.primary));
+            tvLive.setVisibility(title.equals("Out for Delivery") ? View.VISIBLE : View.GONE);
+            if (lineView != null)
+                lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
+        } else {
+            circle.setBackgroundResource(R.drawable.bg_chip_inactive);
+            icon.setColorFilter(ContextCompat.getColor(this, R.color.text_hint));
+            tvTitle.setTextColor(ContextCompat.getColor(this, R.color.text_hint));
+            tvSub.setText(subtitle);
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.text_hint));
+            tvLive.setVisibility(View.GONE);
+            if (lineView != null)
+                lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
         }
-        tvOrderStatus.setText(label);
     }
 
-    // ── SMS to customer ───────────────────────────────────────────────────────
-
-    private void openSmsToCustomer() {
-        if (orderId == null) return;
-        FirebaseHelper.getDb()
-                .collection("orders")
-                .document(orderId)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    String phone = doc.getString("customerPhone");
-                    if (phone != null && !phone.isEmpty()) {
-                        Intent sms = new Intent(Intent.ACTION_SENDTO,
-                                Uri.parse("smsto:" + phone));
-                        sms.putExtra("sms_body",
-                                "Hi! I'm your BiliJuan rider. I'm on my way! 🛵");
-                        startActivity(sms);
-                    } else {
-                        Toast.makeText(this,
-                                "No customer phone on record.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void updateOrderDetails(Order order) {
+        binding.tvProductName.setText(order.getProductName() + " × " + order.getQuantity());
+        binding.tvProductTotal.setText(String.format("₱%.0f", order.getProductPrice() * order.getQuantity()));
+        binding.tvDeliveryFee.setText(String.format("₱%.0f", order.getDeliveryFee()));
+        binding.tvTotal.setText(String.format("₱%.0f", order.getTotalAmount()));
     }
 
-    // ── OSMDroid lifecycle — always required ──────────────────────────────────
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
+    private void updateMapVisibility(Order order) {
+        boolean showMap = "ON_THE_WAY".equals(order.getStatus()) || "DELIVERED".equals(order.getStatus());
+        binding.cardMap.setVisibility(showMap ? View.VISIBLE : View.GONE);
+        if (showMap) showRouteOnMap(order);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
+    private void showRouteOnMap(Order order) {
+        double selLat = order.getSellerLat(), selLng = order.getSellerLng();
+        double cusLat = order.getCustomerLat(), cusLng = order.getCustomerLng();
+        if (selLat == 0 && cusLat == 0) return;
+
+        GeoPoint sellerPoint   = new GeoPoint(selLat, selLng);
+        GeoPoint customerPoint = new GeoPoint(cusLat, cusLng);
+
+        binding.mapView.getController().setCenter(new GeoPoint((selLat + cusLat) / 2, (selLng + cusLng) / 2));
+        binding.mapView.getController().setZoom(16.5);
+        binding.mapView.getOverlays().clear();
+
+        if (routeLine == null) {
+            routeLine = new Polyline();
+            routeLine.getOutlinePaint().setColor(ContextCompat.getColor(this, R.color.primary));
+            routeLine.getOutlinePaint().setStrokeWidth(8f);
+        }
+        routeLine.setPoints(Arrays.asList(sellerPoint, customerPoint));
+        binding.mapView.getOverlays().add(routeLine);
+
+        if (sellerMarker == null) sellerMarker = new Marker(binding.mapView);
+        sellerMarker.setPosition(sellerPoint);
+        sellerMarker.setTitle(order.getSellerName());
+        binding.mapView.getOverlays().add(sellerMarker);
+
+        if (customerMarker == null) customerMarker = new Marker(binding.mapView);
+        customerMarker.setPosition(customerPoint);
+        customerMarker.setTitle("Your Location");
+        binding.mapView.getOverlays().add(customerMarker);
+
+        binding.mapView.invalidate();
     }
 
-    @Override
-    protected void onDestroy() {
+    private boolean isDone(String current, String step) {
+        return stepIndex(current) > stepIndex(step);
+    }
+
+    private boolean isActive(String current, String step) {
+        return step.equals(current);
+    }
+
+    private int stepIndex(String status) {
+        if (status == null) return 0;
+        switch (status) {
+            case "PENDING":    return 0;
+            case "CONFIRMED":  return 1;
+            case "PREPARING":  return 2;
+            case "ON_THE_WAY": return 3;
+            case "DELIVERED":  return 4;
+            default: return 0;
+        }
+    }
+
+    private int progressForStatus(String status) {
+        if (status == null) return 0;
+        switch (status) {
+            case "CONFIRMED":  return 25;
+            case "PREPARING":  return 50;
+            case "ON_THE_WAY": return 75;
+            case "DELIVERED":  return 100;
+            default: return 10;
+        }
+    }
+
+    @Override protected void onResume() { super.onResume(); binding.mapView.onResume(); }
+    @Override protected void onPause() { super.onPause(); binding.mapView.onPause(); }
+    @Override protected void onDestroy() {
         super.onDestroy();
-        if (riderListener != null) riderListener.remove();
-        mapView.onDetach();
+        if (orderListener != null) orderListener.remove();
+        binding.mapView.onDetach();
     }
 }

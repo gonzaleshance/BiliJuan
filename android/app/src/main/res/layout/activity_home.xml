@@ -1,264 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background">
 
-    <androidx.core.widget.NestedScrollView
+    <!-- Green Header -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="80dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/primary"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="0dp">
 
+        <!-- Greeting row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
 
-            <!-- Header Section -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="16dp">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvGreeting"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hey, Juan!"
-                            android:textSize="14sp"
-                            android:textColor="@color/text_secondary"
-                            android:fontFamily="sans-serif-medium"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Going to start your day?"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:letterSpacing="-0.01"/>
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/ivProfile"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:src="@drawable/bg_circle_image"
-                        android:padding="2dp"
-                        android:background="@drawable/bg_primary_circle"/>
-                </LinearLayout>
-
-                <!-- Search Bar -->
-                <LinearLayout
-                    android:id="@+id/searchBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_chip_inactive"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/text_hint"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="I want to buy some..."
-                        android:textColor="@color/text_hint"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Category Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="8dp">
+                    android:text="Kumain na tayo!"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/on_primary"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginBottom="12dp"
-                    android:text="Browse from categories"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
+                    android:text="What are you craving today?"
+                    android:textSize="13sp"
+                    android:textColor="#CCFFFFFF"/>
+            </LinearLayout>
 
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp">
+
+                <ImageButton
+                    android:id="@+id/btnNotification"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_notifications"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/on_primary"/>
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_notification_dot"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Search bar -->
+        <LinearLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_search_white"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/text_hint"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Search food or store..."
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"/>
+        </LinearLayout>
+
+        <!-- Food / Store top tabs -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tabFood"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Food"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/primary"
+                android:background="@drawable/bg_tab_active_white"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tabStore"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Store"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#CCFFFFFF"
+                android:background="@android:color/transparent"
+                android:layout_marginStart="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Content -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- FOOD TAB -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/sectionFood"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="80dp"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Category chips -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:scrollbars="none"
+                    android:paddingVertical="12dp">
 
                     <LinearLayout
                         android:id="@+id/categoryChipsContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="24dp"
-                        android:paddingBottom="8dp">
-
-                        <!-- Lahat Chip (Active) -->
-                        <TextView
-                            android:id="@+id/chipAll"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Lahat"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/on_chip_active"
-                            android:gravity="center"
-                            android:paddingHorizontal="20dp"
-                            android:background="@drawable/bg_chip_active"
-                            android:layout_marginEnd="8dp"/>
-
-                        <TextView
-                            android:id="@+id/chipHomemade"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Homemade"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/on_chip_inactive"
-                            android:gravity="center"
-                            android:paddingHorizontal="20dp"
-                            android:background="@drawable/bg_chip_inactive"
-                            android:layout_marginEnd="8dp"/>
-
-                        <TextView
-                            android:id="@+id/chipHarvest"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Harvest"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/on_chip_inactive"
-                            android:gravity="center"
-                            android:paddingHorizontal="20dp"
-                            android:background="@drawable/bg_chip_inactive"
-                            android:layout_marginEnd="8dp"/>
-
-                        <!-- Additional chips... -->
-                    </LinearLayout>
+                        android:paddingHorizontal="16dp"/>
                 </HorizontalScrollView>
-            </LinearLayout>
 
-            <!-- Popular Section -->
-            <LinearLayout
+                <!-- Popular this week header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Popular this week"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <TextView
+                        android:id="@+id/tvSeeAllPopular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See all"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"/>
+                </LinearLayout>
+
+                <!-- Shimmer for popular -->
+                <LinearLayout
+                    android:id="@+id/shimmerPopular"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    android:visibility="visible">
+
+                    <include layout="@layout/item_shimmer"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="12dp"/>
+                    <include layout="@layout/item_shimmer"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
+                <!-- Popular RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPopular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="16dp"
+                    android:visibility="gone"/>
+
+                <!-- Fresh for you header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/tvListingsLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fresh for you"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+                </LinearLayout>
+
+                <!-- Shimmer for listings -->
+                <LinearLayout
+                    android:id="@+id/shimmerListings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <include layout="@layout/item_shimmer"/>
+                    <include layout="@layout/item_shimmer"/>
+                    <include layout="@layout/item_shimmer"/>
+                </LinearLayout>
+
+                <!-- Food listings -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvListings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone"/>
+
+                <!-- Empty state -->
+                <TextView
+                    android:id="@+id/emptyListings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Wala pang available na pagkain."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:gravity="center"
+                    android:paddingVertical="40dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- STORE TAB -->
+        <LinearLayout
+            android:id="@+id/sectionStore"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/emptyStores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="12dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Popular this week"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-
-                <TextView
-                    android:id="@+id/tvSeeAllPopular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See All"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary"/>
-            </LinearLayout>
+                android:text="Wala pang available na store."
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"
+                android:paddingVertical="40dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDeals"
+                android:id="@+id/rvStores"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:paddingHorizontal="16dp"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                tools:listitem="@layout/item_listing_horizontal"/>
-
-            <!-- All Listings Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="32dp"
-                android:paddingBottom="12dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Fresh for you"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-
-                <TextView
-                    android:id="@+id/tvSeeAllListings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See All"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary"/>
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvListings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_listing_grid"/>
-
+                android:paddingTop="12dp"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false"/>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation Bar -->
+    </FrameLayout>
+
+    <!-- Bottom Nav -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_gravity="bottom"
         android:background="@color/surface"
         app:menu="@menu/bottom_nav_customer"
-        app:itemIconTint="@color/nav_active"
-        app:itemTextColor="@color/nav_active"
+        app:itemIconTint="@color/bottom_nav_tint"
+        app:itemTextColor="@color/bottom_nav_tint"
         app:labelVisibilityMode="labeled"
         android:elevation="16dp"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

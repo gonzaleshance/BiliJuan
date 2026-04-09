@@ -2,7 +2,10 @@ package com.appdev.bilijuan.activities.seller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,25 +20,35 @@ import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.DeliveryUtils;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.NotificationHelper;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellerDashboardActivity extends AppCompatActivity {
 
     private ActivitySellerBinding binding;
-    private ActiveOrderCardAdapter orderAdapter;
+    private ActiveOrderCardAdapter recentOrdersAdapter;
+    private ActiveOrderCardAdapter ordersTabAdapter;
     private SellerMenuAdapter menuAdapter;
-    private final List<Order> activeOrders = new ArrayList<>();
-    private final List<Product> menuItems = new ArrayList<>();
+
+    private final List<Order> allOrders   = new ArrayList<>();
+    private final List<Order> recentOrders = new ArrayList<>();
+    private final List<Product> menuItems  = new ArrayList<>();
+
     private ListenerRegistration ordersListener;
     private ListenerRegistration menuListener;
+
     private String sellerId;
-    private double sellerLat;
-    private double sellerLng;
+    private double sellerLat, sellerLng;
+    private String activeTab = "overview";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,54 +57,125 @@ public class SellerDashboardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         sellerId = FirebaseHelper.getCurrentUid();
-        if (sellerId == null) {
-            finish();
-            return;
-        }
+        if (sellerId == null) { finish(); return; }
 
-        setupRecyclerViews();
+        setupTopTabs();
         setupBottomNav();
-        setupClickListeners();
+        setupRecyclerViews();
         loadSellerProfile();
     }
 
-    private void setupRecyclerViews() {
-        orderAdapter = new ActiveOrderCardAdapter(activeOrders, this::onOrderAction);
-        binding.rvActiveOrders.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvActiveOrders.setAdapter(orderAdapter);
-        binding.rvActiveOrders.setNestedScrollingEnabled(false);
+    // ── Top Tabs ──────────────────────────────────────────────────────────────
 
-        menuAdapter = new SellerMenuAdapter(menuItems, this::onMenuItemToggle, this::onMenuItemEdit);
-        binding.rvMenu.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvMenu.setAdapter(menuAdapter);
-        binding.rvMenu.setNestedScrollingEnabled(false);
+    private void setupTopTabs() {
+        binding.tabOverview.setOnClickListener(v  -> switchTab("overview"));
+        binding.tabProducts.setOnClickListener(v  -> switchTab("products"));
+        binding.tabOrders.setOnClickListener(v    -> switchTab("orders"));
+        switchTab("overview");
     }
 
+    private void switchTab(String tab) {
+        activeTab = tab;
+
+        // Reset all tabs
+        binding.tabOverview.setBackgroundResource(android.R.color.transparent);
+        binding.tabProducts.setBackgroundResource(android.R.color.transparent);
+        binding.tabOrders.setBackgroundResource(android.R.color.transparent);
+        binding.tabOverview.setTextColor(0xCCFFFFFF);
+        binding.tabProducts.setTextColor(0xCCFFFFFF);
+        binding.tabOrders.setTextColor(0xCCFFFFFF);
+
+        // Activate selected
+        switch (tab) {
+            case "overview":
+                binding.tabOverview.setBackgroundResource(R.drawable.bg_tab_active_white);
+                binding.tabOverview.setTextColor(getColor(R.color.primary));
+                binding.sectionOverview.setVisibility(View.VISIBLE);
+                binding.sectionProducts.setVisibility(View.GONE);
+                binding.sectionOrders.setVisibility(View.GONE);
+                break;
+            case "products":
+                binding.tabProducts.setBackgroundResource(R.drawable.bg_tab_active_white);
+                binding.tabProducts.setTextColor(getColor(R.color.primary));
+                binding.sectionOverview.setVisibility(View.GONE);
+                binding.sectionProducts.setVisibility(View.VISIBLE);
+                binding.sectionOrders.setVisibility(View.GONE);
+                break;
+            case "orders":
+                binding.tabOrders.setBackgroundResource(R.drawable.bg_tab_active_white);
+                binding.tabOrders.setTextColor(getColor(R.color.primary));
+                binding.sectionOverview.setVisibility(View.GONE);
+                binding.sectionProducts.setVisibility(View.GONE);
+                binding.sectionOrders.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    // ── Bottom Nav ────────────────────────────────────────────────────────────
+
     private void setupBottomNav() {
-        binding.bottomNav.setSelectedItemId(R.id.nav_dashboard);
+        binding.bottomNav.setSelectedItemId(R.id.nav_home);
         binding.bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_dashboard) return true;
+            if (id == R.id.nav_home)   return true;
+            if (id == R.id.nav_post) {
+                showPostBottomSheet(); return false;
+            }
             if (id == R.id.nav_orders) {
                 startActivity(new Intent(this, SellerOrdersActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
+                overridePendingTransition(0, 0); return true;
             }
-            if (id == R.id.nav_menu) {
-                startActivity(new Intent(this, AddProductActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
+            if (id == R.id.nav_account) {
+                startActivity(new Intent(this, SellerAccountActivity.class));
+                overridePendingTransition(0, 0); return true;
             }
             return false;
         });
     }
 
-    private void setupClickListeners() {
+    // ── Post Bottom Sheet ─────────────────────────────────────────────────────
+
+    private void showPostBottomSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_post, null);
+        sheet.setContentView(v);
+        v.findViewById(R.id.btnNewItem).setOnClickListener(btn -> {
+            sheet.dismiss();
+            startActivity(new Intent(this, AddProductActivity.class));
+        });
+        v.findViewById(R.id.btnEditExisting).setOnClickListener(btn -> {
+            sheet.dismiss();
+            switchTab("products");
+        });
+        sheet.show();
+    }
+
+    // ── RecyclerViews ─────────────────────────────────────────────────────────
+
+    private void setupRecyclerViews() {
+        // Recent orders (overview tab)
+        recentOrdersAdapter = new ActiveOrderCardAdapter(recentOrders, this::onOrderAction);
+        binding.rvActiveOrders.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvActiveOrders.setAdapter(recentOrdersAdapter);
+        binding.rvActiveOrders.setNestedScrollingEnabled(false);
+
+        // All orders (orders tab)
+        ordersTabAdapter = new ActiveOrderCardAdapter(allOrders, this::onOrderAction);
+        binding.rvActiveOrders2.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvActiveOrders2.setAdapter(ordersTabAdapter);
+
+        // Menu (products tab)
+        menuAdapter = new SellerMenuAdapter(menuItems,
+                this::onMenuItemToggle, this::onMenuItemEdit, this::onMenuItemDelete);
+        binding.rvMenu.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvMenu.setAdapter(menuAdapter);
+        binding.rvMenu.setNestedScrollingEnabled(false);
+
         binding.btnAddItem.setOnClickListener(v ->
                 startActivity(new Intent(this, AddProductActivity.class)));
-        binding.tvSeeAllOrders.setOnClickListener(v ->
-                startActivity(new Intent(this, SellerOrdersActivity.class)));
     }
+
+    // ── Profile ───────────────────────────────────────────────────────────────
 
     private void loadSellerProfile() {
         FirebaseHelper.getDb().collection("users").document(sellerId).get()
@@ -101,12 +185,13 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     if (seller == null) return;
                     sellerLat = seller.getLatitude();
                     sellerLng = seller.getLongitude();
-                    binding.tvSellerName.setText("Hello, " + seller.getName());
+                    binding.tvSellerName.setText(seller.getName());
                     listenOrders();
                     listenMenu();
-                    loadStats();
                 });
     }
+
+    // ── Orders Listener ───────────────────────────────────────────────────────
 
     private void listenOrders() {
         ordersListener = FirebaseHelper.getDb()
@@ -114,25 +199,93 @@ public class SellerDashboardActivity extends AppCompatActivity {
                 .whereEqualTo("sellerId", sellerId)
                 .addSnapshotListener((snap, e) -> {
                     if (e != null || snap == null) return;
-                    activeOrders.clear();
+
+                    allOrders.clear();
+                    double totalSales = 0;
+                    int todayCount = 0;
+                    Map<Integer, Double> weekSales = new HashMap<>();
+
+                    Calendar today = Calendar.getInstance();
+
                     for (QueryDocumentSnapshot doc : snap) {
                         Order o = doc.toObject(Order.class);
                         o.setOrderId(doc.getId());
-                        if (o.isActive()) activeOrders.add(o);
+                        allOrders.add(o);
+
+                        if (Order.STATUS_DELIVERED.equals(o.getStatus())) {
+                            totalSales += o.getTotalAmount();
+                        }
+
+                        // Today's orders
+                        if (o.getCreatedAt() != null) {
+                            Calendar oCal = Calendar.getInstance();
+                            oCal.setTime(o.getCreatedAt());
+                            if (oCal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
+                                    && oCal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
+                                todayCount++;
+                            }
+                            // Weekly sales (current week)
+                            if (oCal.get(Calendar.WEEK_OF_YEAR) == today.get(Calendar.WEEK_OF_YEAR)
+                                    && oCal.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+                                    && Order.STATUS_DELIVERED.equals(o.getStatus())) {
+                                int dow = oCal.get(Calendar.DAY_OF_WEEK); // 1=Sun,2=Mon...
+                                weekSales.merge(dow, o.getTotalAmount(), Double::sum);
+                            }
+                        }
                     }
-                    Collections.sort(activeOrders, (a, b) -> {
-                        double dA = DeliveryUtils.haversineKm(sellerLat, sellerLng,
-                                a.getCustomerLat(), a.getCustomerLng());
-                        double dB = DeliveryUtils.haversineKm(sellerLat, sellerLng,
-                                b.getCustomerLat(), b.getCustomerLng());
-                        return Double.compare(dA, dB);
+
+                    // Sort all orders newest first
+                    Collections.sort(allOrders, (a, b) -> {
+                        if (a.getCreatedAt() == null || b.getCreatedAt() == null) return 0;
+                        return b.getCreatedAt().compareTo(a.getCreatedAt());
                     });
-                    orderAdapter.notifyDataSetChanged();
-                    binding.tvActiveOrderCount.setText(String.valueOf(activeOrders.size()));
-                    binding.emptyOrders.setVisibility(
-                            activeOrders.isEmpty() ? View.VISIBLE : View.GONE);
+
+                    // Recent = first 5 active
+                    recentOrders.clear();
+                    int count = 0;
+                    for (Order o : allOrders) {
+                        if (o.isActive() && count < 5) { recentOrders.add(o); count++; }
+                    }
+
+                    recentOrdersAdapter.notifyDataSetChanged();
+                    ordersTabAdapter.notifyDataSetChanged();
+
+                    // Update stats
+                    binding.tvTotalOrders.setText(String.valueOf(allOrders.size()));
+                    binding.tvTotalSales.setText(String.format("₱%.0f", totalSales));
+                    binding.tvOrdersToday.setText("+" + todayCount + " today");
+                    binding.emptyOrders.setVisibility(recentOrders.isEmpty() ? View.VISIBLE : View.GONE);
+
+                    updateWeeklyChart(weekSales);
                 });
     }
+
+    // ── Weekly Chart ──────────────────────────────────────────────────────────
+
+    private void updateWeeklyChart(Map<Integer, Double> weekSales) {
+        // Find max for scaling
+        double max = 1;
+        for (double v : weekSales.values()) if (v > max) max = v;
+
+        // Calendar.DAY_OF_WEEK: 1=Sun,2=Mon,3=Tue,4=Wed,5=Thu,6=Fri,7=Sat
+        int[] days = {2, 3, 4, 5, 6, 7, 1};
+        ProgressBar[] bars = {
+                binding.barMon, binding.barTue, binding.barWed,
+                binding.barThu, binding.barFri, binding.barSat, binding.barSun
+        };
+        TextView[] labels = {
+                binding.tvMon, binding.tvTue, binding.tvWed,
+                binding.tvThu, binding.tvFri, binding.tvSat, binding.tvSun
+        };
+
+        for (int i = 0; i < 7; i++) {
+            double val = weekSales.getOrDefault(days[i], 0.0);
+            bars[i].setProgress((int) ((val / max) * 100));
+            labels[i].setText(String.format("₱%.0f", val));
+        }
+    }
+
+    // ── Menu Listener ─────────────────────────────────────────────────────────
 
     private void listenMenu() {
         menuListener = FirebaseHelper.getDb()
@@ -147,37 +300,11 @@ public class SellerDashboardActivity extends AppCompatActivity {
                         menuItems.add(p);
                     }
                     menuAdapter.notifyDataSetChanged();
-                    binding.emptyMenu.setVisibility(
-                            menuItems.isEmpty() ? View.VISIBLE : View.GONE);
+                    binding.emptyMenu.setVisibility(menuItems.isEmpty() ? View.VISIBLE : View.GONE);
                 });
     }
 
-    private void loadStats() {
-        FirebaseHelper.getDb().collection("orders")
-                .whereEqualTo("sellerId", sellerId)
-                .whereEqualTo("status", Order.STATUS_DELIVERED)
-                .get()
-                .addOnSuccessListener(snap ->
-                        binding.tvTotalOrders.setText(String.valueOf(snap.size())));
-
-        FirebaseHelper.getDb().collection("products")
-                .whereEqualTo("sellerId", sellerId)
-                .get()
-                .addOnSuccessListener(snap -> {
-                    if (snap.isEmpty()) return;
-                    float sumStars = 0;
-                    int count = 0;
-                    for (QueryDocumentSnapshot doc : snap) {
-                        Product p = doc.toObject(Product.class);
-                        if (p.getRatingCount() > 0) {
-                            sumStars += p.getStars();
-                            count++;
-                        }
-                    }
-                    if (count > 0)
-                        binding.tvRating.setText(String.format("%.1f", sumStars / count));
-                });
-    }
+    // ── Actions ───────────────────────────────────────────────────────────────
 
     private void onOrderAction(Order order) {
         String next = nextStatus(order.getStatus());
@@ -185,8 +312,12 @@ public class SellerDashboardActivity extends AppCompatActivity {
         FirebaseHelper.getDb().collection("orders")
                 .document(order.getOrderId())
                 .update("status", next)
-                .addOnSuccessListener(v ->
-                        Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(v -> {
+                    Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
+                    // Notify customer
+                    NotificationHelper.notifyStatusChange(
+                            order.getOrderId(), next, order.getProductName());
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
     }
@@ -203,6 +334,21 @@ public class SellerDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void onMenuItemDelete(Product product) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Item")
+                .setMessage("Remove \"" + product.getName() + "\" from your menu?")
+                .setPositiveButton("Delete", (d, w) ->
+                        FirebaseHelper.getDb().collection("products")
+                                .document(product.getProductId()).delete()
+                                .addOnSuccessListener(v ->
+                                        Toast.makeText(this, "Item deleted", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(ex ->
+                                        Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show()))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private String nextStatus(String current) {
         switch (current) {
             case Order.STATUS_PENDING:    return Order.STATUS_CONFIRMED;
@@ -217,6 +363,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (ordersListener != null) ordersListener.remove();
-        if (menuListener != null) menuListener.remove();
+        if (menuListener   != null) menuListener.remove();
     }
 }

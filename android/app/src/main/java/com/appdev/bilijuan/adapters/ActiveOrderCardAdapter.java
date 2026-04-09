@@ -1,10 +1,10 @@
 package com.appdev.bilijuan.adapters;
 
-import android.util.Base64;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,13 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.models.Order;
-import com.appdev.bilijuan.utils.DeliveryUtils;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
-import java.util.Locale;
 
 public class ActiveOrderCardAdapter extends RecyclerView.Adapter<ActiveOrderCardAdapter.VH> {
 
@@ -43,53 +38,66 @@ public class ActiveOrderCardAdapter extends RecyclerView.Adapter<ActiveOrderCard
     public void onBindViewHolder(@NonNull VH h, int position) {
         Order o = orders.get(position);
 
-        h.tvCustomerName.setText(o.getCustomerName());
-        h.tvProductName.setText(String.format(Locale.getDefault(), "%s × %d", o.getProductName(), o.getQuantity()));
-        h.tvTotal.setText(String.format(Locale.getDefault(), "₱%.2f", o.getTotalAmount()));
-        h.tvPayment.setText(o.getPaymentMethod());
+        // Order number — use short orderId
+        String shortId = o.getOrderId() != null && o.getOrderId().length() >= 6
+                ? "Order #" + o.getOrderId().substring(0, 6).toUpperCase()
+                : "Order";
+        h.tvOrderNumber.setText(shortId);
+        h.tvTimeAgo.setText(timeAgo(o));
+        h.tvProductName.setText("• " + o.getProductName() + " ×" + o.getQuantity());
+        h.tvCustomerName.setText("• " + o.getCustomerName());
+        h.tvTotal.setText(String.format("Total: ₱%.0f", o.getTotalAmount()));
 
-        double dist = DeliveryUtils.haversineKm(
-                o.getSellerLat(), o.getSellerLng(),
-                o.getCustomerLat(), o.getCustomerLng());
-        h.tvDistance.setText(DeliveryUtils.formatDistance(dist));
-        h.tvAddress.setText(o.getCustomerAddress());
+        // Status badge
+        h.tvStatusBadge.setText(o.getStatus());
+        h.tvStatusBadge.setBackgroundTintList(
+                ColorStateList.valueOf(statusColor(o.getStatus())));
+        h.tvStatusBadge.setTextColor(statusTextColor(o.getStatus()));
 
-        h.tvStatusLabel.setText(o.getStatus().toUpperCase());
+        // Action — advance status
+        String next = nextStatus(o.getStatus());
+        h.btnAction.setText(next != null ? "Advance →" : "View Details");
+        h.btnAction.setOnClickListener(v -> listener.onAction(o));
+    }
 
-        String nextLabel = nextActionLabel(o.getStatus());
-        if (nextLabel != null) {
-            h.btnAction.setVisibility(View.VISIBLE);
-            h.btnAction.setText(nextLabel);
-            h.btnAction.setOnClickListener(v -> listener.onAction(o));
-        } else {
-            h.btnAction.setVisibility(View.GONE);
-        }
+    private String timeAgo(Order o) {
+        if (o.getCreatedAt() == null) return "";
+        long diff = System.currentTimeMillis() - o.getCreatedAt().getTime();
+        long mins  = diff / 60000;
+        long hours = mins / 60;
+        if (hours >= 1) return hours + "h ago";
+        if (mins  >= 1) return mins  + "m ago";
+        return "Just now";
+    }
 
-        // Optimized Image Loading
-        if (o.getProductImageBase64() != null && !o.getProductImageBase64().isEmpty()) {
-            try {
-                byte[] imageByteArray = Base64.decode(o.getProductImageBase64(), Base64.DEFAULT);
-                Glide.with(h.itemView.getContext())
-                        .asBitmap()
-                        .load(imageByteArray)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.color.surface_variant)
-                        .into(h.ivProduct);
-            } catch (Exception e) {
-                h.ivProduct.setImageResource(R.color.surface_variant);
-            }
-        } else {
-            h.ivProduct.setImageResource(R.color.surface_variant);
+    private int statusColor(String status) {
+        switch (status) {
+            case Order.STATUS_PENDING:    return Color.parseColor("#FFF3CD");
+            case Order.STATUS_CONFIRMED:
+            case Order.STATUS_PREPARING:  return Color.parseColor("#D0EDFF");
+            case Order.STATUS_ON_THE_WAY: return Color.parseColor("#FFE0CC");
+            case Order.STATUS_DELIVERED:  return Color.parseColor("#D4EDDA");
+            default:                      return Color.parseColor("#F1F2F6");
         }
     }
 
-    private String nextActionLabel(String status) {
-        if (status == null) return null;
+    private int statusTextColor(String status) {
         switch (status) {
-            case "PENDING":    return "Confirm Order";
-            case "CONFIRMED":  return "Start Preparing";
-            case "PREPARING":  return "Mark On the Way";
-            case "ON_THE_WAY": return "Mark Delivered";
+            case Order.STATUS_PENDING:    return Color.parseColor("#856404");
+            case Order.STATUS_CONFIRMED:
+            case Order.STATUS_PREPARING:  return Color.parseColor("#004085");
+            case Order.STATUS_ON_THE_WAY: return Color.parseColor("#833C00");
+            case Order.STATUS_DELIVERED:  return Color.parseColor("#155724");
+            default:                      return Color.parseColor("#636E72");
+        }
+    }
+
+    private String nextStatus(String status) {
+        switch (status) {
+            case Order.STATUS_PENDING:    return Order.STATUS_CONFIRMED;
+            case Order.STATUS_CONFIRMED:  return Order.STATUS_PREPARING;
+            case Order.STATUS_PREPARING:  return Order.STATUS_ON_THE_WAY;
+            case Order.STATUS_ON_THE_WAY: return Order.STATUS_DELIVERED;
             default: return null;
         }
     }
@@ -97,20 +105,17 @@ public class ActiveOrderCardAdapter extends RecyclerView.Adapter<ActiveOrderCard
     @Override public int getItemCount() { return orders.size(); }
 
     static class VH extends RecyclerView.ViewHolder {
-        ImageView ivProduct;
-        TextView tvCustomerName, tvProductName, tvTotal, tvPayment, tvDistance, tvAddress, tvStatusLabel;
-        MaterialButton btnAction;
+        TextView tvOrderNumber, tvTimeAgo, tvProductName,
+                tvCustomerName, tvTotal, tvStatusBadge, btnAction;
 
         VH(@NonNull View v) {
             super(v);
-            ivProduct      = v.findViewById(R.id.ivProduct);
-            tvCustomerName = v.findViewById(R.id.tvCustomerName);
+            tvOrderNumber  = v.findViewById(R.id.tvOrderNumber);
+            tvTimeAgo      = v.findViewById(R.id.tvTimeAgo);
             tvProductName  = v.findViewById(R.id.tvProductName);
+            tvCustomerName = v.findViewById(R.id.tvCustomerName);
             tvTotal        = v.findViewById(R.id.tvTotal);
-            tvPayment      = v.findViewById(R.id.tvPayment);
-            tvDistance     = v.findViewById(R.id.tvDistance);
-            tvAddress      = v.findViewById(R.id.tvAddress);
-            tvStatusLabel  = v.findViewById(R.id.tvStatusLabel);
+            tvStatusBadge  = v.findViewById(R.id.tvStatusBadge);
             btnAction      = v.findViewById(R.id.btnAction);
         }
     }

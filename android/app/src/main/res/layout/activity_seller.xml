@@ -1,313 +1,481 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background">
 
-    <!-- Header -->
-    <com.google.android.material.appbar.AppBarLayout
+    <!-- Green Header -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface"
-        app:elevation="0dp">
+        android:orientation="vertical"
+        android:background="@color/primary"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="0dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="16dp">
-
-            <ImageButton
-                android:id="@+id/btnMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_menu"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/primary"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="BiliJuan"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:letterSpacing="-0.02"
-                android:gravity="center"/>
-
-            <ImageButton
-                android:id="@+id/btnNotification"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_notifications"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/primary"/>
-        </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Scrollable Content -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingBottom="80dp"
-        android:clipToPadding="false">
-
+        <!-- Top row: title + bell -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="24dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
 
-            <!-- Merchant Profile Header -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MERCHANT DASHBOARD"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_secondary"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:id="@+id/tvSellerName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello, Seller!"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:letterSpacing="-0.02"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manage your daily orders and stock."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="32dp"/>
-
-            <!-- Stats Cards Row -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <!-- Total Orders Card -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/surface"
-                    android:layout_marginEnd="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_receipt"
-                            app:tint="@color/primary"
-                            android:layout_marginBottom="16dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Orders"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"/>
-
-                        <TextView
-                            android:id="@+id/tvTotalOrders"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Rating Card -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/surface"
-                    android:layout_marginStart="8dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_star"
-                            app:tint="@color/warning"
-                            android:layout_marginBottom="16dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rating"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"/>
-
-                        <TextView
-                            android:id="@+id/tvRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- Active Orders Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Active Orders"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-
-                <TextView
-                    android:id="@+id/tvActiveOrderCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_primary_pill"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="4dp"
-                    android:text="0"
-                    android:textColor="@color/on_primary"
-                    android:textSize="12sp"
+                    android:text="Seller Dashboard"
+                    android:textSize="22sp"
                     android:textStyle="bold"
-                    android:layout_marginEnd="12dp"/>
+                    android:textColor="@color/on_primary"/>
 
                 <TextView
-                    android:id="@+id/tvSeeAllOrders"
+                    android:id="@+id/tvSellerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See All"
+                    android:text="My Store"
                     android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary"/>
+                    android:textColor="#CCFFFFFF"/>
             </LinearLayout>
 
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp">
+
+                <ImageButton
+                    android:id="@+id/btnNotification"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_notifications"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/on_primary"/>
+
+                <!-- Notification dot -->
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_notification_dot"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Top Tabs: Overview / Products / Orders -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="12dp">
+
             <TextView
-                android:id="@+id/emptyOrders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No active orders right now."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
+                android:id="@+id/tabOverview"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Overview"
+                android:textSize="13sp"
+                android:textStyle="bold"
                 android:gravity="center"
-                android:paddingVertical="32dp"
-                android:visibility="gone"/>
+                android:textColor="@color/on_primary"
+                android:background="@drawable/bg_tab_active_white"
+                android:layout_marginEnd="4dp"/>
 
-            <!-- My Menu Section -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvActiveOrders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_seller_order_row" />
+            <TextView
+                android:id="@+id/tabProducts"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Products"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#CCFFFFFF"
+                android:background="@android:color/transparent"
+                android:layout_marginHorizontal="4dp"/>
+
+            <TextView
+                android:id="@+id/tabOrders"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:text="Orders"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#CCFFFFFF"
+                android:background="@android:color/transparent"
+                android:layout_marginStart="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Content area — switches between sections -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- ── OVERVIEW SECTION ── -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/sectionOverview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="80dp"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="0dp"
+                <!-- Stat Cards -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="My Menu"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddItem"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Add Item"
-                    android:textSize="13sp"
-                    app:icon="@drawable/ic_add"
-                    app:iconSize="16dp"
-                    app:cornerRadius="12dp"/>
+                    <!-- Total Sales -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="@color/surface"
+                        android:layout_marginEnd="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:background="@drawable/bg_stat_icon"
+                                android:gravity="center"
+                                android:layout_marginBottom="12dp">
+
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/ic_receipt"
+                                    app:tint="@color/primary"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvTotalSales"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₱0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="2dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Sales"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginBottom="6dp"/>
+
+                            <TextView
+                                android:id="@+id/tvSalesGrowth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="+0% this week"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Total Orders -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="@color/surface"
+                        android:layout_marginStart="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:background="@drawable/bg_stat_icon"
+                                android:gravity="center"
+                                android:layout_marginBottom="12dp">
+
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/ic_bag"
+                                    app:tint="@color/primary"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvTotalOrders"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginBottom="2dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Orders"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginBottom="6dp"/>
+
+                            <TextView
+                                android:id="@+id/tvOrdersToday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="+0 today"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primary"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Recent Orders Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Recent Orders"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="12dp"/>
+
+                        <TextView
+                            android:id="@+id/emptyOrders"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="No active orders right now."
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary"
+                            android:gravity="center"
+                            android:paddingVertical="16dp"
+                            android:visibility="gone"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvActiveOrders"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Weekly Performance Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/surface">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This Week's Performance"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginBottom="16dp"/>
+
+                        <!-- Day rows — Mon to Sun -->
+                        <LinearLayout android:id="@+id/rowMon" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Mon" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barMon" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvMon" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowTue" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Tue" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barTue" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvTue" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowWed" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Wed" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barWed" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvWed" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowThu" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Thu" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barThu" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvThu" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowFri" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Fri" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barFri" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvFri" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowSat" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Sat" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barSat" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvSat" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                        <LinearLayout android:id="@+id/rowSun" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                            <TextView android:layout_width="32dp" android:layout_height="wrap_content" android:text="Sun" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                            <ProgressBar android:id="@+id/barSun" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
+                            <TextView android:id="@+id/tvSun" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ── PRODUCTS SECTION ── -->
+        <LinearLayout
+            android:id="@+id/sectionProducts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Add New Product button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddItem"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Add New Product"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/on_primary"
+                android:backgroundTint="@color/primary"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_plus_circle"
+                app:iconTint="@color/on_primary"
+                app:iconSize="18dp"
+                app:iconGravity="textStart"/>
 
             <TextView
                 android:id="@+id/emptyMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your pantry is empty."
+                android:text="Your pantry is empty. Add your first item!"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"
-                android:paddingVertical="32dp"
+                android:paddingVertical="40dp"
                 android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMenu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="16dp"
-                tools:listitem="@layout/item_seller_menu"/>
-
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"/>
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+        <!-- ── ORDERS SECTION ── -->
+        <LinearLayout
+            android:id="@+id/sectionOrders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvActiveOrderCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvSeeAllOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvActiveOrders2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_gravity="bottom"
         android:background="@color/surface"
         app:menu="@menu/bottom_nav_seller"
-        app:itemIconTint="@color/nav_active"
-        app:itemTextColor="@color/nav_active"
+        app:itemIconTint="@color/bottom_nav_tint"
+        app:itemTextColor="@color/bottom_nav_tint"
         app:labelVisibilityMode="labeled"
         android:elevation="16dp"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

@@ -2,17 +2,21 @@ package com.appdev.bilijuan.activities.seller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.adapters.SellerOrdersAdapter;
 import com.appdev.bilijuan.databinding.ActivitySellerOrdersBinding;
 import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.utils.DeliveryUtils;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.NotificationHelper;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -24,12 +28,12 @@ public class SellerOrdersActivity extends AppCompatActivity {
 
     private ActivitySellerOrdersBinding binding;
     private SellerOrdersAdapter adapter;
-    private final List<Order> allOrders = new ArrayList<>();
+    private final List<Order> allOrders      = new ArrayList<>();
     private final List<Order> filteredOrders = new ArrayList<>();
     private ListenerRegistration listener;
     private String sellerId;
     private double sellerLat, sellerLng;
-    private String activeFilter = "Active"; // Active | History
+    private String activeFilter = "Active";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,37 +58,56 @@ public class SellerOrdersActivity extends AppCompatActivity {
     }
 
     private void setupBottomNav() {
-        binding.bottomNav.setSelectedItemId(com.appdev.bilijuan.R.id.nav_orders);
+        binding.bottomNav.setSelectedItemId(R.id.nav_orders);
         binding.bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == com.appdev.bilijuan.R.id.nav_orders) return true;
-            if (id == com.appdev.bilijuan.R.id.nav_dashboard) {
+            if (id == R.id.nav_orders) return true;
+            if (id == R.id.nav_home) {
                 startActivity(new Intent(this, SellerDashboardActivity.class));
                 overridePendingTransition(0, 0);
-                finish();
-                return true;
+                finish(); return true;
             }
-            if (id == com.appdev.bilijuan.R.id.nav_menu) {
-                startActivity(new Intent(this, AddProductActivity.class));
+            if (id == R.id.nav_post) {
+                showPostBottomSheet();
+                return false;
+            }
+            if (id == R.id.nav_account) {
+                startActivity(new Intent(this, SellerAccountActivity.class));
                 overridePendingTransition(0, 0);
-                return true;
+                finish(); return true;
             }
             return false;
         });
+    }
+
+    private void showPostBottomSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_post, null);
+        sheet.setContentView(v);
+        v.findViewById(R.id.btnNewItem).setOnClickListener(btn -> {
+            sheet.dismiss();
+            startActivity(new Intent(this, AddProductActivity.class));
+        });
+        v.findViewById(R.id.btnEditExisting).setOnClickListener(btn -> {
+            sheet.dismiss();
+            startActivity(new Intent(this, SellerAccountActivity.class)
+                    .putExtra("openMenu", true));
+        });
+        sheet.show();
     }
 
     private void setupFilterChips() {
         binding.chipActive.setOnClickListener(v -> {
             activeFilter = "Active";
             applyFilter();
-            binding.chipActive.setBackground(getDrawable(com.appdev.bilijuan.R.drawable.bg_chip_active));
-            binding.chipHistory.setBackground(getDrawable(com.appdev.bilijuan.R.drawable.bg_chip_inactive));
+            binding.chipActive.setBackgroundResource(R.drawable.bg_chip_active);
+            binding.chipHistory.setBackgroundResource(R.drawable.bg_chip_inactive);
         });
         binding.chipHistory.setOnClickListener(v -> {
             activeFilter = "History";
             applyFilter();
-            binding.chipActive.setBackground(getDrawable(com.appdev.bilijuan.R.drawable.bg_chip_inactive));
-            binding.chipHistory.setBackground(getDrawable(com.appdev.bilijuan.R.drawable.bg_chip_active));
+            binding.chipHistory.setBackgroundResource(R.drawable.bg_chip_active);
+            binding.chipActive.setBackgroundResource(R.drawable.bg_chip_inactive);
         });
     }
 
@@ -111,7 +134,6 @@ public class SellerOrdersActivity extends AppCompatActivity {
                         o.setOrderId(doc.getId());
                         allOrders.add(o);
                     }
-                    // Sort active orders by distance (nearest first), history by time (newest first)
                     applyFilter();
                 });
     }
@@ -119,34 +141,41 @@ public class SellerOrdersActivity extends AppCompatActivity {
     private void applyFilter() {
         filteredOrders.clear();
         if ("Active".equals(activeFilter)) {
-            for (Order o : allOrders) { if (o.isActive()) filteredOrders.add(o); }
+            for (Order o : allOrders) if (o.isActive()) filteredOrders.add(o);
             Collections.sort(filteredOrders, (a, b) -> {
-                double dA = DeliveryUtils.haversineKm(sellerLat, sellerLng, a.getCustomerLat(), a.getCustomerLng());
-                double dB = DeliveryUtils.haversineKm(sellerLat, sellerLng, b.getCustomerLat(), b.getCustomerLng());
+                double dA = DeliveryUtils.haversineKm(sellerLat, sellerLng,
+                        a.getCustomerLat(), a.getCustomerLng());
+                double dB = DeliveryUtils.haversineKm(sellerLat, sellerLng,
+                        b.getCustomerLat(), b.getCustomerLng());
                 return Double.compare(dA, dB);
             });
         } else {
-            for (Order o : allOrders) { if (!o.isActive()) filteredOrders.add(o); }
+            for (Order o : allOrders) if (!o.isActive()) filteredOrders.add(o);
             Collections.sort(filteredOrders, (a, b) -> {
                 if (a.getCreatedAt() == null || b.getCreatedAt() == null) return 0;
                 return b.getCreatedAt().compareTo(a.getCreatedAt());
             });
         }
         adapter.notifyDataSetChanged();
-        binding.emptyOrders.setVisibility(filteredOrders.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.emptyOrders.setVisibility(
+                filteredOrders.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void onAdvanceStatus(Order order) {
         String next = nextStatus(order.getStatus());
         if (next == null) return;
-        FirebaseHelper.getDb().collection("orders").document(order.getOrderId())
+        FirebaseHelper.getDb().collection("orders")
+                .document(order.getOrderId())
                 .update("status", next)
-                .addOnSuccessListener(v ->
-                        Toast.makeText(this, "Status → " + next, Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(v -> {
+                    Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
+                    // Notify customer
+                    NotificationHelper.notifyStatusChange(
+                            order.getOrderId(), next, order.getProductName());
+                })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
     }
-
     private String nextStatus(String current) {
         switch (current) {
             case Order.STATUS_PENDING:    return Order.STATUS_CONFIRMED;
