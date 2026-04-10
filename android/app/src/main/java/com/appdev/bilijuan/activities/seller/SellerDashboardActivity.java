@@ -154,13 +154,19 @@ public class SellerDashboardActivity extends AppCompatActivity {
 
     private void setupRecyclerViews() {
         // Recent orders (overview tab)
-        recentOrdersAdapter = new ActiveOrderCardAdapter(recentOrders, this::onOrderAction);
+        recentOrdersAdapter = new ActiveOrderCardAdapter(recentOrders, new ActiveOrderCardAdapter.ActionListener() {
+            @Override public void onAction(Order order) { onOrderAction(order); }
+            @Override public void onViewMap(Order order) { openDeliveryMap(order); }
+        });
         binding.rvActiveOrders.setLayoutManager(new LinearLayoutManager(this));
         binding.rvActiveOrders.setAdapter(recentOrdersAdapter);
         binding.rvActiveOrders.setNestedScrollingEnabled(false);
 
         // All orders (orders tab)
-        ordersTabAdapter = new ActiveOrderCardAdapter(allOrders, this::onOrderAction);
+        ordersTabAdapter = new ActiveOrderCardAdapter(allOrders, new ActiveOrderCardAdapter.ActionListener() {
+            @Override public void onAction(Order order) { onOrderAction(order); }
+            @Override public void onViewMap(Order order) { openDeliveryMap(order); }
+        });
         binding.rvActiveOrders2.setLayoutManager(new LinearLayoutManager(this));
         binding.rvActiveOrders2.setAdapter(ordersTabAdapter);
 
@@ -305,6 +311,12 @@ public class SellerDashboardActivity extends AppCompatActivity {
     }
 
     // ── Actions ───────────────────────────────────────────────────────────────
+
+    private void openDeliveryMap(Order order) {
+        Intent intent = new Intent(this, SellerDeliveryMapActivity.class);
+        intent.putExtra("orderId", order.getOrderId());
+        startActivity(intent);
+    }
 
     private void onOrderAction(Order order) {
         String next = nextStatus(order.getStatus());

@@ -1,111 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp"
-    app:cardBackgroundColor="@color/surface">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Row 1: Order number + time + status badge -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvOrderNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-
-                <TextView
-                    android:id="@+id/tvTimeAgo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"/>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" app:cardCornerRadius="16dp" app:cardElevation="2dp" app:strokeWidth="0dp" app:cardBackgroundColor="@color/surface">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <!--  Row 1: Order number + time + status badge  -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="8dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/tvOrderNumber" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                <TextView android:id="@+id/tvTimeAgo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp" android:textColor="@color/text_secondary"/>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvStatusBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"/>
+            <TextView android:id="@+id/tvStatusBadge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="11sp" android:textStyle="bold" android:paddingHorizontal="10dp" android:paddingVertical="4dp"/>
         </LinearLayout>
-
-        <!-- Row 2: Product name -->
-        <TextView
-            android:id="@+id/tvProductName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="2dp"/>
-
-        <!-- Row 3: Customer name -->
-        <TextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="10dp"/>
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/surface_variant"
-            android:layout_marginBottom="10dp"/>
-
-        <!-- Row 4: Total + View Details -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tvTotal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
-
-            <TextView
-                android:id="@+id/btnAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View Details"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"/>
+        <!--  Customer info card  -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/surface_variant" android:padding="10dp" android:layout_marginBottom="10dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/tvCustomerName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="2dp">
+                    <ImageView android:layout_width="12dp" android:layout_height="12dp" android:src="@drawable/ic_location" app:tint="@color/text_secondary" android:layout_marginEnd="3dp"/>
+                    <TextView android:id="@+id/tvCustomerAddress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp" android:textColor="@color/text_secondary" android:maxLines="1" android:ellipsize="end"/>
+                </LinearLayout>
+            </LinearLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton android:id="@+id/btnCallCustomer" android:layout_width="wrap_content" android:layout_height="wrap_content" app:srcCompat="@drawable/ic_phone" app:backgroundTint="@color/primary" app:tint="@color/on_primary" app:fabSize="mini" app:elevation="0dp" android:contentDescription="Call customer"/>
         </LinearLayout>
-
+        <!--  Product name  -->
+        <TextView android:id="@+id/tvProductName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="13sp" android:textColor="@color/text_secondary" android:layout_marginBottom="2dp"/>
+        <!--  Total + divider  -->
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/surface_variant" android:layout_marginTop="8dp" android:layout_marginBottom="8dp"/>
+        <TextView android:id="@+id/tvTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginBottom="12dp"/>
+        <!--  Action buttons: Advance + View Map side by side  -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAction" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/on_primary" android:backgroundTint="@color/primary" app:cornerRadius="12dp" app:elevation="0dp" android:visibility="gone"/>
+            <Space android:id="@+id/spaceBetweenButtons" android:layout_width="8dp" android:layout_height="0dp" android:visibility="gone"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnViewMap" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="View Map" android:textSize="13sp" android:textColor="@color/primary" app:strokeColor="@color/primary" app:cornerRadius="12dp" app:icon="@drawable/ic_location" app:iconTint="@color/primary" app:iconSize="16dp" android:visibility="gone"/>
+        </LinearLayout>
+        <!--  "You are delivering" banner — only when ON_THE_WAY  -->
+        <LinearLayout android:id="@+id/bannerDelivering" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@color/primary_light" android:padding="10dp" android:visibility="gone">
+            <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_delivery_dining" app:tint="@color/primary" android:layout_marginEnd="8dp"/>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="You are delivering this order" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="The customer can track your location in real-time" android:textSize="11sp" android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

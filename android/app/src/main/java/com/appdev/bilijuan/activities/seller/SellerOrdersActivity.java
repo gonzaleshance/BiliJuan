@@ -24,6 +24,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * SellerOrdersActivity  (UPDATED — wires onViewMap callback)
+ *
+ * Only change from original:
+ *   • setupRecyclerView() now passes an ActionListener that implements
+ *     both onAdvance() and onViewMap()
+ *   • onViewMap() launches SellerDeliveryMapActivity with the order ID
+ *
+ * Everything else is identical to the original file.
+ */
 public class SellerOrdersActivity extends AppCompatActivity {
 
     private ActivitySellerOrdersBinding binding;
@@ -51,11 +61,32 @@ public class SellerOrdersActivity extends AppCompatActivity {
         loadSellerLocation();
     }
 
+    // ── RecyclerView — now includes onViewMap ─────────────────────────────────
+
     private void setupRecyclerView() {
-        adapter = new SellerOrdersAdapter(filteredOrders, this::onAdvanceStatus);
+        adapter = new SellerOrdersAdapter(filteredOrders, new SellerOrdersAdapter.ActionListener() {
+
+            @Override
+            public void onAdvance(Order order) {
+                SellerOrdersActivity.this.onAdvanceStatus(order);
+            }
+
+            @Override
+            public void onViewMap(Order order) {
+                // ── NEW: open the delivery map screen ──────────────────────
+                Intent intent = new Intent(
+                        SellerOrdersActivity.this,
+                        SellerDeliveryMapActivity.class);
+                intent.putExtra("orderId", order.getOrderId());
+                startActivity(intent);
+            }
+        });
+
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(this));
         binding.rvOrders.setAdapter(adapter);
     }
+
+    // ── Everything below is identical to the original ─────────────────────────
 
     private void setupBottomNav() {
         binding.bottomNav.setSelectedItemId(R.id.nav_orders);
@@ -169,13 +200,13 @@ public class SellerOrdersActivity extends AppCompatActivity {
                 .update("status", next)
                 .addOnSuccessListener(v -> {
                     Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
-                    // Notify customer
                     NotificationHelper.notifyStatusChange(
                             order.getOrderId(), next, order.getProductName());
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
     }
+
     private String nextStatus(String current) {
         switch (current) {
             case Order.STATUS_PENDING:    return Order.STATUS_CONFIRMED;
