@@ -1,5 +1,14 @@
 package com.appdev.bilijuan.activities.seller;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +18,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +37,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.firebase.firestore.ListenerRegistration;
 
+
+
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -36,6 +48,8 @@ import org.osmdroid.views.overlay.Polyline;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+
 
 /**
  * SellerDeliveryMapActivity
@@ -308,18 +322,79 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     private void drawRoute() {
         if (riderMarker == null || customerMarker == null) return;
 
-        if (routeLine == null) {
-            routeLine = new Polyline();
-            routeLine.getOutlinePaint().setColor(
-                    android.graphics.Color.RED);
-            routeLine.getOutlinePaint().setStrokeWidth(8f);
-        }
-        routeLine.setPoints(Arrays.asList(
-                riderMarker.getPosition(),
-                customerMarker.getPosition()));
+        GeoPoint from = riderMarker.getPosition();
+        GeoPoint to   = customerMarker.getPosition();
 
-        if (!binding.mapView.getOverlays().contains(routeLine))
-            binding.mapView.getOverlays().add(0, routeLine); // add below markers
+        fetchRoadRoute(from, to);
+    }
+
+    private void fetchRoadRoute(GeoPoint from, GeoPoint to) {
+        // OSRM public API — free, no key needed, works in Philippines
+        String url = "https://router.project-osrm.org/route/v1/driving/"
+                + from.getLongitude() + "," + from.getLatitude() + ";"
+                + to.getLongitude()   + "," + to.getLatitude()
+                + "?overview=full&geometries=geojson";
+
+        new Thread(() -> {
+            try {
+                HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+                reader.close();
+
+                // Parse GeoJSON coordinates
+                JSONObject json   = new JSONObject(sb.toString());
+                JSONArray  coords = json
+                        .getJSONArray("routes")
+                        .getJSONObject(0)
+                        .getJSONObject("geometry")
+                        .getJSONArray("coordinates");
+
+                List<GeoPoint> routePoints = new ArrayList<>();
+                for (int i = 0; i < coords.length(); i++) {
+                    JSONArray point = coords.getJSONArray(i);
+                    // GeoJSON is [lng, lat]
+                    routePoints.add(new GeoPoint(point.getDouble(1), point.getDouble(0)));
+                }
+
+                // Draw on main thread
+                runOnUiThread(() -> {
+                    if (routeLine == null) {
+                        routeLine = new Polyline();
+                        routeLine.getOutlinePaint().setColor(android.graphics.Color.parseColor("#2E7D32"));
+                        routeLine.getOutlinePaint().setStrokeWidth(10f);
+                    }
+                    routeLine.setPoints(routePoints);
+
+                    if (!binding.mapView.getOverlays().contains(routeLine))
+                        binding.mapView.getOverlays().add(0, routeLine);
+
+                    binding.mapView.invalidate();
+                });
+
+            } catch (Exception e) {
+                // Fallback: draw straight line if OSRM fails
+                runOnUiThread(() -> {
+                    if (routeLine == null) {
+                        routeLine = new Polyline();
+                        routeLine.getOutlinePaint().setColor(android.graphics.Color.RED);
+                        routeLine.getOutlinePaint().setStrokeWidth(8f);
+                    }
+                    routeLine.setPoints(Arrays.asList(from, to));
+
+                    if (!binding.mapView.getOverlays().contains(routeLine))
+                        binding.mapView.getOverlays().add(0, routeLine);
+
+                    binding.mapView.invalidate();
+                });
+            }
+        }).start();
     }
 
     /**

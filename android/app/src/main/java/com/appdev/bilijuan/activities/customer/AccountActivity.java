@@ -29,6 +29,9 @@ public class AccountActivity extends AppCompatActivity {
         binding = ActivityAccountBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.btnPinLocation.setOnClickListener(v ->
+                startActivity(new Intent(this, PinLocationActivity.class)));
+
         currentUid = FirebaseHelper.getCurrentUid();
         if (currentUid == null) {
             startActivity(new Intent(this, LoginActivity.class));

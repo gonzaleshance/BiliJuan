@@ -42,6 +42,9 @@ public class Order {
     private double totalAmount;     // (productPrice × quantity) + deliveryFee
     private double distanceKm;      // Haversine distance seller → customer
 
+
+
+
     @ServerTimestamp
     private Date createdAt;
 
@@ -76,6 +79,7 @@ public class Order {
         this.distanceKm         = distanceKm;
         this.totalAmount        = (productPrice * quantity) + deliveryFee;
         this.status             = STATUS_PENDING;
+        this.active = true; // add this line in the Order constructor
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────
@@ -136,6 +140,12 @@ public class Order {
     }
 
     public boolean isActive() {
-        return !STATUS_DELIVERED.equals(status) && !STATUS_CANCELLED.equals(status);
+        return active; // use the field directly instead of computing it
     }
+
+    private boolean active; // add this field
+
+    // add getter and setter:
+    public void setActive(boolean active) { this.active = active; }
+
 }

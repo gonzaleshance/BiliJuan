@@ -248,4 +248,14 @@
         app:labelVisibilityMode="labeled"
         android:elevation="16dp"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPinLocation"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📍 Pin Store Location"
+        app:strokeColor="@color/primary"
+        android:textColor="@color/primary"
+        app:cornerRadius="12dp"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

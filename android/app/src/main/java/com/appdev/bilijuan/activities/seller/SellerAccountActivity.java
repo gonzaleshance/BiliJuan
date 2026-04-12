@@ -115,8 +115,11 @@ public class SellerAccountActivity extends AppCompatActivity {
         binding.btnAddItem.setOnClickListener(v ->
                 startActivity(new Intent(this, AddProductActivity.class)));
         binding.btnLogout.setOnClickListener(v -> logout());
-    }
 
+        // ── NEW: Pin store location ──────────────────────────────────────────
+        binding.btnPinLocation.setOnClickListener(v ->
+                startActivity(new Intent(this, SellerPinLocationActivity.class)));
+    }
     // ── Load Data ─────────────────────────────────────────────────────────────
 
     private void loadProfile() {

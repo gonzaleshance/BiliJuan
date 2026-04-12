@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <!-- OSMDroid MapView -->
+    <!-- OSMDroid MapView — full screen -->
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pin Your Location"
+                android:text="📍 Pin Your Delivery Location"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -43,12 +43,27 @@
                 android:id="@+id/tvInstruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tap anywhere on the map to drop your delivery pin inside Saranay."
-                android:textSize="14sp"
+                android:text="Map is centered on your current location. Tap to adjust your pin."
+                android:textSize="13sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingExtra="4dp"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- My Location FAB — bottom right, above the bottom card -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnMyLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:layout_marginBottom="200dp"
+        app:srcCompat="@drawable/ic_location"
+        app:backgroundTint="@color/surface"
+        app:tint="@color/primary"
+        app:fabSize="mini"
+        app:elevation="6dp"
+        android:contentDescription="My Location"/>
 
     <!-- Bottom action buttons -->
     <com.google.android.material.card.MaterialCardView

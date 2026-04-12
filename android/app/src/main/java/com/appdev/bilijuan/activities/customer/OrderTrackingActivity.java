@@ -1,5 +1,15 @@
 package com.appdev.bilijuan.activities.customer;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +34,8 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.Arrays;
+
+
 
 public class OrderTrackingActivity extends AppCompatActivity {
 
@@ -50,6 +62,11 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void setupMap() {
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+        Configuration.getInstance().setOsmdroidBasePath(
+                new File(getCacheDir(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(
+                new File(getCacheDir(), "osmdroid/tiles"));
         binding.mapView.setTileSource(TileSourceFactory.MAPNIK);
         binding.mapView.setMultiTouchControls(true);
         binding.mapView.getController().setZoom(17.0);
@@ -101,25 +118,24 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void updateProgressSteps(String status) {
-        // FIXED: Use .getRoot() because binding.stepConfirmed is an include binding
         setStep(binding.stepConfirmed.getRoot(), binding.lineConfirmed,
                 "Order Confirmed", "Completed",
-                isDone(status, "CONFIRMED"),
-                isActive(status, "CONFIRMED"));
+                isDone(status, Order.STATUS_CONFIRMED),
+                isActive(status, Order.STATUS_CONFIRMED));
 
         setStep(binding.stepPreparing.getRoot(), binding.linePreparing,
                 "Preparing Your Food", "Completed",
-                isDone(status, "PREPARING"),
-                isActive(status, "PREPARING"));
+                isDone(status, Order.STATUS_PREPARING),
+                isActive(status, Order.STATUS_PREPARING));
 
         setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay,
                 "Out for Delivery", "In Progress...",
-                isDone(status, "ON_THE_WAY"),
-                isActive(status, "ON_THE_WAY"));
+                isDone(status, Order.STATUS_ON_THE_WAY),
+                isActive(status, Order.STATUS_ON_THE_WAY));
 
         setStep(binding.stepDelivered.getRoot(), null,
                 "Delivered", "Waiting...",
-                "DELIVERED".equals(status), false);
+                Order.STATUS_DELIVERED.equals(status), false);
     }
 
     private void setStep(View stepView, View lineView,
@@ -172,42 +188,137 @@ public class OrderTrackingActivity extends AppCompatActivity {
     }
 
     private void updateMapVisibility(Order order) {
-        boolean showMap = "ON_THE_WAY".equals(order.getStatus()) || "DELIVERED".equals(order.getStatus());
+        boolean showMap = Order.STATUS_ON_THE_WAY.equals(order.getStatus())
+                || Order.STATUS_DELIVERED.equals(order.getStatus());
         binding.cardMap.setVisibility(showMap ? View.VISIBLE : View.GONE);
         if (showMap) showRouteOnMap(order);
     }
 
     private void showRouteOnMap(Order order) {
-        double selLat = order.getSellerLat(), selLng = order.getSellerLng();
-        double cusLat = order.getCustomerLat(), cusLng = order.getCustomerLng();
-        if (selLat == 0 && cusLat == 0) return;
+        double riderLat = order.getRiderLat();   // live rider GPS from Firestore
+        double riderLng = order.getRiderLng();
+        double cusLat   = order.getCustomerLat();
+        double cusLng   = order.getCustomerLng();
 
-        GeoPoint sellerPoint   = new GeoPoint(selLat, selLng);
+        // Fall back to seller's store location if rider hasn't moved yet
+        if (riderLat == 0 && riderLng == 0) {
+            riderLat = order.getSellerLat();
+            riderLng = order.getSellerLng();
+        }
+        if (riderLat == 0 && cusLat == 0) return;
+
+        final double fromLat = riderLat, fromLng = riderLng;
+        GeoPoint riderPoint    = new GeoPoint(fromLat, fromLng);
         GeoPoint customerPoint = new GeoPoint(cusLat, cusLng);
 
-        binding.mapView.getController().setCenter(new GeoPoint((selLat + cusLat) / 2, (selLng + cusLng) / 2));
+        // Centre map between rider and customer
+        binding.mapView.getController().setCenter(
+                new GeoPoint((fromLat + cusLat) / 2, (fromLng + cusLng) / 2));
         binding.mapView.getController().setZoom(16.5);
         binding.mapView.getOverlays().clear();
 
-        if (routeLine == null) {
-            routeLine = new Polyline();
-            routeLine.getOutlinePaint().setColor(ContextCompat.getColor(this, R.color.primary));
-            routeLine.getOutlinePaint().setStrokeWidth(8f);
-        }
-        routeLine.setPoints(Arrays.asList(sellerPoint, customerPoint));
-        binding.mapView.getOverlays().add(routeLine);
-
+        // Place rider marker
         if (sellerMarker == null) sellerMarker = new Marker(binding.mapView);
-        sellerMarker.setPosition(sellerPoint);
-        sellerMarker.setTitle(order.getSellerName());
+        sellerMarker.setPosition(riderPoint);
+        sellerMarker.setTitle("🛵 Rider");
+        sellerMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_delivery_dining));
         binding.mapView.getOverlays().add(sellerMarker);
 
+        // Place customer marker
         if (customerMarker == null) customerMarker = new Marker(binding.mapView);
         customerMarker.setPosition(customerPoint);
-        customerMarker.setTitle("Your Location");
+        customerMarker.setTitle("📍 Your Location");
+        customerMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location));
         binding.mapView.getOverlays().add(customerMarker);
 
         binding.mapView.invalidate();
+
+        // Fetch road-snapped route + ETA
+        fetchRoadRouteAndEta(fromLat, fromLng, cusLat, cusLng);
+    }
+
+    private void fetchRoadRouteAndEta(double fromLat, double fromLng,
+                                      double toLat,   double toLng) {
+        String url = "https://router.project-osrm.org/route/v1/driving/"
+                + fromLng + "," + fromLat + ";"
+                + toLng   + "," + toLat
+                + "?overview=full&geometries=geojson";
+
+        new Thread(() -> {
+            try {
+                HttpURLConnection conn =
+                        (HttpURLConnection) new URL(url).openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+                reader.close();
+
+                JSONObject json  = new JSONObject(sb.toString());
+                JSONObject route = json.getJSONArray("routes").getJSONObject(0);
+
+                // Road distance in km and duration in minutes
+                double distanceKm  = route.getDouble("distance") / 1000.0;
+                double durationMin = route.getDouble("duration") / 60.0;
+
+                // Parse road-snapped coordinates
+                JSONArray coords = route.getJSONObject("geometry")
+                        .getJSONArray("coordinates");
+                List<GeoPoint> roadPoints = new ArrayList<>();
+                for (int i = 0; i < coords.length(); i++) {
+                    JSONArray pt = coords.getJSONArray(i);
+                    roadPoints.add(new GeoPoint(pt.getDouble(1), pt.getDouble(0)));
+                }
+
+                runOnUiThread(() -> {
+                    // Draw road-snapped polyline
+                    if (routeLine == null) {
+                        routeLine = new Polyline();
+                        routeLine.getOutlinePaint().setColor(
+                                ContextCompat.getColor(this, R.color.primary));
+                        routeLine.getOutlinePaint().setStrokeWidth(10f);
+                    }
+                    routeLine.setPoints(roadPoints);
+                    // Insert below markers so markers stay on top
+                    binding.mapView.getOverlays().add(0, routeLine);
+                    binding.mapView.invalidate();
+
+                    // Update ETA text
+                    int etaMin = (int) Math.ceil(durationMin);
+                    String etaText;
+                    if (etaMin <= 1) {
+                        etaText = "Arriving now";
+                    } else if (etaMin < 60) {
+                        etaText = etaMin + " min away";
+                    } else {
+                        etaText = (etaMin / 60) + "h " + (etaMin % 60) + "m away";
+                    }
+                    String distText = String.format("%.1f km • %s", distanceKm, etaText);
+                    binding.tvEta.setText(distText);
+                });
+
+            } catch (Exception e) {
+                // Fallback: straight line if OSRM unavailable
+                runOnUiThread(() -> {
+                    if (routeLine == null) {
+                        routeLine = new Polyline();
+                        routeLine.getOutlinePaint().setColor(
+                                ContextCompat.getColor(this, R.color.primary));
+                        routeLine.getOutlinePaint().setStrokeWidth(8f);
+                    }
+                    routeLine.setPoints(Arrays.asList(
+                            new GeoPoint(fromLat, fromLng),
+                            new GeoPoint(toLat, toLng)));
+                    binding.mapView.getOverlays().add(0, routeLine);
+                    binding.mapView.invalidate();
+                    binding.tvEta.setText("Estimating...");
+                });
+            }
+        }).start();
     }
 
     private boolean isDone(String current, String step) {
@@ -221,11 +332,11 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private int stepIndex(String status) {
         if (status == null) return 0;
         switch (status) {
-            case "PENDING":    return 0;
-            case "CONFIRMED":  return 1;
-            case "PREPARING":  return 2;
-            case "ON_THE_WAY": return 3;
-            case "DELIVERED":  return 4;
+            case Order.STATUS_PENDING:    return 0;
+            case Order.STATUS_CONFIRMED:  return 1;
+            case Order.STATUS_PREPARING:  return 2;
+            case Order.STATUS_ON_THE_WAY: return 3;
+            case Order.STATUS_DELIVERED:  return 4;
             default: return 0;
         }
     }
@@ -233,10 +344,10 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private int progressForStatus(String status) {
         if (status == null) return 0;
         switch (status) {
-            case "CONFIRMED":  return 25;
-            case "PREPARING":  return 50;
-            case "ON_THE_WAY": return 75;
-            case "DELIVERED":  return 100;
+            case Order.STATUS_CONFIRMED:  return 25;
+            case Order.STATUS_PREPARING:  return 50;
+            case Order.STATUS_ON_THE_WAY: return 75;
+            case Order.STATUS_DELIVERED:  return 100;
             default: return 10;
         }
     }

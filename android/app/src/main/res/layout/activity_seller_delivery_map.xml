@@ -232,7 +232,7 @@
                 android:backgroundTint="@color/primary"
                 app:cornerRadius="12dp"
                 app:elevation="0dp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

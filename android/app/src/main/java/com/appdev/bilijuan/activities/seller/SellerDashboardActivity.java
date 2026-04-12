@@ -1,5 +1,8 @@
 package com.appdev.bilijuan.activities.seller;
 
+import com.appdev.bilijuan.utils.LocationHelper;
+import androidx.annotation.NonNull;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -62,7 +65,9 @@ public class SellerDashboardActivity extends AppCompatActivity {
         setupTopTabs();
         setupBottomNav();
         setupRecyclerViews();
-        loadSellerProfile();
+
+        // GPS saves location first, THEN loads profile + orders
+        LocationHelper.autoSaveLocation(this, (lat, lng) -> loadSellerProfile());
     }
 
     // ── Top Tabs ──────────────────────────────────────────────────────────────
@@ -204,7 +209,11 @@ public class SellerDashboardActivity extends AppCompatActivity {
                 .collection("orders")
                 .whereEqualTo("sellerId", sellerId)
                 .addSnapshotListener((snap, e) -> {
-                    if (e != null || snap == null) return;
+                    if (e != null) {
+                        android.util.Log.e("SELLER_ORDERS", "Firestore error: " + e.getMessage());
+                        return;
+                    }
+                    if (snap == null) return;
 
                     allOrders.clear();
                     double totalSales = 0;
@@ -377,4 +386,13 @@ public class SellerDashboardActivity extends AppCompatActivity {
         if (ordersListener != null) ordersListener.remove();
         if (menuListener   != null) menuListener.remove();
     }
-}
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LocationHelper.onPermissionGranted(this, requestCode, grantResults);
+    }
+
+} // ← closing brace of the class

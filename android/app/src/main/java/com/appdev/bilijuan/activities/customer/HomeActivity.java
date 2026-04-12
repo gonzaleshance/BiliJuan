@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -15,6 +16,7 @@ import com.appdev.bilijuan.databinding.ActivityHomeBinding;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.LocationHelper;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,12 +42,24 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // ── AUTO GPS: silently save customer's location to Firestore ──────────
+        LocationHelper.autoSaveLocation(this);
+
         setupBottomNav();
         setupTopTabs();
         setupCategoryChips();
         setupRecyclerViews();
         loadUserGreeting();
-        switchTab("Food"); // triggers shimmer + data load
+        switchTab("Food");
+    }
+
+    // ── Permission result — needed for LocationHelper ─────────────────────────
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LocationHelper.onPermissionGranted(this, requestCode, grantResults);
     }
 
     // ── Bottom Nav ────────────────────────────────────────────────────────────
@@ -88,13 +102,11 @@ public class HomeActivity extends AppCompatActivity {
     private void switchTab(String tab) {
         activeTab = tab;
 
-        // Reset tabs
         binding.tabFood.setBackgroundResource(android.R.color.transparent);
         binding.tabStore.setBackgroundResource(android.R.color.transparent);
         binding.tabFood.setTextColor(0xCCFFFFFF);
         binding.tabStore.setTextColor(0xCCFFFFFF);
 
-        // Activate selected
         if ("Food".equals(tab)) {
             binding.tabFood.setBackgroundResource(R.drawable.bg_tab_active_white);
             binding.tabFood.setTextColor(getColor(R.color.primary));
@@ -193,7 +205,6 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
-    // Popular = shopScore DESC (original feed algorithm)
     private void loadPopular() {
         if (popularListener != null) popularListener.remove();
         popularListener = FirebaseHelper.getDb().collection("products")
@@ -214,7 +225,6 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
-    // Listings = createdAt DESC + optional category filter
     private void loadFood(String category) {
         if (listingsListener != null) listingsListener.remove();
         binding.rvListings.setAdapter(listingsAdapter);
@@ -239,7 +249,6 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    // Stores = group products by sellerId
     private void loadStores() {
         if (listingsListener != null) listingsListener.remove();
         listingsListener = FirebaseHelper.getDb().collection("products")

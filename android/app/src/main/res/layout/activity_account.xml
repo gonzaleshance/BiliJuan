@@ -381,4 +381,16 @@
         app:labelVisibilityMode="labeled"
         android:elevation="16dp"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPinLocation"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="📍 Update Delivery Location"
+        android:textColor="@color/primary"
+        app:strokeColor="@color/primary"
+        app:cornerRadius="26dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

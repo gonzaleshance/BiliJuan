@@ -59,6 +59,7 @@
         <activity android:name=".activities.seller.SellerAccountActivity"      android:exported="false"/>
         <activity android:name=".activities.seller.EditSellerProfileActivity"  android:exported="false"/>
         <activity android:name=".activities.seller.SellerDeliveryMapActivity" android:exported="false"/>
+        <activity android:name=".activities.seller.SellerPinLocationActivity"  android:exported="false"/>
 
         <!-- FCM Service -->
         <service

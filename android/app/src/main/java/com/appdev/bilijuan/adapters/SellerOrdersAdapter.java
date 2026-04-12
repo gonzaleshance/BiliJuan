@@ -80,6 +80,7 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
         boolean isActive    = o.isActive();
         boolean showMap     = isActive && hasLocation;
 
+
         if (showMap) {
             h.btnViewMap.setVisibility(View.VISIBLE);
             h.btnViewMap.setOnClickListener(v -> listener.onViewMap(o));
@@ -107,6 +108,8 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
             default: return null;
         }
     }
+
+
 
     // ── ViewHolder ────────────────────────────────────────────────────────────
 
