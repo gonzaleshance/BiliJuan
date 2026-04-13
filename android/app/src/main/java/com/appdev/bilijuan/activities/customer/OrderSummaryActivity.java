@@ -15,6 +15,7 @@ import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.DeliveryUtils;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.ImageHelper;
+import com.appdev.bilijuan.utils.NetworkHelper;
 
 public class OrderSummaryActivity extends AppCompatActivity {
 
@@ -133,6 +134,24 @@ public class OrderSummaryActivity extends AppCompatActivity {
 
     private void placeOrder() {
         if (product == null || customer == null) return;
+        // Example usage in any Activity:
+        if (!NetworkHelper.isOnline(this)) {
+            NetworkHelper.showOfflineToast(this);
+            return;
+        }
+
+        // ── Location check ──
+        if (customer.getLatitude() == 0 && customer.getLongitude() == 0) {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("No Location Set")
+                    .setMessage("You haven't pinned your delivery location yet. Please set it before ordering so we can calculate the delivery fee and find you.")
+                    .setPositiveButton("Set Location", (d, w) ->
+                            startActivity(new Intent(this, PinLocationActivity.class)))
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            return;
+        }
+
         Object tag = binding.btnPlaceOrder.getTag();
         if (tag == null) {
             Toast.makeText(this, "Still loading, please wait.", Toast.LENGTH_SHORT).show();
@@ -162,8 +181,11 @@ public class OrderSummaryActivity extends AppCompatActivity {
                             .addOnSuccessListener(ref -> {
                                 ref.update("orderId", ref.getId());
                                 setLoading(false);
-                                Intent intent = new Intent(this, OrderTrackingActivity.class);
-                                intent.putExtra("orderId", ref.getId());
+                                Intent intent = new Intent(this, OrderSuccessActivity.class);
+                                intent.putExtra("orderId",     ref.getId());
+                                intent.putExtra("productName", product.getName() + " × " + quantity);
+                                intent.putExtra("total",       String.format("₱%.0f", order.getTotalAmount()));
+                                intent.putExtra("storeName",   order.getSellerName());
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();

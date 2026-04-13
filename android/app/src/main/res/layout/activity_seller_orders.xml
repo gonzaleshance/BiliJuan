@@ -112,17 +112,11 @@
             tools:listitem="@layout/item_seller_order_row"/>
     </LinearLayout>
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
+    <!-- Custom Store Bottom Nav -->
+    <include layout="@layout/layout_store_bottom_nav"
+        android:id="@+id/storeNav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_gravity="bottom"
-        android:background="@color/surface"
-        app:menu="@menu/bottom_nav_seller"
-        app:itemIconTint="@color/nav_active"
-        app:itemTextColor="@color/nav_active"
-        app:labelVisibilityMode="labeled"
-        android:elevation="16dp"/>
+        android:layout_gravity="bottom"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

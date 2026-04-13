@@ -41,8 +41,19 @@ public class Order {
     private double deliveryFee;     // ₱20 base + ₱10/km after 1km
     private double totalAmount;     // (productPrice × quantity) + deliveryFee
     private double distanceKm;      // Haversine distance seller → customer
+    private boolean reviewed;           // true after customer leaves review
+    private String lastNotificationStatus;
+    private String lastNotificationMessage;
 
+    // Add getters
+    public boolean isReviewed()                     { return reviewed; }
+    public String getLastNotificationStatus()       { return lastNotificationStatus; }
+    public String getLastNotificationMessage()      { return lastNotificationMessage; }
 
+    // Add setters
+    public void setReviewed(boolean reviewed)                       { this.reviewed = reviewed; }
+    public void setLastNotificationStatus(String status)            { this.lastNotificationStatus = status; }
+    public void setLastNotificationMessage(String message)          { this.lastNotificationMessage = message; }
 
 
     @ServerTimestamp

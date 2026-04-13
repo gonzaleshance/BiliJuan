@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Saranay subdivisions for registration -->
-    <string-array name="saranay_subdivisions">
-        <item>Saranay Homes</item>
-        <item>Ugnayan Saranay Phase 1</item>
-        <item>Ugnayan Saranay Phase 2</item>
-        <item>Tierra Nova Royale</item>
-        <item>Nova Hills Subdivision</item>
-        <item>Northville</item>
-        <item>Along Saranay Road</item>
-        <item>Other / Not Listed</item>
-    </string-array>
-
     <!-- Product categories (7) -->
     <string-array name="product_categories">
         <item>Ulam</item>
@@ -23,5 +10,4 @@
         <item>Street Food</item>
         <item>Specialty/Celebration</item>
     </string-array>
-
 </resources>

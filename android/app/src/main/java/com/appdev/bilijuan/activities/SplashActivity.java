@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.appdev.bilijuan.activities.DisabledAccountActivity;
+import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.activities.admin.AdminDashboardActivity;
 import com.appdev.bilijuan.activities.customer.HomeActivity;
 import com.appdev.bilijuan.activities.seller.SellerDashboardActivity;
@@ -125,22 +127,39 @@ public class SplashActivity extends AppCompatActivity {
     // ── Role routing ──────────────────────────────────────────────────────────
 
     private void fetchRoleAndRoute(String uid) {
-        FirebaseHelper.getDb()
-                .collection("users")
-                .document(uid)
-                .get()
+        FirebaseHelper.getDb().collection("users").document(uid).get()
                 .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        routeByRole(doc.getString("role"));
-                    } else {
+                    if (!doc.exists()) {
                         FirebaseHelper.signOut();
                         goTo(LoginActivity.class);
+                        return;
                     }
+                    User user = doc.toObject(User.class);
+                    if (user == null) { goTo(LoginActivity.class); return; }
+
+                    String status = user.getStatus();
+                    if ("disabled".equals(status)) {
+                        FirebaseHelper.signOut();
+                        Intent intent = new Intent(this, DisabledAccountActivity.class);
+                        intent.putExtra("reason", user.getDisableReason());
+                        intent.putExtra("note",   user.getDisableNote());
+                        intent.putExtra("type",   "disabled");
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+                    if ("archived".equals(status)) {
+                        FirebaseHelper.signOut();
+                        Intent intent = new Intent(this, DisabledAccountActivity.class);
+                        intent.putExtra("type", "archived");
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+
+                    routeByRole(user.getRole());
                 })
-                .addOnFailureListener(e -> {
-                    FirebaseHelper.signOut();
-                    goTo(LoginActivity.class);
-                });
+                .addOnFailureListener(e -> goTo(LoginActivity.class));
     }
 
     private void routeByRole(String role) {

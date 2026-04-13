@@ -17,6 +17,7 @@ import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.LocationHelper;
+import com.appdev.bilijuan.utils.NetworkHelper;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -175,6 +176,18 @@ public class HomeActivity extends AppCompatActivity {
     // ── RecyclerViews ─────────────────────────────────────────────────────────
 
     private void setupRecyclerViews() {
+        binding.swipeRefresh.setColorSchemeColors(getColor(R.color.primary));
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            activeCategory = null;
+            refreshChips(
+                    (TextView) binding.categoryChipsContainer.getChildAt(0));
+            loadPopular();
+            loadFood(null);
+            // Stop spinner after load
+            binding.swipeRefresh.postDelayed(
+                    () -> binding.swipeRefresh.setRefreshing(false), 1500);
+        });
+
         popularAdapter = new FoodListingAdapter(new ArrayList<>(), this::onProductClick);
         binding.rvPopular.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -229,6 +242,11 @@ public class HomeActivity extends AppCompatActivity {
         if (listingsListener != null) listingsListener.remove();
         binding.rvListings.setAdapter(listingsAdapter);
         binding.rvListings.setLayoutManager(new LinearLayoutManager(this));
+        // Example usage in any Activity:
+        if (!NetworkHelper.isOnline(this)) {
+            NetworkHelper.showOfflineToast(this);
+            return;
+        }
 
         Query q = FirebaseHelper.getDb().collection("products")
                 .whereEqualTo("available", true)

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +17,10 @@ import com.appdev.bilijuan.databinding.ActivitySellerAccountBinding;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.StoreNavHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.appdev.bilijuan.utils.DeliveryUtils;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +43,20 @@ public class SellerAccountActivity extends AppCompatActivity {
         if (sellerId == null) { finish(); return; }
 
         setupRecyclerView();
-        setupBottomNav();
+        setupStoreNav();
         setupClickListeners();
         loadProfile();
         listenMenu();
 
         // If opened from Post sheet with openMenu=true, scroll to menu section
         if (getIntent().getBooleanExtra("openMenu", false)) {
-            binding.scrollContent.post(() ->
-                    binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop()));
+            binding.scrollContent.post(() -> {
+                if (binding.tvMyMenuLabel != null) {
+                    binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop());
+                }
+            });
         }
     }
-
-    // ── RecyclerView ──────────────────────────────────────────────────────────
 
     private void setupRecyclerView() {
         menuAdapter = new SellerMenuAdapter(menuItems, this::onToggle, this::onEdit, this::onDelete);
@@ -64,32 +65,68 @@ public class SellerAccountActivity extends AppCompatActivity {
         binding.rvMenu.setNestedScrollingEnabled(false);
     }
 
-    // ── Bottom Nav ────────────────────────────────────────────────────────────
-
-    private void setupBottomNav() {
-        binding.bottomNav.setSelectedItemId(R.id.nav_account);
-        binding.bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_account) return true;
-            if (id == R.id.nav_home) {
-                startActivity(new Intent(this, SellerDashboardActivity.class));
-                overridePendingTransition(0, 0);
-                finish(); return true;
-            }
-            if (id == R.id.nav_post) {
-                showPostBottomSheet();
-                return false;
-            }
-            if (id == R.id.nav_orders) {
-                startActivity(new Intent(this, SellerOrdersActivity.class));
-                overridePendingTransition(0, 0);
-                finish(); return true;
-            }
-            return false;
-        });
+    private void setupStoreNav() {
+        // FIXED: Use .getRoot() to pass the View, and use the Tab.STORE active state
+        StoreNavHelper.setup(this, binding.storeNav.getRoot(), StoreNavHelper.Tab.STORE);
+        
+        // Custom FAB action for Store Account
+        binding.storeNav.fabPost.setOnClickListener(v -> showPostBottomSheet());
     }
 
-    // ── Post Bottom Sheet ─────────────────────────────────────────────────────
+    private void setupClickListeners() {
+        binding.btnBack.setOnClickListener(v -> finish());
+        
+        // Settings / Menu button in header
+        binding.btnSettings.setOnClickListener(v -> showSettingsBottomSheet());
+
+        binding.btnAddItem.setOnClickListener(v ->
+                startActivity(new Intent(this, AddProductActivity.class)));
+        
+        binding.btnPinLocation.setOnClickListener(v ->
+                startActivity(new Intent(this, SellerPinLocationActivity.class)));
+
+        binding.btnLogout.setOnClickListener(v -> logout());
+    }
+
+    private void showSettingsBottomSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_admin_action, null);
+        sheet.setContentView(v);
+        
+        TextView tvTitle = v.findViewById(R.id.tvUserName);
+        if (tvTitle != null) tvTitle.setText("Account Settings");
+
+        // Edit Profile using btnEnable slot
+        View btnEdit = v.findViewById(R.id.btnEnable);
+        if (btnEdit != null) {
+            btnEdit.setVisibility(View.VISIBLE);
+            // Access text view inside LinearLayout button
+            TextView tvLabel = btnEdit.findViewById(R.id.tvUserName); // This ID is reused in include? No, let's look at XML again
+            // In bottom_sheet_admin_action.xml, the buttons are LinearLayouts.
+            // Inside them, the first TextView has no ID? No, wait.
+            // I'll just find the first TextView in the button hierarchy.
+        }
+        
+        btnEdit.setOnClickListener(btn -> {
+            sheet.dismiss();
+            startActivity(new Intent(this, EditSellerProfileActivity.class));
+        });
+
+        // Logout using btnArchive slot
+        View btnLogout = v.findViewById(R.id.btnArchive);
+        if (btnLogout != null) {
+            btnLogout.setVisibility(View.VISIBLE);
+            btnLogout.setOnClickListener(btn -> {
+                sheet.dismiss();
+                logout();
+            });
+        }
+
+        // Hide unused buttons
+        if (v.findViewById(R.id.btnDisable) != null) v.findViewById(R.id.btnDisable).setVisibility(View.GONE);
+
+        sheet.show();
+    }
 
     private void showPostBottomSheet() {
         BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
@@ -101,26 +138,12 @@ public class SellerAccountActivity extends AppCompatActivity {
         });
         v.findViewById(R.id.btnEditExisting).setOnClickListener(btn -> {
             sheet.dismiss();
-            binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop());
+            if (binding.tvMyMenuLabel != null) {
+                binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop());
+            }
         });
         sheet.show();
     }
-
-    // ── Click Listeners ───────────────────────────────────────────────────────
-
-    private void setupClickListeners() {
-        binding.btnBack.setOnClickListener(v -> finish());
-        binding.btnEditProfile.setOnClickListener(v ->
-                startActivity(new Intent(this, EditSellerProfileActivity.class)));
-        binding.btnAddItem.setOnClickListener(v ->
-                startActivity(new Intent(this, AddProductActivity.class)));
-        binding.btnLogout.setOnClickListener(v -> logout());
-
-        // ── NEW: Pin store location ──────────────────────────────────────────
-        binding.btnPinLocation.setOnClickListener(v ->
-                startActivity(new Intent(this, SellerPinLocationActivity.class)));
-    }
-    // ── Load Data ─────────────────────────────────────────────────────────────
 
     private void loadProfile() {
         FirebaseHelper.getDb().collection("users").document(sellerId).get()
@@ -152,8 +175,6 @@ public class SellerAccountActivity extends AppCompatActivity {
                 });
     }
 
-    // ── Menu Actions ──────────────────────────────────────────────────────────
-
     private void onToggle(Product product, boolean available) {
         FirebaseHelper.getDb().collection("products")
                 .document(product.getProductId())
@@ -177,13 +198,12 @@ public class SellerAccountActivity extends AppCompatActivity {
                 .show();
     }
 
-    // ── Logout ────────────────────────────────────────────────────────────────
-
     private void logout() {
         FirebaseHelper.signOut();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override

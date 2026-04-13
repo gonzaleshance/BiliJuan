@@ -253,6 +253,33 @@
                     app:cornerRadius="24dp"
                     android:layout_marginBottom="24dp"/>
 
+                <!-- Report button -->
+                <LinearLayout
+                    android:id="@+id/btnReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="end"
+                    android:paddingVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_notifications"
+                        app:tint="@color/error"
+                        android:layout_marginEnd="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Report this listing"
+                        android:textSize="12sp"
+                        android:textColor="@color/error"/>
+                </LinearLayout>
+
                 <!-- Reviews list -->
                 <View
                     android:layout_width="match_parent"

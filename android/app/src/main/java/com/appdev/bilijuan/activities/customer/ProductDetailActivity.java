@@ -58,7 +58,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
-
+        // Add to setupClickListeners()
+        binding.btnReport.setOnClickListener(v -> showReportSheet());
         // Like button
         binding.btnLike.setOnClickListener(v -> toggleLike());
 
@@ -223,6 +224,70 @@ public class ProductDetailActivity extends AppCompatActivity {
                     commentAdapter.notifyDataSetChanged();
                     binding.emptyComments.setVisibility(
                             comments.isEmpty() ? View.VISIBLE : View.GONE);
+                });
+    }
+    private void showReportSheet() {
+        if (product == null) return;
+        com.google.android.material.bottomsheet.BottomSheetDialog sheet =
+                new com.google.android.material.bottomsheet.BottomSheetDialog(
+                        this, R.style.BottomSheetStyle);
+        android.view.View v = android.view.LayoutInflater.from(this)
+                .inflate(R.layout.bottom_sheet_report, null);
+        sheet.setContentView(v);
+
+        String[] reasons = com.appdev.bilijuan.models.Report.REASONS;
+        final int[] selected = {-1};
+
+        android.widget.ListView listView = v.findViewById(R.id.listReasons);
+        android.widget.ArrayAdapter<String> adapter =
+                new android.widget.ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_single_choice, reasons);
+        listView.setAdapter(adapter);
+        listView.setChoiceMode(android.widget.ListView.CHOICE_MODE_SINGLE);
+        listView.setOnItemClickListener((p, vi, pos, id) -> selected[0] = pos);
+
+        v.findViewById(R.id.btnSubmitReport).setOnClickListener(btn -> {
+            if (selected[0] == -1) {
+                Toast.makeText(this, "Please select a reason", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            sheet.dismiss();
+            submitReport(reasons[selected[0]]);
+        });
+
+        v.findViewById(R.id.btnCancelReport).setOnClickListener(btn -> sheet.dismiss());
+        sheet.show();
+    }
+
+    private void submitReport(String reason) {
+        if (currentUid == null || product == null) return;
+
+        FirebaseHelper.getDb().collection("users").document(currentUid).get()
+                .addOnSuccessListener(doc -> {
+                    String customerName = doc.exists()
+                            ? doc.getString("name") : "Customer";
+
+                    com.appdev.bilijuan.models.Report report =
+                            new com.appdev.bilijuan.models.Report(
+                                    productId, product.getName(),
+                                    product.getSellerId(), product.getSellerName(),
+                                    currentUid, customerName, reason, "");
+
+                    FirebaseHelper.getDb().collection("reports").add(report)
+                            .addOnSuccessListener(ref -> {
+                                ref.update("reportId", ref.getId());
+                                // Increment store report count
+                                FirebaseHelper.getDb().collection("users")
+                                        .document(product.getSellerId())
+                                        .update("reportCount",
+                                                com.google.firebase.firestore.FieldValue.increment(1));
+                                Toast.makeText(this,
+                                        "Report submitted. Thank you for your feedback.",
+                                        Toast.LENGTH_LONG).show();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Failed to submit report",
+                                            Toast.LENGTH_SHORT).show());
                 });
     }
 }

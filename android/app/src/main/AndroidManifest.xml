@@ -37,6 +37,10 @@
 
         <!-- ── Admin ── -->
         <activity android:name=".activities.admin.AdminDashboardActivity" android:exported="false"/>
+        <activity android:name=".activities.DisabledAccountActivity"          android:exported="false"/>
+        <activity android:name=".activities.seller.SellerReportsActivity"     android:exported="false"/>
+        <activity android:name=".activities.customer.OrderSuccessActivity"    android:exported="false"/>
+        <activity android:name=".activities.customer.ReviewPromptActivity"    android:exported="false"/>
 
         <!-- ── Customer ── -->
         <activity android:name=".activities.customer.HomeActivity"          android:exported="false"/>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/surface"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="32dp">
+
+    <View android:layout_width="40dp" android:layout_height="4dp" android:background="@color/surface_variant" android:layout_gravity="center_horizontal" android:layout_marginBottom="16dp"/>
+
+    <!-- Store name + status -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
+        <TextView android:id="@+id/tvStoreName" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+        <TextView android:id="@+id/tvStoreStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/primary" android:background="@drawable/bg_badge_active" android:paddingHorizontal="10dp" android:paddingVertical="4dp"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/tvStorePhone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="13sp" android:textColor="@color/text_secondary" android:layout_marginBottom="2dp"/>
+    <TextView android:id="@+id/tvStoreAddress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="13sp" android:textColor="@color/text_secondary" android:layout_marginBottom="16dp"/>
+
+    <!-- Stats row -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="16dp">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="70dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_stat_icon" android:layout_marginEnd="6dp">
+            <TextView android:id="@+id/tvProductCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Products" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="70dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_stat_icon" android:layout_marginEnd="6dp">
+            <TextView android:id="@+id/tvOrderCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Delivered" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="70dp" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@drawable/bg_stat_icon">
+            <TextView android:id="@+id/tvStoreRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="—" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Avg Rating" android:textSize="10sp" android:textColor="@color/text_secondary"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Flag count -->
+    <TextView android:id="@+id/tvFlagCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_secondary" android:layout_marginBottom="20dp"/>
+    <TextView android:id="@+id/tvReportCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp" android:textColor="@color/text_hint" android:layout_marginBottom="20dp"/>
+
+    <!-- Actions -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDisableStore"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Disable Store"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/warning"
+        android:backgroundTint="@color/surface"
+        app:strokeColor="@color/warning"
+        app:strokeWidth="1dp"
+        app:cornerRadius="24dp"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnArchiveStore"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Archive Store"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/error"
+        android:backgroundTint="@color/surface"
+        app:strokeColor="@color/error"
+        app:strokeWidth="1dp"
+        app:cornerRadius="24dp"/>
+
+</LinearLayout>
