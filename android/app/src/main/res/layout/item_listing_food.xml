@@ -1,83 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/surface"
-    android:padding="16dp"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="2dp"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/surface_variant"
+    app:cardBackgroundColor="@color/surface">
 
-    <!-- Product Image -->
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/ivProduct"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:background="@color/surface_variant"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Small"
-        android:layout_marginEnd="14dp"/>
-
-    <!-- Info -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:foreground="?attr/selectableItemBackground">
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:layout_marginBottom="2dp"/>
+        <!-- Product Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProduct"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
+            android:background="@color/surface_variant"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Medium"
+            android:layout_marginEnd="16dp"/>
 
-        <TextView
-            android:id="@+id/tvSellerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:layout_marginBottom="6dp"/>
-
+        <!-- Info -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvPrice"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_marginEnd="10dp"/>
-
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/ic_star"
-                app:tint="@color/warning"
-                android:layout_marginEnd="3dp"/>
+                android:textColor="@color/text_primary"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <TextView
-                android:id="@+id/tvRating"
+                android:id="@+id/tvSellerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"/>
+                android:textSize="13sp"
+                android:textColor="#27AE60"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginTop="2dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#27AE60"/>
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_star"
+                    app:tint="@color/warning"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

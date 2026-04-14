@@ -66,6 +66,9 @@ dependencies {
     //ViewMap
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    // JSON parsing
+    implementation("com.google.code.gson:gson:2.11.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

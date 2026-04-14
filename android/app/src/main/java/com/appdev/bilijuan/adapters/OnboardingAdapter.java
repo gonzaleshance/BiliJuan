@@ -3,6 +3,7 @@ package com.appdev.bilijuan.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,12 +17,12 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Sl
 
     // ── Slide data class ──────────────────────────────────────────────────────
     public static class Slide {
-        public final String emoji;
+        public final int imageResId;
         public final String title;
         public final String description;
 
-        public Slide(String emoji, String title, String description) {
-            this.emoji       = emoji;
+        public Slide(int imageResId, String title, String description) {
+            this.imageResId  = imageResId;
             this.title       = title;
             this.description = description;
         }
@@ -45,7 +46,7 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Sl
     @Override
     public void onBindViewHolder(@NonNull SlideViewHolder holder, int position) {
         Slide slide = slides.get(position);
-        holder.tvEmoji.setText(slide.emoji);
+        holder.ivImage.setImageResource(slide.imageResId);
         holder.tvTitle.setText(slide.title);
         holder.tvDesc.setText(slide.description);
     }
@@ -57,13 +58,13 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Sl
 
     // ── ViewHolder ────────────────────────────────────────────────────────────
     static class SlideViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvEmoji;
+        final ImageView ivImage;
         final TextView tvTitle;
         final TextView tvDesc;
 
         SlideViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvEmoji = itemView.findViewById(R.id.tvSlideEmoji);
+            ivImage = itemView.findViewById(R.id.ivSlideImage);
             tvTitle = itemView.findViewById(R.id.tvSlideTitle);
             tvDesc  = itemView.findViewById(R.id.tvSlideDescription);
         }

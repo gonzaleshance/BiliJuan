@@ -31,12 +31,12 @@ public class OrderSuccessActivity extends AppCompatActivity {
                 ? "#" + orderId.substring(0, Math.min(6, orderId.length())).toUpperCase()
                 : "");
 
-        // Per requirement: "Track order will only appear when status is On the way"
-        // So on success (Pending), we point them to My Orders instead.
-        binding.btnTrackOrder.setText("View My Orders");
+        // REMOVED: Auto-redirect to PinLocation since pinning is now done BEFORE summary.
+        // Instead, point to Tracking or My Orders.
+        binding.btnTrackOrder.setText("Track My Order");
         binding.btnTrackOrder.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyOrdersActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = new Intent(this, OrderTrackingActivity.class);
+            intent.putExtra("orderId", orderId);
             startActivity(intent);
             finish();
         });
@@ -47,7 +47,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
             finish();
         });
 
-        // Auto-redirect to My Orders after 5 seconds
+        // Redirect to My Orders after 5 seconds instead of PinLocation
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (!isFinishing()) {
                 Intent intent = new Intent(this, MyOrdersActivity.class);

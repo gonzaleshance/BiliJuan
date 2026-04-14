@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_white"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="32dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#F1F2F6"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:id="@+id/tvAdvanceTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Advance Status?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#2D3436"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvAdvanceMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to move this order to the next stage? The customer will be notified immediately."
+        android:textSize="14sp"
+        android:textColor="#636E72"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Note Section -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#EAFAF1"
+        app:cardBackgroundColor="#F9FEFA"
+        android:layout_marginBottom="32dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_notifications"
+                app:tint="#27AE60"/>
+
+            <TextView
+                android:id="@+id/tvAdvanceNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Note: Advancing status helps customers track their orders accurately. Make sure you are ready for the next step!"
+                android:textSize="12sp"
+                android:textColor="#27AE60"
+                android:textStyle="italic"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmAdvance"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Confirm and Update"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#27AE60"
+        app:cornerRadius="16dp"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelAdvance"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="#636E72"
+        app:cornerRadius="16dp"/>
+
+</LinearLayout>

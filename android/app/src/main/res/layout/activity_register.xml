@@ -1,273 +1,524 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:fillViewport="true">
+    android:background="#F8F9FA">
 
+    <!-- Top Progress Bar -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/stepProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="33"
+        app:indicatorColor="#27AE60"
+        app:trackColor="#F1F2F6"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="60dp"
-        android:paddingBottom="48dp">
+        android:padding="24dp"
+        app:layout_constraintTop_toBottomOf="@id/stepProgress">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="#2D3436"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
 
         <TextView
+            android:id="@+id/tvStepTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BiliJuan"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="36dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Account"
+            android:text="Choose your role"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:letterSpacing="-0.02"
-            android:layout_marginBottom="6dp"/>
+            android:textColor="#2D3436"
+            android:letterSpacing="-0.02"/>
 
         <TextView
+            android:id="@+id/tvStepSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buy or sell local food in your community."
+            android:text="Step 1 of 3"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="32dp"/>
+            android:textColor="#636E72"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
 
-        <!-- PERSONAL INFO label -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PERSONAL INFO"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_secondary"
-            android:letterSpacing="0.12"
-            android:layout_marginBottom="14dp"/>
+    <FrameLayout
+        android:id="@+id/stepContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintBottom_toTopOf="@id/layoutFooter">
 
-        <!-- Full Name -->
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- Step 1: Role Selection -->
+        <LinearLayout
+            android:id="@+id/step1Role"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Full Name"
-            app:boxBackgroundColor="@color/surface"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeColor="@color/primary"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:inputType="textPersonName"
-                android:textSize="15sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:gravity="center"
+            android:visibility="visible">
 
-        <!-- Email -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Email"
-            app:boxBackgroundColor="@color/surface"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeColor="@color/primary"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:inputType="textEmailAddress"
-                android:textSize="15sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Phone -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Phone (09XX XXX XXXX)"
-            app:boxBackgroundColor="@color/surface"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeColor="@color/primary"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:inputType="phone"
-                android:textSize="15sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Password -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Password (min. 6 characters)"
-            app:boxBackgroundColor="@color/surface"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeColor="@color/primary"
-            app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/text_secondary"
-            android:layout_marginBottom="28dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:inputType="textPassword"
-                android:textSize="15sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ADDRESS label -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="YOUR ADDRESS"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_secondary"
-            android:letterSpacing="0.12"
-            android:layout_marginBottom="4dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Used by riders to find your exact location."
-            android:textSize="12sp"
-            android:textColor="@color/text_hint"
-            android:layout_marginBottom="14dp"/>
-
-        <!-- Address (free text) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Full address (House No., Street, Barangay, City)"
-            app:boxBackgroundColor="@color/surface"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxStrokeColor="@color/primary"
-            android:layout_marginBottom="6dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAddress"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCustomer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="56dp"
-                android:inputType="textMultiLine|textPostalAddress"
-                android:gravity="top"
-                android:textSize="15sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="#F1F2F6"
+                app:cardBackgroundColor="#FFFFFF"
+                android:clickable="true"
+                android:focusable="true"
+                app:rippleColor="#EAFAF1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="You can pin your exact location on the map after signing up."
-            android:textSize="11sp"
-            android:textColor="@color/text_hint"
-            android:layout_marginBottom="28dp"
-            android:lineSpacingMultiplier="1.4"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="24dp"
+                    android:gravity="center_vertical">
 
-        <!-- ROLE label -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I WANT TO"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_secondary"
-            android:letterSpacing="0.12"
-            android:layout_marginBottom="12dp"/>
+                    <FrameLayout
+                        android:id="@+id/iconContainerCustomer"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/bg_primary_light_circle">
+                        <ImageView
+                            android:id="@+id/ivCustomer"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_home"
+                            app:tint="#27AE60"/>
+                    </FrameLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="32dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I want to buy food"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="#2D3436"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Discover home-cooked meals"
+                            android:textSize="14sp"
+                            android:textColor="#636E72"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/btnRoleCustomer"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_role_selected"
-                android:layout_marginEnd="8dp">
-                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_home" app:tint="@color/primary" android:layout_marginBottom="4dp"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Buy Food" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary"/>
-            </LinearLayout>
+                    <RadioButton
+                        android:id="@+id/rbCustomer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        app:buttonTint="#27AE60"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:id="@+id/btnRoleSeller"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/bg_role_unselected"
-                android:layout_marginStart="8dp">
-                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_store" app:tint="@color/text_secondary" android:layout_marginBottom="4dp"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sell Food" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_secondary"/>
-            </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSeller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="#F1F2F6"
+                app:cardBackgroundColor="#FFFFFF"
+                android:clickable="true"
+                android:focusable="true"
+                app:rippleColor="#EAFAF1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="24dp"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:id="@+id/iconContainerSeller"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/bg_primary_light_circle">
+                        <ImageView
+                            android:id="@+id/ivSeller"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_store"
+                            app:tint="#27AE60"/>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I want to sell food"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="#2D3436"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start your food business"
+                            android:textSize="14sp"
+                            android:textColor="#636E72"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <RadioButton
+                        android:id="@+id/rbSeller"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        app:buttonTint="#27AE60"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+
+        <!-- Step 2: Credentials -->
+        <LinearLayout
+            android:id="@+id/step2Credentials"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Email Address"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:startIconDrawable="@drawable/ic_person"
+                app:startIconTint="#636E72"
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="textEmailAddress"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Password"
+                app:passwordToggleEnabled="true"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:startIconDrawable="@drawable/ic_lock"
+                app:startIconTint="#636E72"
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="textPassword"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Confirm Password"
+                app:passwordToggleEnabled="true"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:startIconDrawable="@drawable/ic_lock"
+                app:startIconTint="#636E72"
+                app:boxBackgroundColor="#FFFFFF">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="textPassword"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Step 3: Profile (Customer) -->
+        <LinearLayout
+            android:id="@+id/step3Customer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Full Name"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="textPersonName"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Phone Number"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:startIconDrawable="@drawable/ic_phone"
+                app:startIconTint="#636E72"
+                app:boxBackgroundColor="#FFFFFF">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="phone"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Step 3: Profile (Seller) -->
+        <LinearLayout
+            android:id="@+id/step3Seller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Store Name"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="24dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etStoreName"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="textCapWords"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Store Logo"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#2D3436"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnSelectLogo"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="70dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#B2BEC3"
+                app:cardBackgroundColor="#F1F2F6">
+                
+                <ImageView
+                    android:id="@+id/ivStoreLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_person"
+                    app:tint="#B2BEC3"
+                    android:padding="40dp"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:src="@drawable/ic_add"
+                    app:fabSize="mini"
+                    app:tint="#FFFFFF"
+                    app:backgroundTint="#27AE60"
+                    android:importantForAccessibility="no"
+                    android:layout_margin="4dp"/>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click to upload store identity"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:textSize="12sp"
+                android:textColor="#636E72"/>
+            
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Store Contact Number"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxStrokeColor="#27AE60"
+                app:hintTextColor="#27AE60"
+                app:cursorColor="#27AE60"
+                android:textColorHint="#636E72"
+                app:startIconDrawable="@drawable/ic_phone"
+                app:startIconTint="#636E72"
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginTop="24dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSellerPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:inputType="phone"
+                    android:textColor="#2D3436"
+                    android:textSize="16sp"
+                    android:textColorHint="#636E72"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:id="@+id/layoutFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:indeterminateTint="@color/primary"
-            android:visibility="gone"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
+            android:id="@+id/btnNext"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Create Account"
-            android:textSize="16sp"
+            android:layout_height="64dp"
+            android:text="Continue"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/on_primary"
-            android:backgroundTint="@color/primary"
-            app:cornerRadius="28dp"
-            android:layout_marginBottom="24dp"/>
+            app:backgroundTint="#27AE60"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="32dp"
+            android:visibility="gone"
+            app:elevation="0dp"/>
 
         <LinearLayout
+            android:id="@+id/layoutLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Already have an account? " android:textColor="@color/text_secondary" android:textSize="14sp"/>
-            <TextView android:id="@+id/tvLogin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sign In" android:textColor="@color/primary" android:textStyle="bold" android:textSize="14sp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? "
+                android:textColor="#636E72"/>
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="#27AE60"
+                android:textStyle="bold"/>
         </LinearLayout>
-
     </LinearLayout>
-</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

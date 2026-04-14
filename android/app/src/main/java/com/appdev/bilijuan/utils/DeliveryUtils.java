@@ -2,9 +2,10 @@ package com.appdev.bilijuan.utils;
 
 public class DeliveryUtils {
 
-    private static final double BASE_FEE       = 20.0;  // ₱20 flat base
-    private static final double FEE_PER_KM     = 10.0;  // ₱10 per km after 1km
-    private static final double FREE_KM        = 1.0;   // First 1km is free
+    // Public so OrderSummaryActivity can use it as the safe default
+    public static final double BASE_FEE   = 20.0;  // ₱20 flat base
+    public static final double FEE_PER_KM = 10.0;  // ₱10 per km after 1km
+    public static final double FREE_KM    = 1.0;   // First 1km is free
 
     /**
      * Haversine formula — calculates straight-line distance in km
@@ -25,7 +26,12 @@ public class DeliveryUtils {
 
     /**
      * Calculates delivery fee: ₱20 base + ₱10 per km after first 1km.
-     * Example: 0.5km = ₱20, 1km = ₱20, 2km = ₱30, 3.5km = ₱45
+     * Examples:
+     *   0.3 km → ₱20
+     *   1.0 km → ₱20
+     *   1.5 km → ₱25
+     *   2.0 km → ₱30
+     *   3.5 km → ₱45
      */
     public static double calculateDeliveryFee(double distanceKm) {
         if (distanceKm <= FREE_KM) {
@@ -39,7 +45,7 @@ public class DeliveryUtils {
      * Formats distance for display. e.g. "0.8 km" or "2.3 km"
      */
     public static String formatDistance(double distanceKm) {
-        return String.format("%.1f km", distanceKm);
+        return String.format("%.1f km away", distanceKm);
     }
 
     /**

@@ -4,23 +4,30 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.appdev.bilijuan.adapters.CommentAdapter;
 import com.appdev.bilijuan.databinding.ActivityProductDetailBinding;
+import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Comment;
 import com.appdev.bilijuan.models.Product;
+import com.appdev.bilijuan.utils.CartBottomSheet;
+import com.appdev.bilijuan.utils.CartHelper;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.ImageHelper;
+import com.appdev.bilijuan.utils.NotificationHelper;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.appdev.bilijuan.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -31,6 +38,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private final List<Comment> comments = new ArrayList<>();
     private CommentAdapter commentAdapter;
     private float selectedStars = 0f;
+    private int quantity = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         setupClickListeners();
         loadProduct();
         loadComments();
+        updateCartUI();
     }
 
     private void setupComments() {
@@ -58,12 +67,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
-        // Add to setupClickListeners()
         binding.btnReport.setOnClickListener(v -> showReportSheet());
-        // Like button
         binding.btnLike.setOnClickListener(v -> toggleLike());
 
-        // Star rating tap
         View.OnClickListener starListener = v -> {
             int id = v.getId();
             if      (id == binding.star1.getId()) selectedStars = 1f;
@@ -79,20 +85,117 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.star4.setOnClickListener(starListener);
         binding.star5.setOnClickListener(starListener);
 
-        // Submit comment
         binding.btnSubmitComment.setOnClickListener(v -> submitComment());
 
-        // Order button
+        // Quantity Listeners
+        binding.btnMinus.setOnClickListener(v -> {
+            if (quantity > 1) {
+                quantity--;
+                updateQuantityDisplay();
+            }
+        });
+        binding.btnPlus.setOnClickListener(v -> {
+            quantity++;
+            updateQuantityDisplay();
+        });
+
         binding.btnOrder.setOnClickListener(v -> {
             if (product == null) return;
             if (!product.isAvailable()) {
                 Toast.makeText(this, "This item is currently unavailable.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Intent intent = new Intent(this, OrderSummaryActivity.class);
+            Intent intent = new Intent(this, PinLocationActivity.class);
             intent.putExtra("productId", productId);
+            intent.putExtra("quantity", quantity);
             startActivity(intent);
         });
+
+        binding.btnAddToCart.setOnClickListener(v -> handleAddToCart());
+
+        binding.btnCart.setOnClickListener(v -> {
+            CartBottomSheet.show(this, this::updateCartUI);
+        });
+    }
+
+    private void updateQuantityDisplay() {
+        binding.tvQuantity.setText(String.valueOf(quantity));
+        if (product != null) {
+            double total = product.getPrice() * quantity;
+            binding.tvTotalPrice.setText(String.format(Locale.getDefault(), "₱%.0f", total));
+        }
+    }
+
+    private void handleAddToCart() {
+        if (product == null) return;
+        if (!product.isAvailable()) {
+            Toast.makeText(this, "This item is currently unavailable.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String cartSellerId = CartHelper.getCartSellerId(this);
+        if (cartSellerId != null && !cartSellerId.equals(product.getSellerId())) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Replace Cart?")
+                    .setMessage("Your cart contains items from another store. Do you want to clear your current cart and add this item?")
+                    .setPositiveButton("Clear and Add", (dialog, which) -> {
+                        CartHelper.clearCart(this);
+                        addToCart();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        } else {
+            addToCart();
+        }
+    }
+
+    private void addToCart() {
+        CartItem item = new CartItem(
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                quantity,
+                product.getSellerId(),
+                product.getSellerName(),
+                product.getImageBase64()
+        );
+        CartHelper.addToCart(this, item);
+        animateCartButton();
+        updateCartUI();
+        Toast.makeText(this, "Added to cart!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateCartUI() {
+        int count = CartHelper.getCartCount(this);
+        if (count > 0) {
+            binding.btnCart.setVisibility(View.VISIBLE);
+            binding.tvCartBadge.setVisibility(View.VISIBLE);
+            binding.tvCartBadge.setText(String.valueOf(count));
+        } else {
+            binding.btnCart.setVisibility(View.GONE);
+            binding.tvCartBadge.setVisibility(View.GONE);
+        }
+    }
+
+    private void animateCartButton() {
+        binding.btnCart.setVisibility(View.VISIBLE);
+        binding.btnCart.clearAnimation();
+        binding.btnCart.setScaleX(1f);
+        binding.btnCart.setScaleY(1f);
+
+        binding.btnCart.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(150)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .withEndAction(() -> {
+                    binding.btnCart.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(150)
+                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                            .start();
+                }).start();
     }
 
     private void loadProduct() {
@@ -115,9 +218,19 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.tvLikeCount.setText(String.valueOf(product.getLikes()));
         binding.tvRatingCount.setText("(" + product.getRatingCount() + " ratings)");
 
-        binding.tvAvailability.setText(product.isAvailable() ? "Available" : "Unavailable");
-        binding.tvAvailability.setTextColor(getColor(
-                product.isAvailable() ? R.color.success : R.color.error));
+        updateQuantityDisplay();
+
+        boolean available = product.isAvailable();
+        binding.tvAvailability.setText(available ? "Available" : "Unavailable");
+        binding.tvAvailability.setTextColor(getColor(available ? R.color.success : R.color.error));
+        
+        // Show/Hide unavailable notice and disable buttons
+        binding.cardUnavailableNotice.setVisibility(available ? View.GONE : View.VISIBLE);
+        binding.cardActionButtons.setAlpha(available ? 1.0f : 0.5f);
+        binding.btnOrder.setEnabled(available);
+        binding.btnAddToCart.setEnabled(available);
+        binding.btnPlus.setEnabled(available);
+        binding.btnMinus.setEnabled(available);
 
         if (product.getImageBase64() != null && !product.getImageBase64().isEmpty()) {
             Bitmap bm = ImageHelper.base64ToBitmap(product.getImageBase64());
@@ -127,7 +240,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void toggleLike() {
         if (currentUid == null) return;
-        // Simple increment — in production use a likes sub-collection to prevent double-likes
         long newLikes = product.getLikes() + 1;
         FirebaseHelper.getDb().collection("products").document(productId)
                 .update("likes", FieldValue.increment(1),
@@ -140,10 +252,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void updateStarDisplay() {
-        int[] stars = {
-                binding.star1.getId(), binding.star2.getId(),
-                binding.star3.getId(), binding.star4.getId(), binding.star5.getId()
-        };
         android.widget.ImageView[] views = {
                 binding.star1, binding.star2, binding.star3, binding.star4, binding.star5
         };
@@ -167,7 +275,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         binding.btnSubmitComment.setEnabled(false);
 
-        // Get user name first
         FirebaseHelper.getDb().collection("users").document(currentUid).get()
                 .addOnSuccessListener(doc -> {
                     String userName = doc.exists() ? doc.getString("name") : "Anonymous";
@@ -176,7 +283,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                     FirebaseHelper.getDb().collection("comments").add(comment)
                             .addOnSuccessListener(ref -> {
                                 ref.update("commentId", ref.getId());
-                                // Update product rating average
                                 updateProductRating();
                                 binding.etComment.setText("");
                                 selectedStars = 0;
@@ -226,6 +332,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             comments.isEmpty() ? View.VISIBLE : View.GONE);
                 });
     }
+
     private void showReportSheet() {
         if (product == null) return;
         com.google.android.material.bottomsheet.BottomSheetDialog sheet =
@@ -275,12 +382,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                     FirebaseHelper.getDb().collection("reports").add(report)
                             .addOnSuccessListener(ref -> {
-                                ref.update("reportId", ref.getId());
-                                // Increment store report count
+                                String reportId = ref.getId();
+                                ref.update("reportId", reportId);
+
                                 FirebaseHelper.getDb().collection("users")
                                         .document(product.getSellerId())
-                                        .update("reportCount",
-                                                com.google.firebase.firestore.FieldValue.increment(1));
+                                        .update("reportCount", FieldValue.increment(1));
+
+                                NotificationHelper.notifyNewReport(reportId, customerName, product.getSellerName());
+
                                 Toast.makeText(this,
                                         "Report submitted. Thank you for your feedback.",
                                         Toast.LENGTH_LONG).show();

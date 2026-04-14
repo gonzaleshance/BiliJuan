@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="#F8F9FA"
     android:fillViewport="true">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:text="BiliJuan"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/primary"
+            android:textColor="#27AE60"
             android:layout_gravity="center_horizontal"
             android:letterSpacing="-0.02"
             android:layout_marginBottom="64dp"/>
@@ -31,7 +31,7 @@
             android:text="Welcome Back"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="#2D3436"
             android:letterSpacing="-0.02"
             android:layout_marginBottom="8dp"/>
 
@@ -40,21 +40,22 @@
             android:layout_height="wrap_content"
             android:text="Please enter your details to sign in."
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="#636E72"
             android:layout_marginBottom="48dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.TextInputLayout.FilledBox"
-            app:boxBackgroundColor="@color/surface_variant"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="1dp"
-            app:hintEnabled="false"
+            app:boxStrokeColor="#27AE60"
+            app:hintTextColor="#27AE60"
+            android:textColorHint="#636E72"
+            app:cursorColor="#27AE60"
+            app:boxBackgroundColor="#FFFFFF"
             android:layout_marginBottom="20dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -62,24 +63,26 @@
                 android:layout_height="56dp"
                 android:hint="Email Address"
                 android:inputType="textEmailAddress"
-                android:paddingHorizontal="20dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"/>
+                android:textColor="#2D3436"
+                android:textSize="14sp"
+                android:textColorHint="#636E72"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.TextInputLayout.FilledBox"
-            app:boxBackgroundColor="@color/surface_variant"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusTopStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusBottomEnd="16dp"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="1dp"
-            app:hintEnabled="false"
+            app:boxStrokeColor="#27AE60"
+            app:hintTextColor="#27AE60"
+            android:textColorHint="#636E72"
+            app:cursorColor="#27AE60"
+            app:boxBackgroundColor="#FFFFFF"
             app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#636E72"
             android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
@@ -87,9 +90,9 @@
                 android:layout_height="56dp"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:paddingHorizontal="20dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"/>
+                android:textColor="#2D3436"
+                android:textSize="14sp"
+                android:textColorHint="#636E72"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -99,7 +102,7 @@
             android:text="Forgot Password?"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="@color/primary"
+            android:textColor="#27AE60"
             android:layout_gravity="end"
             android:layout_marginBottom="32dp"
             android:padding="4dp"/>
@@ -109,7 +112,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center_horizontal"
-            android:indeterminateTint="@color/primary"
+            android:indeterminateTint="#27AE60"
             android:visibility="gone"
             android:layout_marginBottom="16dp"/>
 
@@ -120,8 +123,8 @@
             android:text="Sign In"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/on_primary"
-            android:backgroundTint="@color/primary"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#27AE60"
             app:cornerRadius="16dp"
             android:layout_marginBottom="24dp"
             app:elevation="4dp"/>
@@ -132,9 +135,9 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="24dp">
-            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/surface_variant"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="or continue with" android:textSize="12sp" android:textColor="@color/text_secondary" android:paddingHorizontal="16dp"/>
-            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/surface_variant"/>
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="#F1F2F6"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="or continue with" android:textSize="12sp" android:textColor="#636E72" android:paddingHorizontal="16dp"/>
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="#F1F2F6"/>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -143,13 +146,15 @@
             android:layout_height="56dp"
             android:text="Google"
             android:textSize="14sp"
+            app:rippleColor="#BFF0BA"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:backgroundTint="@color/surface"
-            app:strokeColor="@color/surface_container"
+            android:textColor="#2D3436"
+            android:backgroundTint="#FFFFFF"
+            app:strokeColor="#B2BEC3"
             app:strokeWidth="1dp"
             app:cornerRadius="16dp"
-            app:icon="@drawable/ic_launcher_foreground"
+            app:icon="@drawable/google"
+            app:iconTint="@null"
             app:iconGravity="textStart"
             android:layout_marginBottom="32dp"/>
 
@@ -158,8 +163,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Don't have an account? " android:textColor="@color/text_secondary" android:textSize="14sp"/>
-            <TextView android:id="@+id/tvRegister" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sign up" android:textColor="@color/primary" android:textStyle="bold" android:textSize="14sp" android:padding="4dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Don't have an account? " android:textColor="#636E72" android:textSize="14sp"/>
+            <TextView android:id="@+id/tvRegister" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sign up" android:textColor="#27AE60" android:textStyle="bold" android:textSize="14sp" android:padding="4dp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

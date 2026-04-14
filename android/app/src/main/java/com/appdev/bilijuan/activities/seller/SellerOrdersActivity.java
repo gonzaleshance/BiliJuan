@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.adapters.SellerOrdersAdapter;
 import com.appdev.bilijuan.databinding.ActivitySellerOrdersBinding;
+import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.utils.DeliveryUtils;
 import com.appdev.bilijuan.utils.FirebaseHelper;
@@ -21,10 +24,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class SellerOrdersActivity extends AppCompatActivity {
@@ -67,6 +72,11 @@ public class SellerOrdersActivity extends AppCompatActivity {
                 intent.putExtra("orderId", order.getOrderId());
                 startActivity(intent);
             }
+
+            @Override
+            public void onViewDetails(Order order) {
+                showOrderDetailsSheet(order);
+            }
         });
 
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(this));
@@ -74,10 +84,7 @@ public class SellerOrdersActivity extends AppCompatActivity {
     }
 
     private void setupStoreNav() {
-        // FIXED: Use the unified StoreNavHelper with the root of the included layout
         StoreNavHelper.setup(this, binding.storeNav.getRoot(), StoreNavHelper.Tab.ORDERS);
-        
-        // Custom FAB action
         binding.storeNav.fabPost.setOnClickListener(v -> showPostBottomSheet());
     }
 
@@ -169,7 +176,9 @@ public class SellerOrdersActivity extends AppCompatActivity {
         FirebaseHelper.getDb().collection("orders").document(order.getOrderId()).update(update)
                 .addOnSuccessListener(v -> {
                     Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
-                    NotificationHelper.notifyStatusChange(order.getOrderId(), next, order.getProductName());
+                    // FIXED: Added missing customerId argument
+                    NotificationHelper.notifyStatusChange(
+                            order.getOrderId(), next, order.getProductName(), order.getCustomerId());
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
     }
@@ -182,6 +191,58 @@ public class SellerOrdersActivity extends AppCompatActivity {
             case Order.STATUS_ON_THE_WAY: return Order.STATUS_DELIVERED;
             default: return null;
         }
+    }
+
+    private void showOrderDetailsSheet(Order order) {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_order_details, null);
+        sheet.setContentView(v);
+
+        TextView tvOrderId = v.findViewById(R.id.tvOrderId);
+        TextView tvOrderDate = v.findViewById(R.id.tvOrderDate);
+        TextView tvCustomerName = v.findViewById(R.id.tvCustomerName);
+        TextView tvCustomerPhone = v.findViewById(R.id.tvCustomerPhone);
+        TextView tvCustomerAddress = v.findViewById(R.id.tvCustomerAddress);
+        LinearLayout layoutItems = v.findViewById(R.id.layoutOrderItems);
+        TextView tvSubtotal = v.findViewById(R.id.tvSubtotal);
+        TextView tvDeliveryFee = v.findViewById(R.id.tvDeliveryFee);
+        TextView tvTotalAmount = v.findViewById(R.id.tvTotalAmount);
+
+        String shortId = order.getOrderId().length() > 6 ? order.getOrderId().substring(0, 6).toUpperCase() : order.getOrderId();
+        tvOrderId.setText("Order #" + shortId);
+        
+        if (order.getCreatedAt() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy • h:mm a", Locale.getDefault());
+            tvOrderDate.setText("Placed on " + sdf.format(order.getCreatedAt()));
+        }
+
+        tvCustomerName.setText(order.getCustomerName());
+        tvCustomerPhone.setText(order.getCustomerPhone());
+        tvCustomerAddress.setText(order.getCustomerAddress());
+
+        double subtotal = 0;
+        layoutItems.removeAllViews();
+        List<CartItem> items = order.getItems();
+        if (items == null || items.isEmpty()) {
+            items = new ArrayList<>();
+            items.add(new CartItem(order.getProductId(), order.getProductName(), order.getProductPrice(), order.getQuantity(), order.getSellerId(), order.getSellerName(), order.getProductImageBase64()));
+        }
+
+        for (CartItem item : items) {
+            View itemView = LayoutInflater.from(this).inflate(R.layout.item_order_summary_product, layoutItems, false);
+            ((TextView)itemView.findViewById(R.id.tvProductName)).setText(item.getProductName());
+            ((TextView)itemView.findViewById(R.id.tvProductQty)).setText("x" + item.getQuantity());
+            ((TextView)itemView.findViewById(R.id.tvProductPrice)).setText(String.format(Locale.getDefault(), "₱%.0f", item.getPrice() * item.getQuantity()));
+            layoutItems.addView(itemView);
+            subtotal += (item.getPrice() * item.getQuantity());
+        }
+
+        tvSubtotal.setText(String.format(Locale.getDefault(), "₱%.0f", subtotal));
+        tvDeliveryFee.setText(String.format(Locale.getDefault(), "₱%.0f", order.getDeliveryFee()));
+        tvTotalAmount.setText(String.format(Locale.getDefault(), "₱%.0f", order.getTotalAmount()));
+
+        v.findViewById(R.id.btnClose).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
     }
 
     @Override protected void onDestroy() {

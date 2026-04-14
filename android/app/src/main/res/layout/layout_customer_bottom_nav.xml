@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:background="@color/surface"
+    android:background="#FFFFFF"
     android:elevation="16dp"
     android:clipChildren="false">
 
@@ -12,7 +12,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/surface_variant"/>
+        android:background="#F1F2F6"/>
 
     <!-- Tabs Container -->
     <LinearLayout
@@ -34,7 +34,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_home"
-                app:tint="@color/text_hint"/>
+                app:tint="#B2BEC3"/>
             <TextView
                 android:id="@+id/labelHome"
                 android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 android:text="Home"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_hint"
+                android:textColor="#B2BEC3"
                 android:layout_marginTop="3dp"/>
         </LinearLayout>
 
@@ -60,7 +60,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_bag"
-                app:tint="@color/text_hint"/>
+                app:tint="#B2BEC3"/>
             <TextView
                 android:id="@+id/labelOrders"
                 android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                 android:text="Orders"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_hint"
+                android:textColor="#B2BEC3"
                 android:layout_marginTop="3dp"/>
         </LinearLayout>
 
@@ -78,9 +78,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-        <!-- Category -->
+        <!-- Search -->
         <LinearLayout
-            android:id="@+id/navCategory"
+            android:id="@+id/navSearch"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -88,19 +88,19 @@
             android:gravity="center"
             android:foreground="?attr/selectableItemBackgroundBorderless">
             <ImageView
-                android:id="@+id/iconCategory"
+                android:id="@+id/iconSearch"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_restaurant"
-                app:tint="@color/text_hint"/>
+                android:src="@drawable/ic_search"
+                app:tint="#B2BEC3"/>
             <TextView
-                android:id="@+id/labelCategory"
+                android:id="@+id/labelSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category"
+                android:text="Search"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_hint"
+                android:textColor="#B2BEC3"
                 android:layout_marginTop="3dp"/>
         </LinearLayout>
 
@@ -118,7 +118,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
-                app:tint="@color/text_hint"/>
+                app:tint="#B2BEC3"/>
             <TextView
                 android:id="@+id/labelProfile"
                 android:layout_width="wrap_content"
@@ -126,22 +126,22 @@
                 android:text="Profile"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_hint"
+                android:textColor="#B2BEC3"
                 android:layout_marginTop="3dp"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Floating center "Order" FAB -->
+    <!-- Floating center "Category" FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabOrder"
+        android:id="@+id/fabCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="12dp"
         android:src="@drawable/ic_restaurant"
-        app:backgroundTint="@color/primary"
-        app:tint="@color/on_primary"
+        app:backgroundTint="#27AE60"
+        app:tint="#FFFFFF"
         app:fabSize="normal"
         app:elevation="8dp"
         app:borderWidth="0dp"/>

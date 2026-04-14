@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_white"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="32dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#F1F2F6"
+        android:layout_marginBottom="24dp"/>
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_notifications"
+        app:tint="#E74C3C"
+        android:layout_marginBottom="16dp"
+        android:rotation="15"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel your order?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#2D3436"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to cancel this order? This action cannot be undone once confirmed."
+        android:textSize="14sp"
+        android:textColor="#636E72"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmCancel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Yes, Cancel Order"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#E74C3C"
+        app:cornerRadius="16dp"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnKeepOrder"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="No, Keep Order"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="#636E72"
+        app:cornerRadius="16dp"/>
+
+</LinearLayout>

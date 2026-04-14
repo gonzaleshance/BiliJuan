@@ -22,18 +22,19 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.VH> {
     public interface ClickListener { void onClick(StoreItem store); }
 
     public static class StoreItem {
-        public String sellerId, sellerName, imageBase64, category;
+        public String sellerId, sellerName, bannerBase64, logoBase64, category;
         public float rating;
         public int itemCount;
 
-        public StoreItem(String sellerId, String sellerName, String imageBase64,
+        public StoreItem(String sellerId, String sellerName, String bannerBase64, String logoBase64,
                          String category, float rating, int itemCount) {
-            this.sellerId    = sellerId;
-            this.sellerName  = sellerName;
-            this.imageBase64 = imageBase64;
-            this.category    = category;
-            this.rating      = rating;
-            this.itemCount   = itemCount;
+            this.sellerId     = sellerId;
+            this.sellerName   = sellerName;
+            this.bannerBase64 = bannerBase64;
+            this.logoBase64   = logoBase64;
+            this.category     = category;
+            this.rating       = rating;
+            this.itemCount    = itemCount;
         }
     }
 
@@ -65,9 +66,10 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.VH> {
         h.tvRating.setText(String.format(Locale.getDefault(), "%.1f", s.rating));
         h.tvItemCount.setText(s.itemCount + " items");
 
-        if (s.imageBase64 != null && !s.imageBase64.isEmpty()) {
+        // Load Banner
+        if (s.bannerBase64 != null && !s.bannerBase64.isEmpty()) {
             try {
-                byte[] bytes = Base64.decode(s.imageBase64, Base64.DEFAULT);
+                byte[] bytes = Base64.decode(s.bannerBase64, Base64.DEFAULT);
                 Glide.with(h.itemView.getContext())
                         .asBitmap().load(bytes)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -78,18 +80,33 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.VH> {
             }
         }
 
+        // Load Logo
+        if (s.logoBase64 != null && !s.logoBase64.isEmpty()) {
+            try {
+                byte[] bytes = Base64.decode(s.logoBase64, Base64.DEFAULT);
+                Glide.with(h.itemView.getContext())
+                        .asBitmap().load(bytes)
+                        .circleCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(h.ivStoreLogo);
+            } catch (Exception e) {
+                h.ivStoreLogo.setImageResource(R.drawable.ic_store);
+            }
+        }
+
         h.itemView.setOnClickListener(v -> listener.onClick(s));
     }
 
     @Override public int getItemCount() { return stores.size(); }
 
     static class VH extends RecyclerView.ViewHolder {
-        ImageView ivStoreBanner;
+        ImageView ivStoreBanner, ivStoreLogo;
         TextView tvStoreName, tvCategory, tvRating, tvItemCount;
 
         VH(@NonNull View v) {
             super(v);
             ivStoreBanner = v.findViewById(R.id.ivStoreBanner);
+            ivStoreLogo   = v.findViewById(R.id.ivStoreLogo);
             tvStoreName   = v.findViewById(R.id.tvStoreName);
             tvCategory    = v.findViewById(R.id.tvCategory);
             tvRating      = v.findViewById(R.id.tvRating);

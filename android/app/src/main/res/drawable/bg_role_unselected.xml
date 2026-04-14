@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- bg_role_unselected.xml
-     Unselected state for role-picker cards (Customer / Seller).
-     Background: surface-container-low #F4F4F0.
-     No border stroke (No-Line Rule; the surface color shift defines boundary).
-     XL corners (20dp) matching the selected variant for seamless state transition. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
-    <solid android:color="#F4F4F0" />
-
+    <solid android:color="@color/surface_variant" />
     <corners android:radius="20dp" />
-
 </shape>

@@ -1,6 +1,6 @@
 package com.appdev.bilijuan.adapters;
 
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.models.Product;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -54,21 +55,20 @@ public class SellerMenuAdapter extends RecyclerView.Adapter<SellerMenuAdapter.VH
         h.tvPrice.setText(String.format(Locale.getDefault(), "₱%.0f", p.getPrice()));
         h.tvCategory.setText(p.getCategory());
 
-        // Availability badge
+        // Availability Toggle Logic
         if (p.isAvailable()) {
-            h.tvAvailabilityBadge.setText("Active");
-            h.tvAvailabilityBadge.setTextColor(
-                    h.itemView.getContext().getColor(R.color.primary));
-            h.tvAvailabilityBadge.setBackgroundResource(R.drawable.bg_badge_active);
+            h.btnToggle.setText("Disable");
+            h.btnToggle.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(h.itemView.getContext(), R.color.primary_light)));
+            h.btnToggle.setTextColor(h.itemView.getContext().getColor(R.color.primary));
         } else {
-            h.tvAvailabilityBadge.setText("Out of Stock");
-            h.tvAvailabilityBadge.setTextColor(
-                    h.itemView.getContext().getColor(R.color.error));
-            h.tvAvailabilityBadge.setBackgroundResource(R.drawable.bg_badge_inactive);
+            h.btnToggle.setText("Enable");
+            h.btnToggle.setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(h.itemView.getContext(), R.color.surface_variant)));
+            h.btnToggle.setTextColor(h.itemView.getContext().getColor(R.color.text_secondary));
         }
 
-        // Buttons
-        h.btnView.setOnClickListener(v -> editListener.onEdit(p)); // View = open detail
+        h.btnToggle.setOnClickListener(v -> toggleListener.onToggle(p, !p.isAvailable()));
         h.btnEdit.setOnClickListener(v -> editListener.onEdit(p));
         h.btnDelete.setOnClickListener(v -> deleteListener.onDelete(p));
 
@@ -93,19 +93,18 @@ public class SellerMenuAdapter extends RecyclerView.Adapter<SellerMenuAdapter.VH
 
     static class VH extends RecyclerView.ViewHolder {
         ShapeableImageView ivProduct;
-        TextView tvName, tvPrice, tvCategory, tvAvailabilityBadge;
-        View btnView, btnEdit, btnDelete;
+        TextView tvName, tvPrice, tvCategory;
+        MaterialButton btnToggle, btnEdit, btnDelete;
 
         VH(@NonNull View v) {
             super(v);
-            ivProduct           = v.findViewById(R.id.ivProduct);
-            tvName              = v.findViewById(R.id.tvName);
-            tvPrice             = v.findViewById(R.id.tvPrice);
-            tvCategory          = v.findViewById(R.id.tvCategory);
-            tvAvailabilityBadge = v.findViewById(R.id.tvAvailabilityBadge);
-            btnView             = v.findViewById(R.id.btnView);
-            btnEdit             = v.findViewById(R.id.btnEdit);
-            btnDelete           = v.findViewById(R.id.btnDelete);
+            ivProduct = v.findViewById(R.id.ivProduct);
+            tvName    = v.findViewById(R.id.tvName);
+            tvPrice   = v.findViewById(R.id.tvPrice);
+            tvCategory = v.findViewById(R.id.tvCategory);
+            btnToggle = v.findViewById(R.id.btnToggleAvailability);
+            btnEdit   = v.findViewById(R.id.btnEdit);
+            btnDelete = v.findViewById(R.id.btnDelete);
         }
     }
 }

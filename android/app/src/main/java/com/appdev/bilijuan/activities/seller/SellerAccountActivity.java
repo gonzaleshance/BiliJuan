@@ -1,12 +1,17 @@
 package com.appdev.bilijuan.activities.seller;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -17,13 +22,17 @@ import com.appdev.bilijuan.databinding.ActivitySellerAccountBinding;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.ImageHelper;
 import com.appdev.bilijuan.utils.StoreNavHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellerAccountActivity extends AppCompatActivity {
 
@@ -32,6 +41,20 @@ public class SellerAccountActivity extends AppCompatActivity {
     private final List<Product> menuItems = new ArrayList<>();
     private ListenerRegistration menuListener;
     private String sellerId;
+    private User currentUser;
+    
+    private String encodedImage;
+    private ImageView ivEditAvatar;
+
+    private final ActivityResultLauncher<String> pickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null && ivEditAvatar != null) {
+                    encodedImage = ImageHelper.uriToBase64(this, uri);
+                    ivEditAvatar.setImageURI(uri);
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +71,6 @@ public class SellerAccountActivity extends AppCompatActivity {
         loadProfile();
         listenMenu();
 
-        // If opened from Post sheet with openMenu=true, scroll to menu section
         if (getIntent().getBooleanExtra("openMenu", false)) {
             binding.scrollContent.post(() -> {
                 if (binding.tvMyMenuLabel != null) {
@@ -66,66 +88,100 @@ public class SellerAccountActivity extends AppCompatActivity {
     }
 
     private void setupStoreNav() {
-        // FIXED: Use .getRoot() to pass the View, and use the Tab.STORE active state
         StoreNavHelper.setup(this, binding.storeNav.getRoot(), StoreNavHelper.Tab.STORE);
-        
-        // Custom FAB action for Store Account
         binding.storeNav.fabPost.setOnClickListener(v -> showPostBottomSheet());
     }
 
     private void setupClickListeners() {
-        binding.btnBack.setOnClickListener(v -> finish());
-        
-        // Settings / Menu button in header
-        binding.btnSettings.setOnClickListener(v -> showSettingsBottomSheet());
-
-        binding.btnAddItem.setOnClickListener(v ->
-                startActivity(new Intent(this, AddProductActivity.class)));
-        
-        binding.btnPinLocation.setOnClickListener(v ->
-                startActivity(new Intent(this, SellerPinLocationActivity.class)));
-
+        binding.btnSettings.setOnClickListener(v -> showEditProfileModal());
+        binding.btnAddItem.setOnClickListener(v -> startActivity(new Intent(this, AddProductActivity.class)));
         binding.btnLogout.setOnClickListener(v -> logout());
     }
 
-    private void showSettingsBottomSheet() {
-        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
-        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_admin_action, null);
-        sheet.setContentView(v);
-        
-        TextView tvTitle = v.findViewById(R.id.tvUserName);
-        if (tvTitle != null) tvTitle.setText("Account Settings");
+    private void loadProfile() {
+        FirebaseHelper.getDb().collection("users").document(sellerId).get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) return;
+                    currentUser = doc.toObject(User.class);
+                    updateUI();
+                });
+    }
 
-        // Edit Profile using btnEnable slot
-        View btnEdit = v.findViewById(R.id.btnEnable);
-        if (btnEdit != null) {
-            btnEdit.setVisibility(View.VISIBLE);
-            // Access text view inside LinearLayout button
-            TextView tvLabel = btnEdit.findViewById(R.id.tvUserName); // This ID is reused in include? No, let's look at XML again
-            // In bottom_sheet_admin_action.xml, the buttons are LinearLayouts.
-            // Inside them, the first TextView has no ID? No, wait.
-            // I'll just find the first TextView in the button hierarchy.
-        }
+    private void updateUI() {
+        if (currentUser == null) return;
+        binding.tvStoreName.setText(currentUser.getName());
+        binding.tvPhone.setText(!TextUtils.isEmpty(currentUser.getPhone()) ? currentUser.getPhone() : "Not set");
+        binding.tvAddress.setText(!TextUtils.isEmpty(currentUser.getAddress()) ? currentUser.getAddress() : "Address not set");
         
-        btnEdit.setOnClickListener(btn -> {
-            sheet.dismiss();
-            startActivity(new Intent(this, EditSellerProfileActivity.class));
+        if (!TextUtils.isEmpty(currentUser.getStoreImageBase64())) {
+            binding.ivStoreAvatar.setImageBitmap(ImageHelper.base64ToBitmap(currentUser.getStoreImageBase64()));
+            binding.ivStoreAvatar.setPadding(0, 0, 0, 0);
+        }
+    }
+
+    private void showEditProfileModal() {
+        if (currentUser == null) return;
+
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_edit_profile, null);
+
+        ivEditAvatar = view.findViewById(R.id.ivEditAvatar);
+        TextView btnChangePhoto = view.findViewById(R.id.btnChangePhoto);
+        TextInputEditText etName = view.findViewById(R.id.etEditName);
+        TextInputEditText etPhone = view.findViewById(R.id.etEditPhone);
+        TextInputEditText etAddress = view.findViewById(R.id.etEditAddress);
+        View btnSave = view.findViewById(R.id.btnSaveProfile);
+
+        // Populate
+        etName.setText(currentUser.getName());
+        etPhone.setText(currentUser.getPhone());
+        etAddress.setText(currentUser.getAddress());
+        encodedImage = currentUser.getStoreImageBase64();
+        
+        if (!TextUtils.isEmpty(encodedImage)) {
+            ivEditAvatar.setImageBitmap(ImageHelper.base64ToBitmap(encodedImage));
+            ivEditAvatar.setPadding(0, 0, 0, 0);
+        }
+
+        btnChangePhoto.setOnClickListener(v -> pickerLauncher.launch("image/*"));
+
+        btnSave.setOnClickListener(v -> {
+            String newName = etName.getText().toString().trim();
+            String newPhone = etPhone.getText().toString().trim();
+            String newAddress = etAddress.getText().toString().trim();
+
+            if (TextUtils.isEmpty(newName)) {
+                etName.setError("Name is required");
+                return;
+            }
+
+            btnSave.setEnabled(false);
+            
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("name", newName);
+            updates.put("phone", newPhone);
+            updates.put("address", newAddress);
+            updates.put("storeImageBase64", encodedImage);
+
+            FirebaseHelper.getDb().collection("users").document(sellerId)
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        currentUser.setName(newName);
+                        currentUser.setPhone(newPhone);
+                        currentUser.setAddress(newAddress);
+                        currentUser.setStoreImageBase64(encodedImage);
+                        updateUI();
+                        dialog.dismiss();
+                        Toast.makeText(this, "Store profile updated!", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        btnSave.setEnabled(true);
+                        Toast.makeText(this, "Update failed.", Toast.LENGTH_SHORT).show();
+                    });
         });
 
-        // Logout using btnArchive slot
-        View btnLogout = v.findViewById(R.id.btnArchive);
-        if (btnLogout != null) {
-            btnLogout.setVisibility(View.VISIBLE);
-            btnLogout.setOnClickListener(btn -> {
-                sheet.dismiss();
-                logout();
-            });
-        }
-
-        // Hide unused buttons
-        if (v.findViewById(R.id.btnDisable) != null) v.findViewById(R.id.btnDisable).setVisibility(View.GONE);
-
-        sheet.show();
+        dialog.setContentView(view);
+        dialog.show();
     }
 
     private void showPostBottomSheet() {
@@ -138,29 +194,13 @@ public class SellerAccountActivity extends AppCompatActivity {
         });
         v.findViewById(R.id.btnEditExisting).setOnClickListener(btn -> {
             sheet.dismiss();
-            if (binding.tvMyMenuLabel != null) {
-                binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop());
-            }
+            binding.scrollContent.smoothScrollTo(0, binding.tvMyMenuLabel.getTop());
         });
         sheet.show();
     }
 
-    private void loadProfile() {
-        FirebaseHelper.getDb().collection("users").document(sellerId).get()
-                .addOnSuccessListener(doc -> {
-                    if (!doc.exists()) return;
-                    User u = doc.toObject(User.class);
-                    if (u == null) return;
-                    binding.tvStoreName.setText(u.getName());
-                    binding.tvPhone.setText(u.getPhone());
-                    binding.tvAddress.setText(u.getAddress());
-                });
-    }
-
     private void listenMenu() {
-        menuListener = FirebaseHelper.getDb()
-                .collection("products")
-                .whereEqualTo("sellerId", sellerId)
+        menuListener = FirebaseHelper.getDb().collection("products").whereEqualTo("sellerId", sellerId)
                 .addSnapshotListener((snap, e) -> {
                     if (e != null || snap == null) return;
                     menuItems.clear();
@@ -170,32 +210,23 @@ public class SellerAccountActivity extends AppCompatActivity {
                         menuItems.add(p);
                     }
                     menuAdapter.notifyDataSetChanged();
-                    binding.emptyMenu.setVisibility(
-                            menuItems.isEmpty() ? View.VISIBLE : View.GONE);
+                    binding.emptyMenu.setVisibility(menuItems.isEmpty() ? View.VISIBLE : View.GONE);
                 });
     }
 
     private void onToggle(Product product, boolean available) {
-        FirebaseHelper.getDb().collection("products")
-                .document(product.getProductId())
-                .update("available", available);
+        FirebaseHelper.getDb().collection("products").document(product.getProductId()).update("available", available);
     }
 
     private void onEdit(Product product) {
-        Intent intent = new Intent(this, AddProductActivity.class);
-        intent.putExtra("productId", product.getProductId());
-        startActivity(intent);
+        startActivity(new Intent(this, AddProductActivity.class).putExtra("productId", product.getProductId()));
     }
 
     private void onDelete(Product product) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Delete Item")
-                .setMessage("Remove \"" + product.getName() + "\" from your menu?")
-                .setPositiveButton("Delete", (d, w) ->
-                        FirebaseHelper.getDb().collection("products")
-                                .document(product.getProductId()).delete())
-                .setNegativeButton("Cancel", null)
-                .show();
+                .setTitle("Delete Item").setMessage("Remove \"" + product.getName() + "\"?")
+                .setPositiveButton("Delete", (d, w) -> FirebaseHelper.getDb().collection("products").document(product.getProductId()).delete())
+                .setNegativeButton("Cancel", null).show();
     }
 
     private void logout() {

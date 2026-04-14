@@ -1,15 +1,16 @@
 package com.appdev.bilijuan.models;
 
 import com.google.firebase.firestore.ServerTimestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Order {
 
-    // Status constants — use these everywhere, never raw strings
     public static final String STATUS_PENDING    = "Pending";
     public static final String STATUS_CONFIRMED  = "Confirmed";
     public static final String STATUS_PREPARING  = "Preparing";
-    public static final String STATUS_ON_THE_WAY = "On the way";
+    public static final String STATUS_ON_THE_WAY = "Out for delivery";
     public static final String STATUS_DELIVERED  = "Delivered";
     public static final String STATUS_CANCELLED  = "Cancelled";
 
@@ -26,42 +27,34 @@ public class Order {
     private double sellerLat;
     private double sellerLng;
 
-    // Live rider location — updated by seller while delivering
     private double riderLat;
     private double riderLng;
 
+    // For single item compatibility
     private String productId;
     private String productName;
     private String productImageBase64;
     private int    quantity;
     private double productPrice;
 
-    private String status;          // See STATUS_ constants above
-    private String paymentMethod;   // "COD" or "GCash"
-    private double deliveryFee;     // ₱20 base + ₱10/km after 1km
-    private double totalAmount;     // (productPrice × quantity) + deliveryFee
-    private double distanceKm;      // Haversine distance seller → customer
-    private boolean reviewed;           // true after customer leaves review
+    // Support for multiple items in one order
+    private List<CartItem> items = new ArrayList<>();
+
+    private String status;          
+    private String paymentMethod;   
+    private double deliveryFee;     
+    private double totalAmount;     
+    private double distanceKm;      
+    private boolean reviewed;       
     private String lastNotificationStatus;
     private String lastNotificationMessage;
-
-    // Add getters
-    public boolean isReviewed()                     { return reviewed; }
-    public String getLastNotificationStatus()       { return lastNotificationStatus; }
-    public String getLastNotificationMessage()      { return lastNotificationMessage; }
-
-    // Add setters
-    public void setReviewed(boolean reviewed)                       { this.reviewed = reviewed; }
-    public void setLastNotificationStatus(String status)            { this.lastNotificationStatus = status; }
-    public void setLastNotificationMessage(String message)          { this.lastNotificationMessage = message; }
-
 
     @ServerTimestamp
     private Date createdAt;
 
-    // Required empty constructor for Firestore
     public Order() {}
 
+    // Legacy constructor
     public Order(String customerId, String customerName, String customerPhone,
                  String customerAddress, double customerLat, double customerLng,
                  String sellerId, String sellerName, double sellerLat, double sellerLng,
@@ -90,10 +83,8 @@ public class Order {
         this.distanceKm         = distanceKm;
         this.totalAmount        = (productPrice * quantity) + deliveryFee;
         this.status             = STATUS_PENDING;
-        this.active = true; // add this line in the Order constructor
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
     public String getOrderId()              { return orderId; }
     public String getCustomerId()           { return customerId; }
     public String getCustomerName()         { return customerName; }
@@ -112,14 +103,17 @@ public class Order {
     public String getProductImageBase64()   { return productImageBase64; }
     public int    getQuantity()             { return quantity; }
     public double getProductPrice()         { return productPrice; }
+    public List<CartItem> getItems()        { return items; }
     public String getStatus()               { return status; }
     public String getPaymentMethod()        { return paymentMethod; }
     public double getDeliveryFee()          { return deliveryFee; }
     public double getTotalAmount()          { return totalAmount; }
     public double getDistanceKm()           { return distanceKm; }
+    public boolean isReviewed()             { return reviewed; }
+    public String getLastNotificationStatus()  { return lastNotificationStatus; }
+    public String getLastNotificationMessage() { return lastNotificationMessage; }
     public Date   getCreatedAt()            { return createdAt; }
 
-    // ── Setters ───────────────────────────────────────────────────────────────
     public void setOrderId(String orderId)                      { this.orderId = orderId; }
     public void setCustomerId(String customerId)                { this.customerId = customerId; }
     public void setCustomerName(String customerName)            { this.customerName = customerName; }
@@ -138,25 +132,22 @@ public class Order {
     public void setProductImageBase64(String img)               { this.productImageBase64 = img; }
     public void setQuantity(int quantity)                       { this.quantity = quantity; }
     public void setProductPrice(double productPrice)            { this.productPrice = productPrice; }
+    public void setItems(List<CartItem> items)                  { this.items = items; }
     public void setStatus(String status)                        { this.status = status; }
     public void setPaymentMethod(String paymentMethod)          { this.paymentMethod = paymentMethod; }
     public void setDeliveryFee(double deliveryFee)              { this.deliveryFee = deliveryFee; }
     public void setTotalAmount(double totalAmount)              { this.totalAmount = totalAmount; }
     public void setDistanceKm(double distanceKm)                { this.distanceKm = distanceKm; }
+    public void setReviewed(boolean reviewed)                   { this.reviewed = reviewed; }
+    public void setLastNotificationStatus(String s)             { this.lastNotificationStatus = s; }
+    public void setLastNotificationMessage(String m)            { this.lastNotificationMessage = m; }
     public void setCreatedAt(Date createdAt)                    { this.createdAt = createdAt; }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
     public boolean canCustomerCancel() {
         return STATUS_PENDING.equals(status) || STATUS_CONFIRMED.equals(status);
     }
 
     public boolean isActive() {
-        return active; // use the field directly instead of computing it
+        return !STATUS_DELIVERED.equals(status) && !STATUS_CANCELLED.equals(status);
     }
-
-    private boolean active; // add this field
-
-    // add getter and setter:
-    public void setActive(boolean active) { this.active = active; }
-
 }

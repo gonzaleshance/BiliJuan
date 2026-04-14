@@ -20,12 +20,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
 
     public static class CategoryItem {
         public String name;
-        public int iconRes;
+        public String emoji;
+        public String subtitle;
         public String bgColor;
 
-        public CategoryItem(String name, int iconRes, String bgColor) {
-            this.name    = name;
-            this.iconRes = iconRes;
+        public CategoryItem(String name, String emoji, String subtitle, String bgColor) {
+            this.name = name;
+            this.emoji = emoji;
+            this.subtitle = subtitle;
             this.bgColor = bgColor;
         }
     }
@@ -34,7 +36,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
     private final ClickListener listener;
 
     public CategoryAdapter(List<CategoryItem> items, ClickListener listener) {
-        this.items    = items;
+        this.items = items;
         this.listener = listener;
     }
 
@@ -49,23 +51,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.VH> {
     public void onBindViewHolder(@NonNull VH h, int position) {
         CategoryItem item = items.get(position);
         h.tvName.setText(item.name);
-        h.ivIcon.setImageResource(item.iconRes);
-        h.cardBg.setBackgroundColor(Color.parseColor(item.bgColor));
+        h.tvEmoji.setText(item.emoji);
+        h.tvSubtitle.setText(item.subtitle);
         h.itemView.setOnClickListener(v -> listener.onClick(item));
     }
 
     @Override public int getItemCount() { return items.size(); }
 
     static class VH extends RecyclerView.ViewHolder {
-        View cardBg;
-        ImageView ivIcon;
-        TextView tvName;
+        TextView tvName, tvEmoji, tvSubtitle;
 
         VH(@NonNull View v) {
             super(v);
-            cardBg = v.findViewById(R.id.cardBg);
-            ivIcon = v.findViewById(R.id.ivIcon);
+            tvEmoji = v.findViewById(R.id.tvEmoji);
             tvName = v.findViewById(R.id.tvName);
+            tvSubtitle = v.findViewById(R.id.tvSubtitle);
         }
     }
 }

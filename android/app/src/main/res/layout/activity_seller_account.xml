@@ -4,258 +4,287 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="#F8F9FA">
 
-    <!-- Header -->
-    <LinearLayout
-        android:id="@+id/header"
+    <!-- Premium Header (Matches Customer Style) -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
-        android:background="@color/surface"
-        android:elevation="4dp">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_back"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/text_primary"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="My Store"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:gravity="center"/>
-
-        <ImageButton
-            android:id="@+id/btnSettings"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_menu"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/primary"/>
-    </LinearLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:paddingBottom="80dp"
-        android:clipToPadding="false">
+        android:layout_height="wrap_content"
+        android:background="#27AE60"
+        app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingTop="48dp"
+            android:paddingBottom="40dp"
+            android:paddingHorizontal="24dp"
+            android:gravity="center">
 
-            <!-- Store Avatar + Name -->
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingVertical="20dp">
+                android:layout_height="wrap_content">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_alignParentEnd="true"
+                    android:text="Edit Store"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#27AE60"
+                    android:backgroundTint="#FFFFFF"
+                    app:cornerRadius="18dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:elevation="2dp"/>
+            </RelativeLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="60dp"
+                app:cardElevation="8dp"
+                app:strokeWidth="4dp"
+                app:strokeColor="#FFFFFF"
+                app:cardBackgroundColor="#EAFAF1">
+                
                 <ImageView
                     android:id="@+id/ivStoreAvatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ic_store"
-                    android:background="@drawable/bg_primary_circle"
-                    android:padding="20dp"
-                    app:tint="@color/on_primary"
-                    android:layout_marginBottom="12dp"/>
+                    app:tint="#27AE60"
+                    android:padding="28dp"
+                    android:scaleType="centerInside"/>
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvStoreName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/tvStoreName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="16dp"
+                android:letterSpacing="-0.01"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Seller Account"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary"
-                    android:background="@drawable/bg_chip_active"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="4dp"/>
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verified Seller"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#CCFFFFFF"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_white_circle"
+                android:backgroundTint="#33FFFFFF"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"/>
 
-            <!-- Store Info Card -->
-            <LinearLayout
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-32dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_top_rounded"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="36dp"
+            android:paddingBottom="100dp"
+            android:elevation="4dp">
+
+            <!-- Store Details Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STORE DETAILS"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#B2BEC3"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="4dp"/>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_white"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F1F2F6"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="32dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="STORE INFO"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_secondary"
-                    android:letterSpacing="0.1"
-                    android:layout_marginBottom="12dp"/>
-
-                <!-- Phone -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp">
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_phone"
-                        app:tint="@color/primary"
-                        android:layout_marginEnd="14dp"/>
-
-                    <TextView
-                        android:id="@+id/tvPhone"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"/>
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_phone"
+                            app:tint="#27AE60"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Phone"
+                            android:textSize="14sp"
+                            android:textColor="#636E72"
+                            android:layout_marginStart="16dp"/>
+                        <TextView
+                            android:id="@+id/tvPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#2D3436"/>
+                    </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/surface_variant"/>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F8F9FA" android:layout_marginVertical="18dp"/>
 
-                <!-- Address -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="top"
-                    android:paddingVertical="10dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_location"
-                        app:tint="@color/primary"
-                        android:layout_marginEnd="14dp"/>
-
-                    <TextView
-                        android:id="@+id/tvAddress"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"
-                        android:lineSpacingMultiplier="1.4"/>
+                        android:orientation="horizontal"
+                        android:gravity="top">
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="#27AE60"
+                            android:layout_marginTop="2dp"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Address"
+                            android:textSize="14sp"
+                            android:textColor="#636E72"
+                            android:layout_marginStart="16dp"/>
+                        <TextView
+                            android:id="@+id/tvAddress"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#2D3436"
+                            android:gravity="end"
+                            android:maxLines="2"
+                            android:ellipsize="end"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Location -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPinLocation"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="📍 Update Store Location"
-                app:strokeColor="@color/primary"
-                android:textColor="@color/primary"
-                app:cornerRadius="12dp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- My Menu Header -->
+            <!-- Menu Management Section -->
             <LinearLayout
-                android:id="@+id/layoutMyMenuHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="4dp">
                 <TextView
                     android:id="@+id/tvMyMenuLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="My Menu"
-                    android:textSize="18sp"
+                    android:text="MY PRODUCTS"
+                    android:textSize="11sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-
+                    android:textColor="#B2BEC3"
+                    android:letterSpacing="0.1"/>
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAddItem"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="32dp"
                     android:text="+ Add Item"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
-                    android:backgroundTint="@color/surface"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="@color/primary"
-                    app:strokeWidth="1dp"/>
+                    android:textColor="#27AE60"
+                    android:backgroundTint="#FFFFFF"
+                    app:cornerRadius="16dp"
+                    app:strokeColor="#27AE60"
+                    app:strokeWidth="1dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
             </LinearLayout>
 
-            <!-- Empty menu state -->
             <TextView
                 android:id="@+id/emptyMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Wala ka pang posted na pagkain."
+                android:text="No products posted yet."
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="#B2BEC3"
                 android:gravity="center"
-                android:paddingVertical="24dp"
+                android:paddingVertical="32dp"
                 android:visibility="gone"/>
 
-            <!-- Menu RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="32dp"/>
 
-            <!-- Logout -->
+            <!-- Profile Actions -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Log Out"
-                android:textSize="15sp"
+                android:layout_height="60dp"
+                android:text="Sign Out"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/error"
-                android:backgroundTint="@color/surface"
-                app:strokeColor="@color/error"
-                app:strokeWidth="1dp"
-                app:cornerRadius="26dp"
-                android:layout_marginTop="8dp"/>
+                android:textColor="#EB4D4B"
+                android:backgroundTint="#FFFFFF"
+                app:strokeColor="#EB4D4B"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="30dp"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="#EB4D4B"
+                app:iconPadding="12dp"
+                app:iconGravity="textStart"
+                app:elevation="0dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Version 1.0.4 • BiliJuan Marketplace"
+                android:textSize="11sp"
+                android:textColor="#B2BEC3"
+                android:gravity="center"
+                android:layout_marginTop="24dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Custom Store Bottom Nav -->
-    <include layout="@layout/layout_store_bottom_nav"
+    <include
         android:id="@+id/storeNav"
+        layout="@layout/layout_store_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

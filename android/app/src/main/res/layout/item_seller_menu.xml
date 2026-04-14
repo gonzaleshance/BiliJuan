@@ -4,169 +4,126 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="14dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="@color/surface">
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
-        <!-- Top row: image + info + badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
+            android:gravity="center_vertical">
 
-            <!-- Product image -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivProduct"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:background="@color/surface_variant"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Small"
-                android:layout_marginEnd="14dp"/>
+                android:background="#F1F2F6"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Medium"
+                android:layout_marginEnd="16dp"/>
 
-            <!-- Name + price + stock -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/tvName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:maxLines="1"
-                        android:ellipsize="end"/>
-
-                    <!-- Active / Out of Stock badge -->
-                    <TextView
-                        android:id="@+id/tvAvailabilityBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Active"
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary"
-                        android:background="@drawable/bg_badge_active"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="3dp"/>
-                </LinearLayout>
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#2D3436"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
 
                 <TextView
                     android:id="@+id/tvPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"/>
+                    android:textColor="#27AE60"
+                    android:layout_marginTop="4dp"/>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvCategory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="11sp"
-                        android:textColor="@color/text_secondary"/>
-                </LinearLayout>
+                    android:textSize="12sp"
+                    android:textColor="#636E72"
+                    android:layout_marginTop="2dp"/>
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToggleAvailability"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Disable"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="32dp"
+                android:backgroundTint="#EAFAF1"
+                android:textColor="#27AE60"/>
         </LinearLayout>
 
-        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/surface_variant"
-            android:layout_marginBottom="10dp"/>
+            android:background="#F1F2F6"
+            android:layout_marginVertical="12dp"/>
 
-        <!-- Action buttons: View | Edit | Delete -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnView"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:text="View"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:backgroundTint="@color/surface_variant"
-                app:cornerRadius="8dp"
-                app:icon="@drawable/ic_search"
-                app:iconTint="@color/text_secondary"
-                app:iconSize="14dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:layout_marginEnd="6dp"/>
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEdit"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Edit"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:backgroundTint="@color/surface_variant"
-                app:cornerRadius="8dp"
+                android:text="Edit Details"
+                android:textSize="13sp"
+                android:textColor="#27AE60"
                 app:icon="@drawable/ic_edit"
-                app:iconTint="@color/text_secondary"
-                app:iconSize="14dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:layout_marginEnd="6dp"/>
+                app:iconTint="#27AE60"
+                app:iconSize="18dp"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#F9FEFA"/>
 
-            <!-- Delete -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:backgroundTint="#FDECEA"
-                app:cornerRadius="8dp"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Delete"
+                android:textSize="13sp"
+                android:textColor="#E74C3C"
                 app:icon="@drawable/ic_delete"
-                app:iconTint="@color/error"
-                app:iconSize="16dp"
-                app:iconGravity="textStart"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingStart="10dp"/>
-
-            <!-- Availability toggle -->
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchAvailable"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginStart="6dp"
-                android:visibility="gone"/>
-
+                app:iconTint="#E74C3C"
+                app:iconSize="18dp"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FDEDEC"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

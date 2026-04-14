@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="#FFFFFF"
+    android:elevation="16dp"
+    android:clipChildren="false">
+
+    <!-- Shadow line at top -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F1F2F6"/>
+
+    <!-- Tabs Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <!-- Overview -->
+        <LinearLayout
+            android:id="@+id/navOverview"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:id="@+id/iconOverview"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_chart"
+                app:tint="#B2BEC3"/>
+            <TextView
+                android:id="@+id/labelOverview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stats"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#B2BEC3"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+
+        <!-- Users -->
+        <LinearLayout
+            android:id="@+id/navUsers"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:id="@+id/iconUsers"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_person"
+                app:tint="#B2BEC3"/>
+            <TextView
+                android:id="@+id/labelUsers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Users"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#B2BEC3"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+
+        <!-- Center spacer for FAB -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <!-- Orders -->
+        <LinearLayout
+            android:id="@+id/navOrders"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:id="@+id/iconOrders"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_bag"
+                app:tint="#B2BEC3"/>
+            <TextView
+                android:id="@+id/labelOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Orders"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#B2BEC3"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+
+        <!-- Sellers -->
+        <LinearLayout
+            android:id="@+id/navSellers"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:id="@+id/iconSellers"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_store"
+                app:tint="#B2BEC3"/>
+            <TextView
+                android:id="@+id/labelSellers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sellers"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#B2BEC3"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Floating center "Foods" FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabFoods"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_restaurant"
+        app:backgroundTint="#27AE60"
+        app:tint="#FFFFFF"
+        app:fabSize="normal"
+        app:elevation="8dp"
+        app:borderWidth="0dp"/>
+
+</RelativeLayout>

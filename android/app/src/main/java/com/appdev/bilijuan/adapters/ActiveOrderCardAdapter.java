@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appdev.bilijuan.R;
+import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Order;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,7 +55,21 @@ public class ActiveOrderCardAdapter extends RecyclerView.Adapter<ActiveOrderCard
                 : "Order";
         h.tvOrderNumber.setText(shortId);
         h.tvTimeAgo.setText(timeAgo(o));
-        h.tvProductName.setText("• " + o.getProductName() + " ×" + o.getQuantity());
+
+        // Build product list string for multi-item orders
+        StringBuilder productList = new StringBuilder();
+        if (o.getItems() != null && !o.getItems().isEmpty()) {
+            for (int i = 0; i < o.getItems().size(); i++) {
+                CartItem item = o.getItems().get(i);
+                productList.append("• ").append(item.getProductName()).append(" ×").append(item.getQuantity());
+                if (i < o.getItems().size() - 1) productList.append("\n");
+            }
+            h.tvProductName.setText(productList.toString());
+        } else {
+            // Fallback to legacy fields
+            h.tvProductName.setText("• " + o.getProductName() + " ×" + o.getQuantity());
+        }
+
         h.tvTotal.setText(String.format("Total: ₱%.0f", o.getTotalAmount()));
 
         // Customer info

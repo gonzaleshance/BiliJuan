@@ -1,167 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
+    android:background="#F8F9FA">
 
-    <!-- Green Header -->
-    <LinearLayout
+    <!-- Premium Seller Header -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/primary"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="0dp">
+        android:background="#27AE60"
+        app:elevation="0dp">
 
-        <!-- Top row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="4dp">
+            android:orientation="vertical"
+            android:paddingTop="48dp"
+            android:paddingHorizontal="24dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Store Dashboard"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_primary"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvSellerName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Store"
-                    android:textSize="13sp"
-                    android:textColor="#CCFFFFFF"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Store Dashboard"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:id="@+id/tvSellerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading Store..."
+                        android:textSize="14sp"
+                        android:textColor="#CCFFFFFF"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp">
+                    <ImageButton
+                        android:id="@+id/btnNotification"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/ic_notifications"
+                        android:background="@drawable/bg_white_circle"
+                        android:backgroundTint="#33FFFFFF"
+                        app:tint="#FFFFFF"
+                        android:padding="10dp"/>
+                    <View
+                        android:id="@+id/notifDot"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="8dp"
+                        android:background="#EB4D4B"
+                        android:visibility="gone"/>
+                </FrameLayout>
             </LinearLayout>
 
-            <!-- Open/Closed toggle -->
+            <!-- Navigation Tabs -->
             <LinearLayout
-                android:id="@+id/btnToggleOpen"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="@drawable/bg_tab_active_white"
-                android:paddingHorizontal="14dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp">
 
-                <View
-                    android:id="@+id/dotOpenStatus"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:background="@drawable/bg_notification_dot"
+                <TextView
+                    android:id="@+id/tabOverview"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Overview"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="#27AE60"
+                    android:background="@drawable/bg_tab_active_white"
                     android:layout_marginEnd="6dp"/>
 
                 <TextView
-                    android:id="@+id/tvOpenStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Open"
-                    android:textSize="12sp"
+                    android:id="@+id/tabProducts"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Menu"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"/>
-            </LinearLayout>
-
-            <!-- Notification bell -->
-            <FrameLayout
-                android:layout_width="44dp"
-                android:layout_height="44dp">
-
-                <ImageButton
-                    android:id="@+id/btnNotification"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@drawable/ic_notifications"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
                     android:background="@android:color/transparent"
-                    app:tint="@color/on_primary"/>
+                    android:layout_marginHorizontal="6dp"/>
 
-                <View
-                    android:id="@+id/notifDot"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/bg_notification_dot"
-                    android:visibility="gone"/>
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/tabOrders"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Orders"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
+                    android:background="@android:color/transparent"
+                    android:layout_marginStart="6dp"/>
+            </LinearLayout>
         </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Top Tabs -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tabOverview"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:text="Overview"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/primary"
-                android:background="@drawable/bg_tab_active_white"
-                android:layout_marginEnd="4dp"/>
-
-            <TextView
-                android:id="@+id/tabProducts"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:text="Products"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="#CCFFFFFF"
-                android:background="@android:color/transparent"
-                android:layout_marginHorizontal="4dp"/>
-
-            <TextView
-                android:id="@+id/tabOrders"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:text="Orders"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="#CCFFFFFF"
-                android:background="@android:color/transparent"
-                android:layout_marginStart="4dp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Content -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- OVERVIEW -->
+        <!-- 1. OVERVIEW SECTION -->
         <androidx.core.widget.NestedScrollView
             android:id="@+id/sectionOverview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="80dp"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:paddingBottom="100dp"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -169,333 +144,340 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- Today's earnings banner -->
+                <!-- Priority 1: Today's Summary -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/primary_light"
-                    android:layout_marginBottom="16dp">
-
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F2F6"
+                    app:cardBackgroundColor="#FFFFFF"
+                    android:layout_marginBottom="24dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp">
-
+                        android:padding="24dp"
+                        android:gravity="center_vertical">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical">
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Today's Earnings"
                                 android:textSize="12sp"
-                                android:textColor="@color/primary_dark"
-                                android:layout_marginBottom="2dp"/>
-
+                                android:textStyle="bold"
+                                android:textColor="#B2BEC3"
+                                android:letterSpacing="0.05"/>
                             <TextView
                                 android:id="@+id/tvTodayEarnings"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="₱0"
-                                android:textSize="28sp"
+                                android:textSize="32sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/primary"/>
+                                android:textColor="#27AE60"
+                                android:layout_marginTop="4dp"/>
                         </LinearLayout>
-
+                        <View android:layout_width="1dp" android:layout_height="48dp" android:background="#F1F2F6" android:layout_marginHorizontal="20dp"/>
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:gravity="end">
-
+                            android:gravity="center">
                             <TextView
                                 android:id="@+id/tvTodayOrders"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0 orders"
-                                android:textSize="13sp"
+                                android:text="0"
+                                android:textSize="24sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/primary"/>
-
+                                android:textColor="#2D3436"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="today"
+                                android:text="Orders"
                                 android:textSize="11sp"
-                                android:textColor="@color/primary_dark"/>
+                                android:textColor="#636E72"
+                                android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Stats row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <!-- Priority 2: Action Required Summary -->
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="20dp">
+                    android:text="Action Required"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#2D3436"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="4dp"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@color/surface"
-                        android:layout_marginEnd="8dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/bg_stat_icon"
-                                android:gravity="center"
-                                android:layout_marginBottom="10dp">
-                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_receipt" app:tint="@color/primary"/>
-                            </LinearLayout>
-
-                            <TextView android:id="@+id/tvTotalSales" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₱0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginBottom="2dp"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Sales" android:textSize="11sp" android:textColor="@color/text_secondary" android:layout_marginBottom="4dp"/>
-                            <TextView android:id="@+id/tvSalesGrowth" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+0% this week" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/primary"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="@color/surface"
-                        android:layout_marginStart="8dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/bg_stat_icon"
-                                android:gravity="center"
-                                android:layout_marginBottom="10dp">
-                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_bag" app:tint="@color/primary"/>
-                            </LinearLayout>
-
-                            <TextView android:id="@+id/tvTotalOrders" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginBottom="2dp"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Orders" android:textSize="11sp" android:textColor="@color/text_secondary" android:layout_marginBottom="4dp"/>
-                            <TextView android:id="@+id/tvOrdersToday" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+0 today" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/primary"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <!-- Recent Orders -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnGoToOrders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/surface"
-                    android:layout_marginBottom="16dp">
-
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F2F6"
+                    app:cardBackgroundColor="#FFFFFF"
+                    android:layout_marginBottom="24dp"
+                    android:clickable="true"
+                    android:focusable="true">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:orientation="horizontal"
+                        android:padding="20dp"
+                        android:gravity="center_vertical">
+                        
+                        <FrameLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_primary_light_circle">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_bag"
+                                app:tint="#27AE60"/>
+                        </FrameLayout>
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="12dp">
-
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
                             <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Recent Orders"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/text_primary"/>
-
-                            <TextView
-                                android:id="@+id/tvSeeAllOrders"
+                                android:id="@+id/tvActionMessage"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="See all"
-                                android:textSize="13sp"
+                                android:text="You have no active orders"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/primary"/>
+                                android:textColor="#2D3436"/>
+                            <TextView
+                                android:id="@+id/tvActionSubMessage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tap here to track all orders"
+                                android:textSize="13sp"
+                                android:textColor="#636E72"
+                                android:layout_marginTop="2dp"/>
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/emptyOrders"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="No active orders right now."
-                            android:textSize="13sp"
-                            android:textColor="@color/text_secondary"
-                            android:gravity="center"
-                            android:paddingVertical="16dp"
-                            android:visibility="gone"/>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvActiveOrders"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"/>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_back"
+                            android:rotation="180"
+                            app:tint="#B2BEC3"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Weekly Performance -->
+                <!-- Priority 3: Weekly Performance -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weekly Trends"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#2D3436"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="4dp"/>
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp"
-                    app:cardBackgroundColor="@color/surface">
-
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F2F6"
+                    app:cardBackgroundColor="#FFFFFF"
+                    android:layout_marginBottom="24dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="This Week's Performance" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginBottom="16dp"/>
-
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Mon" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barMon" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvMon" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        android:padding="20dp">
+                        <!-- Weekly Bars -->
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Mon" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barMon" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvMon" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Tue" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barTue" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvTue" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Tue" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barTue" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvTue" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Wed" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barWed" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvWed" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Wed" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barWed" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvWed" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Thu" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barThu" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvThu" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Thu" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barThu" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvThu" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Fri" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barFri" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvFri" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Fri" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barFri" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvFri" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Sat" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barSat" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvSat" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Sat" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barSat" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvSat" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Sun" android:textSize="12sp" android:textColor="@color/text_secondary"/>
-                            <ProgressBar android:id="@+id/barSun" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="8dp" android:layout_weight="1" android:progressTint="@color/primary" android:progressBackgroundTint="@color/surface_variant" android:max="100" android:progress="0" android:layout_marginHorizontal="8dp"/>
-                            <TextView android:id="@+id/tvSun" android:layout_width="60dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="end"/>
+                            <TextView android:layout_width="36dp" android:layout_height="wrap_content" android:text="Sun" android:textSize="11sp" android:textColor="#636E72"/>
+                            <ProgressBar android:id="@+id/barSun" style="?android:attr/progressBarStyleHorizontal" android:layout_width="0dp" android:layout_height="6dp" android:layout_weight="1" android:progressTint="#27AE60" android:progressBackgroundTint="#F1F2F6" android:max="100" android:progress="0" android:layout_marginHorizontal="10dp"/>
+                            <TextView android:id="@+id/tvSun" android:layout_width="64dp" android:layout_height="wrap_content" android:text="₱0" android:textSize="11sp" android:textStyle="bold" android:textColor="#2D3436" android:gravity="end"/>
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Priority 4: Tools -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnEditStoreLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F2F6"
+                    app:cardBackgroundColor="#FFFFFF"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="#27AE60"/>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Store Location"
+                                android:textSize="11sp"
+                                android:textColor="#B2BEC3"
+                                android:textStyle="bold"/>
+                            <TextView
+                                android:id="@+id/tvStoreAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Update store location pin"
+                                android:textSize="13sp"
+                                android:textColor="#2D3436"
+                                android:layout_marginTop="2dp"
+                                android:maxLines="1"
+                                android:ellipsize="end"/>
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#B2BEC3"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Hidden UI for keeping Java compatibility -->
+                <TextView android:id="@+id/tvTotalSales" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+                <TextView android:id="@+id/tvTotalOrders" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+                <TextView android:id="@+id/tvOrdersToday" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <!-- PRODUCTS SECTION -->
+        <!-- MENU SECTION (Tab) -->
         <LinearLayout
             android:id="@+id/sectionProducts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone">
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddItem"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
                 android:text="Add New Product"
-                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/on_primary"
-                android:backgroundTint="@color/primary"
-                app:cornerRadius="12dp"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#27AE60"
+                app:cornerRadius="28dp"
                 app:icon="@drawable/ic_plus_circle"
-                app:iconTint="@color/on_primary"
-                app:iconSize="18dp"/>
-
+                app:iconTint="#FFFFFF"
+                app:elevation="4dp"/>
+            
             <TextView
                 android:id="@+id/emptyMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your menu is empty. Add your first item!"
+                android:text="Your menu is empty."
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="#B2BEC3"
                 android:gravity="center"
-                android:paddingVertical="40dp"
+                android:paddingVertical="48dp"
                 android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMenu"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:paddingHorizontal="16dp"
-                android:paddingBottom="80dp"
-                android:clipToPadding="false"/>
+                android:paddingBottom="100dp"/>
         </LinearLayout>
 
-        <!-- ORDERS SECTION -->
+        <!-- ORDERS SECTION (Tab) -->
         <LinearLayout
             android:id="@+id/sectionOrders"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone">
-
-            <!-- Hidden views for binding compatibility -->
-            <TextView android:id="@+id/tvActiveOrderCount" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvActiveOrders2"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:paddingHorizontal="16dp"
                 android:paddingTop="12dp"
-                android:paddingBottom="80dp"
-                android:clipToPadding="false"/>
+                android:paddingBottom="100dp"/>
         </LinearLayout>
     </FrameLayout>
 
-    <!-- Custom Store Bottom Nav -->
-    <include layout="@layout/layout_store_bottom_nav"
+    <!-- Unified Store Bottom Nav -->
+    <include
         android:id="@+id/storeNav"
+        layout="@layout/layout_store_bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="72dp"/>
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"/>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

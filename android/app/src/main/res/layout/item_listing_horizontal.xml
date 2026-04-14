@@ -9,7 +9,7 @@
     app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="@color/surface">
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_height="160dp"
             android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Medium"
-            android:background="@color/surface_variant"/>
+            android:background="#F1F2F6"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,10 +42,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sunset Bagels"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"
+                    android:textColor="#2D3436"
                     android:maxLines="1"
                     android:ellipsize="end"/>
 
@@ -53,11 +52,11 @@
                     android:id="@+id/tvStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FREE DELIVERY"
+                    android:text="POPULAR"
                     android:textSize="9sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
-                    android:background="@color/primary_light"
+                    android:textColor="#27AE60"
+                    android:background="@drawable/bg_chip_available"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"/>
             </LinearLayout>
@@ -66,9 +65,9 @@
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Burger, Pizza, Sandwich"
+                android:text="Support Local"
                 android:textSize="12sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="#636E72"
                 android:layout_marginBottom="12dp"
                 android:maxLines="1"
                 android:ellipsize="end"/>
@@ -83,19 +82,19 @@
                     android:id="@+id/tvPriceRange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="₱₱₱"
+                    android:text="₱₱"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"
+                    android:textColor="#2D3436"
                     android:layout_marginEnd="12dp"/>
 
                 <TextView
                     android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10-20 min"
+                    android:text="Available"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="#636E72"
                     android:layout_marginEnd="12dp"/>
 
                 <ImageView
@@ -109,10 +108,10 @@
                     android:id="@+id/tvRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4.5 (82)"
+                    android:text="4.5"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
+                    android:textColor="#2D3436"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -4,8 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="14dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@color/surface">
@@ -15,7 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <!-- Info -->
         <LinearLayout
@@ -29,14 +30,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="2dp">
+                android:layout_marginBottom="4dp">
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"/>
 
@@ -46,17 +47,18 @@
                     android:layout_height="wrap_content"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    android:textColor="@color/on_chip_active"
-                    android:background="@drawable/bg_chip_active"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="3dp"/>
+                    android:textColor="@color/primary"
+                    android:background="@drawable/bg_white_circle"
+                    android:backgroundTint="#E8F6EF"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="2dp"/>
 
@@ -64,14 +66,15 @@
                 android:id="@+id/tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textColor="@color/text_secondary"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginBottom="8dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvStatus"
@@ -79,6 +82,10 @@
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
                     android:textStyle="bold"
+                    android:textColor="@color/on_primary"
+                    android:background="@drawable/bg_primary_pill"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
                     android:layout_marginEnd="8dp"/>
 
                 <TextView
@@ -87,25 +94,24 @@
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
                     android:textStyle="bold"
-                    android:textColor="@color/error"
+                    android:textColor="#E74C3C"
+                    android:background="@drawable/bg_white_circle"
+                    android:backgroundTint="#FDEDEC"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
                     android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Action button (three dots / manage) -->
-        <LinearLayout
+        <!-- Action button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_stat_icon"
-            android:gravity="center"
-            android:layout_marginStart="8dp">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_edit"
-                app:tint="@color/primary"/>
-        </LinearLayout>
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:icon="@drawable/ic_edit"
+            app:iconTint="@color/primary"
+            android:layout_marginStart="12dp"
+            app:cornerRadius="12dp"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

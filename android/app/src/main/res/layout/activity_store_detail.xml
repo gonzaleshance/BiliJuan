@@ -1,71 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background">
 
-    <!-- Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:background="@color/surface"
-        android:elevation="4dp">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_back"
-            android:background="@android:color/transparent"
-            app:tint="@color/text_primary"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="8dp">
-
-            <TextView
-                android:id="@+id/tvStoreName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
-
-            <TextView
-                android:id="@+id/tvItemCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/emptyProducts"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Wala pang available na items ang store na ito."
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"
-        android:gravity="center"
-        android:paddingVertical="48dp"
-        android:visibility="gone"/>
+        android:background="@color/surface">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProducts"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false">
+
+                <!-- Banner Area -->
+                <FrameLayout
+                    android:id="@+id/bannerArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp">
+
+                    <ImageView
+                        android:id="@+id/ivStoreBanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_launcher_background"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#33000000"/>
+
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="16dp"
+                        android:src="@drawable/ic_arrow_back"
+                        android:background="@drawable/bg_white_circle"
+                        android:backgroundTint="#80000000"
+                        app:tint="#FFFFFF"/>
+                </FrameLayout>
+
+                <!-- Store Logo - Only this overlaps the banner -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cvLogo"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_below="@id/bannerArea"
+                    android:layout_marginTop="-44dp"
+                    android:layout_marginStart="16dp"
+                    app:cardCornerRadius="44dp"
+                    app:cardElevation="8dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/surface">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivStoreLogo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/surface"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_store"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Circle"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Store name and rating - Safely below the banner -->
+                <LinearLayout
+                    android:id="@+id/infoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/bannerArea"
+                    android:layout_toEndOf="@id/cvLogo"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvStoreName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_star"
+                            app:tint="@color/warning"/>
+
+                        <TextView
+                            android:id="@+id/tvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="--"
+                            android:textSize="13sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginStart="4dp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvItemCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/infoContainer"
+                    android:layout_toEndOf="@id/cvLogo"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="4dp"
+                    android:paddingBottom="16dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:text="0 items available"/>
+
+            </RelativeLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/emptyProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wala pang available na items ang store na ito."
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"
+                android:paddingVertical="48dp"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Nav Container -->
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+        <include
+            android:id="@+id/customerNav"
+            layout="@layout/layout_customer_bottom_nav"/>
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

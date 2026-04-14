@@ -8,21 +8,22 @@
     android:gravity="center_vertical">
 
     <!-- Step circle -->
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/stepCircle"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:background="@drawable/bg_step_inactive"
-        android:gravity="center"
-        android:layout_marginEnd="12dp">
+        android:background="@drawable/bg_white_circle"
+        android:backgroundTint="#F1F2F6"
+        android:layout_marginEnd="16dp">
 
         <ImageView
             android:id="@+id/stepIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
             android:src="@drawable/ic_check_circle"
             app:tint="#B2BEC3"/>
-    </LinearLayout>
+    </FrameLayout>
 
     <!-- Step text -->
     <LinearLayout
@@ -35,19 +36,22 @@
             android:id="@+id/stepTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:text="Step Title"
+            android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/text_hint"/>
+            android:textColor="#2D3436"/>
 
         <TextView
             android:id="@+id/stepSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/text_hint"/>
+            android:text="Status..."
+            android:textSize="13sp"
+            android:textColor="#636E72"
+            android:layout_marginTop="2dp"/>
     </LinearLayout>
 
-    <!-- Live badge — only visible on active step -->
+    <!-- Live badge -->
     <TextView
         android:id="@+id/stepLiveBadge"
         android:layout_width="wrap_content"
@@ -55,7 +59,11 @@
         android:text="● Live"
         android:textSize="11sp"
         android:textStyle="bold"
-        android:textColor="@color/primary"
+        android:textColor="#27AE60"
+        android:background="@drawable/bg_white_circle"
+        android:backgroundTint="#E8F6EF"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp"
         android:visibility="gone"/>
 
 </LinearLayout>

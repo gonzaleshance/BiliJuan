@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:foreground="?attr/selectableItemBackground">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivStore"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:scaleType="centerCrop"
+        android:background="#F1F2F6"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Circle"
+        app:strokeWidth="2dp"
+        app:strokeColor="#27AE60"/>
+
+    <TextView
+        android:id="@+id/tvStoreName"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Store Name"
+        android:textSize="12sp"
+        android:textColor="#2D3436"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</LinearLayout>

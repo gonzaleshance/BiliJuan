@@ -1,331 +1,409 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
+    android:background="#F8F9FA">
 
-    <!-- Green Header -->
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/primary"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="0dp">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-        <!-- Greeting row -->
-        <LinearLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvGreeting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kumain na tayo!"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_primary"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="What are you craving today?"
-                    android:textSize="13sp"
-                    android:textColor="#CCFFFFFF"/>
-            </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="44dp"
-                android:layout_height="44dp">
-
-                <ImageButton
-                    android:id="@+id/btnNotification"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@drawable/ic_notifications"
-                    android:background="@android:color/transparent"
-                    app:tint="@color/on_primary"/>
-
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/bg_notification_dot"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <!-- Search bar -->
-        <LinearLayout
-            android:id="@+id/searchBar"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_search_white"
-            android:paddingHorizontal="14dp"
-            android:layout_marginBottom="16dp">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/text_hint"
-                android:layout_marginEnd="10dp"/>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Search food or store..."
-                android:textSize="13sp"
-                android:textColor="@color/text_hint"/>
-        </LinearLayout>
+                android:orientation="vertical"
+                android:background="#27AE60"
+                android:paddingTop="48dp"
+                android:paddingBottom="32dp"
+                android:paddingHorizontal="24dp">
 
-        <!-- Food / Store top tabs -->
+                <!-- Greeting row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kumain na tayo!"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Discover local flavors today"
+                            android:textSize="14sp"
+                            android:textColor="#CCFFFFFF"/>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp">
+                        <ImageButton
+                            android:id="@+id/btnNotification"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_notifications"
+                            android:background="@drawable/bg_white_circle"
+                            android:backgroundTint="#33FFFFFF"
+                            app:tint="#FFFFFF"
+                            android:padding="12dp"/>
+                        <View
+                            android:id="@+id/notifDot"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/bg_notification_dot"
+                            android:visibility="gone"/>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Search bar -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/searchBarContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="20dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_search"
+                            app:tint="#636E72"/>
+
+                        <EditText
+                            android:id="@+id/etSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Search for food or store..."
+                            android:textSize="15sp"
+                            android:textColorHint="#636E72"
+                            android:textColor="#2D3436"
+                            android:background="@android:color/transparent"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:paddingStart="12dp"
+                            android:textCursorDrawable="@null"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <!-- Static Tabs -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="#27AE60"
+            android:paddingHorizontal="24dp">
 
             <TextView
                 android:id="@+id/tabFood"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:text="Food"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="@color/primary"
+                android:textColor="#27AE60"
                 android:background="@drawable/bg_tab_active_white"
-                android:layout_marginEnd="4dp"/>
+                android:layout_marginEnd="6dp"/>
 
             <TextView
                 android:id="@+id/tabStore"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:text="Store"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="#CCFFFFFF"
+                android:textColor="#FFFFFF"
                 android:background="@android:color/transparent"
-                android:layout_marginStart="4dp"/>
+                android:layout_marginStart="6dp"/>
         </LinearLayout>
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Content -->
-    <FrameLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <!-- FOOD TAB -->
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/sectionFood"
+            android:id="@+id/scrollViewMain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="80dp"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:paddingBottom="100dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:animateLayoutChanges="true">
 
-                <!-- Category chips -->
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="none"
-                    android:paddingVertical="12dp">
-
-                    <LinearLayout
-                        android:id="@+id/categoryChipsContainer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="16dp"/>
-                </HorizontalScrollView>
-
-                <!-- Popular this week header -->
+                <!-- FOOD TAB SECTION -->
                 <LinearLayout
+                    android:id="@+id/sectionFood"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="20dp"
-                    android:paddingBottom="10dp">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Popular this week"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-
-                    <TextView
-                        android:id="@+id/tvSeeAllPopular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="See all"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary"/>
-                </LinearLayout>
-
-                <!-- Shimmer for popular -->
-                <LinearLayout
-                    android:id="@+id/shimmerPopular"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp"
-                    android:visibility="visible">
-
-                    <include layout="@layout/item_shimmer"
-                        android:layout_width="200dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="12dp"/>
-                    <include layout="@layout/item_shimmer"
-                        android:layout_width="200dp"
-                        android:layout_height="match_parent"/>
-                </LinearLayout>
-
-                <!-- Popular RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvPopular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:clipToPadding="false"
-                    android:paddingHorizontal="16dp"
-                    android:visibility="gone"/>
-
-                <!-- Fresh for you header -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="20dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="10dp">
-
-                    <TextView
-                        android:id="@+id/tvListingsLabel"
+                    <!-- Category chips -->
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Fresh for you"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
+                        android:scrollbars="none"
+                        android:paddingVertical="16dp">
+                        <LinearLayout
+                            android:id="@+id/categoryChipsContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="24dp"/>
+                    </HorizontalScrollView>
+
+                    <!-- Popular header -->
+                    <LinearLayout
+                        android:id="@+id/layoutPopularHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="24dp"
+                        android:paddingBottom="12dp">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🔥 Popular this week"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2D3436"/>
+                        <TextView
+                            android:id="@+id/tvSeeAllPopular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="See all"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#27AE60"
+                            android:padding="4dp"/>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvPopular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:clipToPadding="false"
+                            android:paddingHorizontal="24dp"
+                            android:visibility="invisible"/>
+                        <LinearLayout
+                            android:id="@+id/shimmerPopular"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="24dp">
+                            <include layout="@layout/item_shimmer" android:layout_width="240dp" android:layout_height="match_parent" android:layout_marginEnd="16dp"/>
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Listings header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="24dp"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="12dp">
+                        <TextView
+                            android:id="@+id/tvListingsLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="✨ Fresh for you"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#2D3436"/>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvListings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:visibility="invisible"/>
+                        <LinearLayout
+                            android:id="@+id/shimmerListings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <include layout="@layout/item_shimmer"/>
+                            <include layout="@layout/item_shimmer"/>
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/emptyListings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Wala pang available na pagkain."
+                        android:textSize="14sp"
+                        android:textColor="#636E72"
+                        android:gravity="center"
+                        android:paddingVertical="64dp"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
-                <!-- Shimmer for listings -->
+                <!-- STORE TAB SECTION -->
                 <LinearLayout
-                    android:id="@+id/shimmerListings"
+                    android:id="@+id/sectionStore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible">
-
-                    <include layout="@layout/item_shimmer"/>
-                    <include layout="@layout/item_shimmer"/>
-                    <include layout="@layout/item_shimmer"/>
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/emptyStores"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Wala pang available na store."
+                        android:textSize="14sp"
+                        android:textColor="#636E72"
+                        android:gravity="center"
+                        android:paddingVertical="64dp"
+                        android:visibility="gone"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvStores"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="20dp"
+                        android:paddingTop="16dp"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"/>
                 </LinearLayout>
-
-                <!-- Food listings -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvListings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="gone"/>
-
-                <!-- Empty state -->
-                <TextView
-                    android:id="@+id/emptyListings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Wala pang available na pagkain."
-                    android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
-                    android:gravity="center"
-                    android:paddingVertical="40dp"
-                    android:visibility="gone"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-        <!-- STORE TAB -->
-        <LinearLayout
-            android:id="@+id/sectionStore"
+    <!-- SEARCH RESULTS VIEW -->
+    <LinearLayout
+        android:id="@+id/layoutSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F8F9FA"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"
+        android:animateLayoutChanges="true">
+        <TextView
+            android:id="@+id/tvSearchCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:text="Search Results"
+            android:textStyle="bold"
+            android:textColor="#636E72"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchResults"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:paddingHorizontal="8dp"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/emptyStores"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wala pang available na store."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:paddingVertical="40dp"
-                android:visibility="gone"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvStores"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="80dp"
-                android:clipToPadding="false"/>
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <!-- Bottom Nav -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
+    <include
+        android:id="@+id/customerNav"
+        layout="@layout/layout_customer_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:background="@color/surface"
-        app:menu="@menu/bottom_nav_customer"
-        app:itemIconTint="@color/bottom_nav_tint"
-        app:itemTextColor="@color/bottom_nav_tint"
-        app:labelVisibilityMode="labeled"
-        android:elevation="16dp"/>
+        android:layout_gravity="bottom" />
 
-</LinearLayout>
+    <!-- FAB for Cart with Badge -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnCart"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="100dp"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:strokeWidth="0dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cart"
+                app:tint="#27AE60"/>
+
+            <TextView
+                android:id="@+id/tvCartBadge"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_notification_dot"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:elevation="4dp"/>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,8 +1,10 @@
 package com.appdev.bilijuan.activities.customer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,17 +15,19 @@ import androidx.core.content.ContextCompat;
 
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.databinding.ActivityOrderTrackingBinding;
+import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Order;
+import com.appdev.bilijuan.utils.DeliveryUtils;
 import com.appdev.bilijuan.utils.FirebaseHelper;
+import com.appdev.bilijuan.utils.ImageHelper;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
 
-import java.util.Arrays;
+import java.util.Locale;
 
 public class OrderTrackingActivity extends AppCompatActivity {
 
@@ -31,7 +35,6 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private ListenerRegistration orderListener;
     private String orderId;
     private Marker riderMarker, customerMarker;
-    private Polyline routeLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,77 +71,201 @@ public class OrderTrackingActivity extends AppCompatActivity {
                     updateHeader(order);
                     updateProgressSteps(order.getStatus());
                     updateOrderDetails(order);
+                    updateAddress(order);
+                    updateContactInfo(order);
                     updateMapVisibility(order);
                 });
     }
 
     private void updateHeader(Order order) {
-        String shortId = orderId.length() >= 6 ? "Order #" + orderId.substring(0, 6).toUpperCase() : "Order #" + orderId;
-        binding.tvOrderId.setText(shortId);
-        binding.tvSellerName.setText(order.getSellerName());
         binding.tvCurrentStatus.setText(order.getStatus());
-        binding.tvEta.setText("10-20 min"); 
+        
+        // Accurate ETA Calculation
+        if (Order.STATUS_DELIVERED.equals(order.getStatus())) {
+            binding.tvEta.setText("Delivered");
+            binding.ivStatusIcon.setImageResource(R.drawable.ic_check_circle);
+            return;
+        }
 
-        int pct = progressForStatus(order.getStatus());
-        binding.progressDelivery.setProgress(pct);
-        binding.tvProgressPct.setText(pct + "% complete");
+        double lat = (order.getRiderLat() != 0) ? order.getRiderLat() : order.getSellerLat();
+        double lng = (order.getRiderLng() != 0) ? order.getRiderLng() : order.getSellerLng();
+        
+        if (lat != 0 && order.getCustomerLat() != 0) {
+            double dist = DeliveryUtils.haversineKm(lat, lng, order.getCustomerLat(), order.getCustomerLng());
+            
+            int travelTimeMin = (int) Math.ceil(dist * 4); // 4 mins per km (slower for traffic/motorcycle)
+            int prepTimeMin = 0;
 
-        binding.btnCallSeller.setOnClickListener(v -> {
-            FirebaseHelper.getDb().collection("users").document(order.getSellerId()).get().addOnSuccessListener(doc -> {
-                String sp = doc.getString("phone");
-                if (sp != null && !sp.isEmpty()) startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + sp)));
-                else Toast.makeText(this, "No phone available", Toast.LENGTH_SHORT).show();
-            });
-        });
+            // Add prep time based on status
+            if (Order.STATUS_PENDING.equals(order.getStatus())) prepTimeMin = 15;
+            else if (Order.STATUS_CONFIRMED.equals(order.getStatus())) prepTimeMin = 12;
+            else if (Order.STATUS_PREPARING.equals(order.getStatus())) prepTimeMin = 8;
+            else prepTimeMin = 2; // Buffer for on the way
+
+            int totalEta = travelTimeMin + prepTimeMin;
+            
+            if (totalEta < 2 && !Order.STATUS_DELIVERED.equals(order.getStatus())) {
+                binding.tvEta.setText("Arriving soon");
+            } else {
+                binding.tvEta.setText(String.format(Locale.getDefault(), "%d-%d mins", totalEta, totalEta + 5));
+            }
+        } else {
+            binding.tvEta.setText("--");
+        }
+
+        if (Order.STATUS_ON_THE_WAY.equals(order.getStatus())) {
+            binding.ivStatusIcon.setImageResource(R.drawable.ic_delivery_dining);
+        } else {
+            binding.ivStatusIcon.setImageResource(R.drawable.ic_restaurant);
+        }
     }
 
     private void updateProgressSteps(String status) {
-        setStep(binding.stepConfirmed.getRoot(), binding.lineConfirmed, "Order Confirmed", "Completed", isDone(status, "Confirmed"), "Confirmed".equals(status));
-        setStep(binding.stepPreparing.getRoot(), binding.linePreparing, "Preparing Your Food", "Completed", isDone(status, "Preparing"), "Preparing".equals(status));
-        setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay, "Out for Delivery", "In Progress...", isDone(status, "On the way"), "On the way".equals(status));
-        setStep(binding.stepDelivered.getRoot(), null, "Delivered", "Waiting...", "Delivered".equals(status), false);
+        // Status flow: Pending -> Confirmed -> Preparing -> Out for delivery -> Delivered
+        
+        boolean preparingDone = isDone(status, Order.STATUS_PREPARING);
+        boolean preparingActive = Order.STATUS_PREPARING.equals(status) || Order.STATUS_CONFIRMED.equals(status);
+        boolean pendingActive = Order.STATUS_PENDING.equals(status);
+
+        String firstStepTitle = "Preparing Your Food";
+        String firstStepSub = "Waiting...";
+        int firstStepIcon = R.drawable.ic_restaurant;
+
+        if (pendingActive) {
+            firstStepTitle = "Order Received";
+            firstStepSub = "Waiting for seller confirmation...";
+            firstStepIcon = R.drawable.ic_notifications;
+        } else if (Order.STATUS_CONFIRMED.equals(status)) {
+            firstStepTitle = "Order Confirmed";
+            firstStepSub = "Seller is checking your order...";
+            firstStepIcon = R.drawable.ic_check_circle;
+        } else if (Order.STATUS_PREPARING.equals(status)) {
+            firstStepTitle = "Preparing Food";
+            firstStepSub = "Your food is being cooked!";
+            firstStepIcon = R.drawable.ic_restaurant;
+        }
+
+        setStep(binding.stepPreparing.getRoot(), binding.linePreparing, firstStepTitle, preparingDone, preparingActive || pendingActive, firstStepSub, firstStepIcon);
+
+        boolean onWayDone = isDone(status, Order.STATUS_ON_THE_WAY);
+        boolean onWayActive = Order.STATUS_ON_THE_WAY.equals(status);
+        setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay, "Out for Delivery", onWayDone, onWayActive, null, R.drawable.ic_delivery_dining);
+
+        boolean deliveredDone = Order.STATUS_DELIVERED.equals(status);
+        setStep(binding.stepDelivered.getRoot(), null, "Delivered", deliveredDone, deliveredDone, null, R.drawable.ic_check_circle);
     }
 
-    private void setStep(View stepView, View lineView, String title, String subtitle, boolean done, boolean active) {
+    private void setStep(View stepView, View lineView, String title, boolean done, boolean active, String customSub, int activeIcon) {
         View circle = stepView.findViewById(R.id.stepCircle);
         ImageView icon = stepView.findViewById(R.id.stepIcon);
         TextView tvTitle = stepView.findViewById(R.id.stepTitle);
         TextView tvSub = stepView.findViewById(R.id.stepSubtitle);
+        TextView tvLive = stepView.findViewById(R.id.stepLiveBadge);
+
         tvTitle.setText(title);
 
         if (done) {
-            circle.setBackgroundResource(R.drawable.bg_primary_circle);
+            circle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.primary));
             icon.setImageResource(R.drawable.ic_check_circle);
-            icon.setColorFilter(ContextCompat.getColor(this, R.color.primary));
+            icon.setColorFilter(ContextCompat.getColor(this, R.color.on_primary));
             tvSub.setText("✓ Completed");
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.primary));
+            tvLive.setVisibility(View.GONE);
             if (lineView != null) lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.primary));
         } else if (active) {
-            circle.setBackgroundResource(R.drawable.bg_primary_pill);
+            circle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.primary));
+            icon.setImageResource(activeIcon);
             icon.setColorFilter(ContextCompat.getColor(this, R.color.on_primary));
-            tvSub.setText("In Progress...");
+            tvSub.setText(customSub != null ? customSub : "In Progress...");
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.primary));
+            tvLive.setVisibility(View.VISIBLE);
             if (lineView != null) lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
         } else {
-            circle.setBackgroundResource(R.drawable.bg_chip_inactive);
-            tvSub.setText(subtitle);
+            circle.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.surface_variant));
+            icon.setImageResource(R.drawable.ic_check_circle);
+            icon.setColorFilter(ContextCompat.getColor(this, R.color.text_hint));
+            tvSub.setText("Waiting...");
+            tvSub.setTextColor(ContextCompat.getColor(this, R.color.text_hint));
+            tvLive.setVisibility(View.GONE);
             if (lineView != null) lineView.setBackgroundColor(ContextCompat.getColor(this, R.color.surface_variant));
         }
     }
 
     private void updateOrderDetails(Order order) {
-        binding.tvProductName.setText(order.getProductName() + " × " + order.getQuantity());
-        binding.tvProductTotal.setText(String.format("₱%.0f", order.getProductPrice() * order.getQuantity()));
-        binding.tvDeliveryFee.setText(String.format("₱%.0f", order.getDeliveryFee()));
-        binding.tvTotal.setText(String.format("₱%.0f", order.getTotalAmount()));
+        binding.layoutOrderItems.removeAllViews();
+
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
+            for (CartItem item : order.getItems()) {
+                addItemToLayout(item.getProductName(), item.getQuantity(), item.getPrice(), item.getImageBase64());
+            }
+        } else {
+            // Fallback for legacy single-item orders
+            addItemToLayout(order.getProductName(), order.getQuantity(), order.getProductPrice(), order.getProductImageBase64());
+        }
+
+        binding.tvTotal.setText(String.format(Locale.getDefault(), "₱%.0f", order.getTotalAmount()));
+    }
+
+    private void addItemToLayout(String name, int qty, double price, String imgBase64) {
+        View view = LayoutInflater.from(this).inflate(R.layout.item_order_summary_product, binding.layoutOrderItems, false);
+        
+        ImageView iv = view.findViewById(R.id.ivProduct);
+        TextView tvName = view.findViewById(R.id.tvProductName);
+        TextView tvQty = view.findViewById(R.id.tvProductQty);
+        TextView tvPrice = view.findViewById(R.id.tvProductPrice);
+
+        tvName.setText(name);
+        tvQty.setText("x" + qty);
+        tvPrice.setText(String.format(Locale.getDefault(), "₱%.0f", price * qty));
+
+        if (imgBase64 != null && !imgBase64.isEmpty()) {
+            Bitmap bm = ImageHelper.base64ToBitmap(imgBase64);
+            if (bm != null) iv.setImageBitmap(bm);
+        }
+
+        binding.layoutOrderItems.addView(view);
+    }
+
+    private void updateAddress(Order order) {
+        String fullAddress = order.getCustomerAddress();
+        if (fullAddress != null && !fullAddress.isEmpty()) {
+            if (fullAddress.contains(",")) {
+                int firstComma = fullAddress.indexOf(",");
+                binding.tvAddressMain.setText(fullAddress.substring(0, firstComma).trim());
+                binding.tvAddressSub.setText(fullAddress.substring(firstComma + 1).trim());
+            } else {
+                binding.tvAddressMain.setText(fullAddress);
+                binding.tvAddressSub.setText("");
+            }
+        } else {
+            binding.tvAddressMain.setText("Location pinned");
+            binding.tvAddressSub.setText("");
+        }
+    }
+
+    private void updateContactInfo(Order order) {
+        binding.tvContactName.setText(order.getSellerName());
+        
+        FirebaseHelper.getDb().collection("users").document(order.getSellerId()).get().addOnSuccessListener(doc -> {
+            String phone = doc.getString("phone");
+            if (phone != null) {
+                binding.tvContactPhone.setText(phone);
+                binding.btnCall.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone))));
+            }
+        });
+
+        binding.btnMessage.setOnClickListener(v -> {
+            Toast.makeText(this, "Messaging feature coming soon!", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void updateMapVisibility(Order order) {
-        boolean showMap = "On the way".equals(order.getStatus()) || "Delivered".equals(order.getStatus());
+        boolean showMap = Order.STATUS_ON_THE_WAY.equals(order.getStatus());
         binding.cardMap.setVisibility(showMap ? View.VISIBLE : View.GONE);
         if (showMap) updateMapMarkers(order);
     }
 
     private void updateMapMarkers(Order order) {
-        // Use RIDER coordinates if available, otherwise fallback to seller store coordinates
         double lat = (order.getRiderLat() != 0) ? order.getRiderLat() : order.getSellerLat();
         double lng = (order.getRiderLng() != 0) ? order.getRiderLng() : order.getSellerLng();
         double cusLat = order.getCustomerLat(), cusLng = order.getCustomerLng();
@@ -151,14 +278,12 @@ public class OrderTrackingActivity extends AppCompatActivity {
         if (riderMarker == null) {
             riderMarker = new Marker(binding.mapView);
             riderMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_delivery_dining));
-            riderMarker.setTitle("Rider is here");
             binding.mapView.getOverlays().add(riderMarker);
         }
         riderMarker.setPosition(riderPoint);
 
         if (customerMarker == null) {
             customerMarker = new Marker(binding.mapView);
-            customerMarker.setTitle("Your Location");
             binding.mapView.getOverlays().add(customerMarker);
         }
         customerMarker.setPosition(customerPoint);
@@ -169,23 +294,12 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
     private boolean isDone(String current, String step) { return stepIndex(current) > stepIndex(step); }
     private int stepIndex(String status) {
-        switch (status) {
-            case "Pending": return 0;
-            case "Confirmed": return 1;
-            case "Preparing": return 2;
-            case "On the way": return 3;
-            case "Delivered": return 4;
-            default: return 0;
-        }
-    }
-    private int progressForStatus(String status) {
-        switch (status) {
-            case "Confirmed": return 25;
-            case "Preparing": return 50;
-            case "On the way": return 75;
-            case "Delivered": return 100;
-            default: return 10;
-        }
+        if (Order.STATUS_PENDING.equals(status)) return 0;
+        if (Order.STATUS_CONFIRMED.equals(status)) return 1;
+        if (Order.STATUS_PREPARING.equals(status)) return 2;
+        if (Order.STATUS_ON_THE_WAY.equals(status)) return 3;
+        if (Order.STATUS_DELIVERED.equals(status)) return 4;
+        return 0;
     }
 
     @Override protected void onResume() { super.onResume(); binding.mapView.onResume(); }

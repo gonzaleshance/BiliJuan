@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.activities.DisabledAccountActivity;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.activities.admin.AdminDashboardActivity;
@@ -29,14 +30,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Already logged in — skip onboarding, go straight to dashboard
         FirebaseUser currentUser = FirebaseHelper.getAuth().getCurrentUser();
         if (currentUser != null) {
             fetchRoleAndRoute(currentUser.getUid());
             return;
         }
 
-        // Inflate layout via ViewBinding
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -51,28 +50,33 @@ public class SplashActivity extends AppCompatActivity {
         );
     }
 
-    // ── Onboarding setup ─────────────────────────────────────────────────────
-
     private void setupOnboarding() {
         List<OnboardingAdapter.Slide> slides = new ArrayList<>();
         slides.add(new OnboardingAdapter.Slide(
-                "🛒",
-                "Bilijuan sa Saranay",
+                R.drawable.ic_onboarding_1,
+                "Bilijuan Marketplace",
                 "Order fresh homemade goods from your neighbors — delivered right to your door."
         ));
         slides.add(new OnboardingAdapter.Slide(
-                "🍳",
+                R.drawable.ic_onboarding_2,
                 "Support Local Sellers",
-                "From kakanin to gulayan, discover everyday staples made with love inside Saranay."
+                "From kakanin to gulayan, discover everyday staples made with love by local cooks."
         ));
         slides.add(new OnboardingAdapter.Slide(
-                "📍",
+                R.drawable.ic_onboarding_3,
                 "Track Every Delivery",
                 "Watch your order move from the seller's kitchen all the way to your gate in real time."
         ));
 
         OnboardingAdapter adapter = new OnboardingAdapter(slides);
         binding.viewPagerOnboarding.setAdapter(adapter);
+
+        // Page Transformer for smooth slide animations
+        binding.viewPagerOnboarding.setPageTransformer((page, position) -> {
+            page.setAlpha(0.5f + (1 - Math.abs(position)) * 0.5f);
+            page.setScaleX(0.85f + (1 - Math.abs(position)) * 0.15f);
+            page.setScaleY(0.85f + (1 - Math.abs(position)) * 0.15f);
+        });
 
         buildDots(slides.size());
         updateDots(0, slides.size());
@@ -82,27 +86,34 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onPageSelected(int position) {
                         updateDots(position, slides.size());
+                        
+                        // Animate Progress Bar
+                        int progress = ((position + 1) * 100) / slides.size();
+                        binding.onboardingProgress.setProgress(progress, true);
+
                         boolean isLast = position == slides.size() - 1;
-                        binding.btnGetStarted.setVisibility(
-                                isLast ? View.VISIBLE : View.INVISIBLE
-                        );
+                        if (isLast) {
+                            binding.btnGetStarted.setAlpha(0f);
+                            binding.btnGetStarted.setVisibility(View.VISIBLE);
+                            binding.btnGetStarted.animate().alpha(1f).setDuration(400).start();
+                        } else {
+                            binding.btnGetStarted.setVisibility(View.INVISIBLE);
+                        }
                     }
                 }
         );
     }
 
-    // ── Dot indicators ────────────────────────────────────────────────────────
-
     private void buildDots(int count) {
         binding.dotsContainer.removeAllViews();
         for (int i = 0; i < count; i++) {
             View dot = new View(this);
-            int sizePx = dpToPx(10);
+            int sizePx = dpToPx(8);
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(sizePx, sizePx);
-            params.setMargins(dpToPx(5), 0, dpToPx(5), 0);
+            params.setMargins(dpToPx(6), 0, dpToPx(6), 0);
             dot.setLayoutParams(params);
-            dot.setBackgroundResource(com.appdev.bilijuan.R.drawable.bg_dot_inactive);
+            dot.setBackgroundResource(R.drawable.bg_dot_inactive);
             binding.dotsContainer.addView(dot);
         }
     }
@@ -111,11 +122,13 @@ public class SplashActivity extends AppCompatActivity {
         for (int i = 0; i < count; i++) {
             View dot = binding.dotsContainer.getChildAt(i);
             if (dot == null) continue;
-            dot.setBackgroundResource(
-                    i == activeIndex
-                            ? com.appdev.bilijuan.R.drawable.bg_dot_active
-                            : com.appdev.bilijuan.R.drawable.bg_dot_inactive
-            );
+            
+            boolean isActive = i == activeIndex;
+            dot.setBackgroundResource(isActive ? R.drawable.bg_dot_active : R.drawable.bg_dot_inactive);
+            
+            // Animate dot size
+            float scale = isActive ? 1.2f : 1.0f;
+            dot.animate().scaleX(scale).scaleY(scale).setDuration(200).start();
         }
     }
 
@@ -123,8 +136,6 @@ public class SplashActivity extends AppCompatActivity {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-
-    // ── Role routing ──────────────────────────────────────────────────────────
 
     private void fetchRoleAndRoute(String uid) {
         FirebaseHelper.getDb().collection("users").document(uid).get()

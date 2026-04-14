@@ -51,6 +51,9 @@ public class FoodListingAdapter extends RecyclerView.Adapter<FoodListingAdapter.
         h.tvRating.setText(String.format(Locale.getDefault(),
                 "%.1f (%d)", p.getStars(), p.getRatingCount()));
 
+        // Clear the image view first to prevent wrong images appearing during recycling
+        h.ivProduct.setImageDrawable(null);
+
         if (p.getImageBase64() != null && !p.getImageBase64().isEmpty()) {
             try {
                 byte[] bytes = Base64.decode(p.getImageBase64(), Base64.DEFAULT);
@@ -58,6 +61,7 @@ public class FoodListingAdapter extends RecyclerView.Adapter<FoodListingAdapter.
                         .asBitmap().load(bytes)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.color.surface_variant)
+                        .error(R.color.surface_variant)
                         .into(h.ivProduct);
             } catch (Exception e) {
                 h.ivProduct.setImageResource(R.color.surface_variant);

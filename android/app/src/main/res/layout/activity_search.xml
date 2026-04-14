@@ -1,74 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
+    android:background="#F8F9FA">
 
-    <!-- Search Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:background="@color/surface"
-        android:elevation="4dp">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_arrow_back"
-            android:background="@android:color/transparent"
-            app:tint="@color/text_primary"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundColor="@color/surface_variant"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:boxStrokeColor="@color/primary">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="Search food, store, category..."
-                android:inputType="text"
-                android:imeOptions="actionSearch"
-                android:textSize="14sp"
-                android:textColor="@color/text_primary"/>
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/emptyResults"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Walang nahanap na pagkain."
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"
-        android:gravity="center"
-        android:paddingVertical="48dp"
-        android:visibility="gone"/>
+        android:background="#27AE60"
+        app:elevation="0dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvResults"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="48dp"
+            android:paddingBottom="20dp"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Search Food"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="27dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_search"
+                        app:tint="#B2BEC3"/>
+
+                    <EditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search for food, store, category..."
+                        android:textSize="15sp"
+                        android:textColor="#2D3436"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingStart="12dp"
+                        android:textCursorDrawable="@null"
+                        android:textColorHint="#B2BEC3"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <!-- Suggestions Section -->
+            <LinearLayout
+                android:id="@+id/layoutSuggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Popular Stores"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2D3436"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStoreSuggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingHorizontal="12dp"
+                    android:orientation="horizontal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2D3436"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    app:singleSelection="true"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/emptyResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No results found."
+                android:textSize="14sp"
+                android:textColor="#636E72"
+                android:gravity="center"
+                android:paddingVertical="64dp"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="100dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/customerNav"
+        layout="@layout/layout_customer_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
