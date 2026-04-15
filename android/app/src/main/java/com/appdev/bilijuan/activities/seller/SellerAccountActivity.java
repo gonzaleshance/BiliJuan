@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -189,15 +188,7 @@ public class SellerAccountActivity extends AppCompatActivity {
         btnChangePhoto.setOnClickListener(v -> pickerLauncher.launch("image/*"));
 
         btnUpdatePin.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Repin Store Location")
-                    .setMessage("This will open the map. Your pinned location should accurately represent your physical store address.")
-                    .setPositiveButton("Open Map", (d, w) -> {
-                        Intent intent = new Intent(this, SellerPinRegistrationActivity.class);
-                        pinMapLauncher.launch(intent);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            showRepinConfirmSheet();
         });
 
         btnSave.setOnClickListener(v -> {
@@ -240,6 +231,21 @@ public class SellerAccountActivity extends AppCompatActivity {
 
         dialog.setContentView(view);
         dialog.show();
+    }
+
+    private void showRepinConfirmSheet() {
+        BottomSheetDialog confirmSheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_repin_confirm, null);
+        confirmSheet.setContentView(v);
+
+        v.findViewById(R.id.btnConfirm).setOnClickListener(view -> {
+            confirmSheet.dismiss();
+            Intent intent = new Intent(this, SellerPinRegistrationActivity.class);
+            pinMapLauncher.launch(intent);
+        });
+
+        v.findViewById(R.id.btnCancel).setOnClickListener(view -> confirmSheet.dismiss());
+        confirmSheet.show();
     }
 
     private void showPostBottomSheet() {

@@ -251,11 +251,12 @@ public class OrderTrackingActivity extends AppCompatActivity {
             if (phone != null) {
                 binding.tvContactPhone.setText(phone);
                 binding.btnCall.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone))));
+                binding.btnMessage.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("smsto:" + phone));
+                    startActivity(intent);
+                });
             }
-        });
-
-        binding.btnMessage.setOnClickListener(v -> {
-            Toast.makeText(this, "Messaging feature coming soon!", Toast.LENGTH_SHORT).show();
         });
     }
 

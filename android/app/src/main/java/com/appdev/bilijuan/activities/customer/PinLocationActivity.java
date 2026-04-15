@@ -1,11 +1,13 @@
 package com.appdev.bilijuan.activities.customer;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +42,7 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import org.osmdroid.api.IMapController;
@@ -112,8 +115,10 @@ public class PinLocationActivity extends AppCompatActivity {
         setupSuggestions();
 
         btnConfirm.setOnClickListener(v -> saveLocationAndProceed());
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.btnSkipPin).setOnClickListener(v -> finish());
         findViewById(R.id.btnMyLocation).setOnClickListener(v -> checkSettingsAndGetLocation());
+        findViewById(R.id.btnVerifyExternal).setOnClickListener(v -> showExternalVerifySheet());
 
         checkSettingsAndGetLocation();
     }
@@ -188,7 +193,6 @@ public class PinLocationActivity extends AppCompatActivity {
             etSearch.setText(displayName);
             etSearch.setSelection(etSearch.getText().length());
             
-            // Immediately update address from the new center
             updateAddressFromCenter();
         });
         rvSuggestions.setLayoutManager(new LinearLayoutManager(this));
@@ -272,7 +276,6 @@ public class PinLocationActivity extends AppCompatActivity {
         GeoPoint center = (GeoPoint) mapView.getMapCenter();
         new Thread(() -> {
             try {
-                // geocoder.getFromLocation can sometimes be slow or fail on some devices
                 List<Address> addresses = geocoder.getFromLocation(center.getLatitude(), center.getLongitude(), 1);
                 runOnUiThread(() -> {
                     if (addresses != null && !addresses.isEmpty()) {
@@ -286,6 +289,35 @@ public class PinLocationActivity extends AppCompatActivity {
                 runOnUiThread(() -> tvCurrentAddress.setText("Geocoder unavailable"));
             }
         }).start();
+    }
+
+    private void showExternalVerifySheet() {
+        GeoPoint center = (GeoPoint) mapView.getMapCenter();
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_google_maps_redirection, null);
+        sheet.setContentView(v);
+
+        v.findViewById(R.id.btnOpenMaps).setOnClickListener(view -> {
+            sheet.dismiss();
+            double lat = center.getLatitude();
+            double lng = center.getLongitude();
+            
+            // Format: geo:lat,lng?q=lat,lng(Label)
+            String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", 
+                    lat, lng, lat, lng, Uri.encode("Confirm My Location"));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            mapIntent.setPackage("com.google.android.apps.maps");
+            
+            try {
+                startActivity(mapIntent);
+            } catch (ActivityNotFoundException e) {
+                Uri webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
+                startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+            }
+        });
+
+        v.findViewById(R.id.btnCancel).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
     }
 
     private void checkSettingsAndGetLocation() {
@@ -370,7 +402,6 @@ public class PinLocationActivity extends AppCompatActivity {
         Map<String, Object> update = new HashMap<>();
         String fullAddress = tvCurrentAddress.getText().toString();
         
-        // Don't save if it's still detecting
         if (fullAddress.equals("Detecting location...") || fullAddress.equals("Geocoder unavailable")) {
             Toast.makeText(this, "Please wait for address to be detected", Toast.LENGTH_SHORT).show();
             btnConfirm.setEnabled(true);

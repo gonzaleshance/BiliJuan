@@ -29,6 +29,7 @@ import com.appdev.bilijuan.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import org.osmdroid.api.IMapController;
@@ -47,7 +48,7 @@ import java.util.Locale;
 /**
  * SellerPinRegistrationActivity
  *
- * Updated with a fixed center pointer and External Maps verification (UX design).
+ * Updated with a fixed center pointer and Premium Bottom Sheet confirmations.
  */
 public class SellerPinRegistrationActivity extends AppCompatActivity {
 
@@ -92,9 +93,9 @@ public class SellerPinRegistrationActivity extends AppCompatActivity {
 
         btnConfirm.setEnabled(true);
         btnConfirm.setAlpha(1.0f);
-        btnConfirm.setOnClickListener(v -> confirmPin());
+        btnConfirm.setOnClickListener(v -> showFinalConfirmationSheet());
         
-        btnVerify.setOnClickListener(v -> showExternalVerifyDialog());
+        btnVerify.setOnClickListener(v -> showExternalVerifySheet());
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.btnMyLocation).setOnClickListener(v -> goToMyLocation());
@@ -221,26 +222,37 @@ public class SellerPinRegistrationActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void showExternalVerifyDialog() {
+    private void showExternalVerifySheet() {
         if (selectedPoint == null) return;
-        
-        new AlertDialog.Builder(this)
-                .setTitle("Verify on External Maps?")
-                .setMessage("We will open Google Maps at this exact location so you can verify landmarks or view Street View. Accuracy is key!")
-                .setPositiveButton("Open Google Maps", (d, w) -> {
-                    String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f", 
-                            selectedPoint.getLatitude(), selectedPoint.getLongitude(),
-                            selectedPoint.getLatitude(), selectedPoint.getLongitude());
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                    intent.setPackage("com.google.android.apps.maps");
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(this, "Google Maps app not found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_google_maps_redirection, null);
+        sheet.setContentView(v);
+
+        v.findViewById(R.id.btnOpenMaps).setOnClickListener(view -> {
+            sheet.dismiss();
+            double lat = selectedPoint.getLatitude();
+            double lng = selectedPoint.getLongitude();
+            
+            // To avoid the "0,0 bug" and ensure a pin drops at the center:
+            // geo:lat,lng?q=lat,lng(Label) is the most reliable format.
+            String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", 
+                    lat, lng, lat, lng, Uri.encode("Verify Store Location"));
+            
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            mapIntent.setPackage("com.google.android.apps.maps");
+            
+            try {
+                startActivity(mapIntent);
+            } catch (Exception e) {
+                // Fallback: Web browser
+                Uri webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
+                startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+            }
+        });
+
+        v.findViewById(R.id.btnCancel).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
     }
 
     private void goToMyLocation() {
@@ -267,22 +279,25 @@ public class SellerPinRegistrationActivity extends AppCompatActivity {
         }
     }
 
-    private void confirmPin() {
+    private void showFinalConfirmationSheet() {
         if (selectedPoint == null) return;
-        
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Store Location")
-                .setMessage("Are you sure this is the exact physical location of your store? Fake or inaccurate locations may lead to account suspension.")
-                .setPositiveButton("Yes, Confirm", (d, w) -> {
-                    Intent result = new Intent();
-                    result.putExtra("lat", selectedPoint.getLatitude());
-                    result.putExtra("lng", selectedPoint.getLongitude());
-                    result.putExtra("address", selectedAddress);
-                    setResult(RESULT_OK, result);
-                    finish();
-                })
-                .setNegativeButton("Wait, Re-check", null)
-                .show();
+
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_repin_confirm, null);
+        sheet.setContentView(v);
+
+        v.findViewById(R.id.btnConfirm).setOnClickListener(view -> {
+            sheet.dismiss();
+            Intent result = new Intent();
+            result.putExtra("lat", selectedPoint.getLatitude());
+            result.putExtra("lng", selectedPoint.getLongitude());
+            result.putExtra("address", selectedAddress);
+            setResult(RESULT_OK, result);
+            finish();
+        });
+
+        v.findViewById(R.id.btnCancel).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
     }
 
     @Override protected void onResume()  { super.onResume();  mapView.onResume(); }
