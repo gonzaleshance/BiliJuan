@@ -12,6 +12,41 @@
         android:layout_height="match_parent"
         android:clickable="true"/>
 
+    <!-- Fixed Center Pointer (Optimized UX Pointer) -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="48dp"
+        android:elevation="12dp">
+        
+        <!-- Outer Circle / Target area -->
+        <View
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_white_circle"
+            android:backgroundTint="#3327AE60"
+            android:alpha="0.5"/>
+
+        <!-- The Pin -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_location"
+            app:tint="#EB4D4B" />
+            
+        <!-- Precise tip dot -->
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_white_circle"
+            android:backgroundTint="#EB4D4B"/>
+    </FrameLayout>
+
     <!-- Top card: back button + Search + instruction -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +54,8 @@
         android:layout_gravity="top"
         android:orientation="vertical"
         android:layout_margin="12dp"
-        android:background="#EEFFFFFF"
+        android:background="@drawable/bg_card_white"
+        android:backgroundTint="#EEFFFFFF"
         android:padding="14dp"
         android:elevation="6dp">
 
@@ -57,7 +93,8 @@
                 android:src="@drawable/ic_location"
                 app:fabSize="mini"
                 app:backgroundTint="#27AE60"
-                app:tint="#FFFFFF"/>
+                app:tint="#FFFFFF"
+                app:elevation="2dp"/>
         </LinearLayout>
 
         <!-- Search Bar -->
@@ -104,20 +141,54 @@
             android:id="@+id/tvInstruction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap the map to drop a pin on your store's exact location."
-            android:textSize="13sp"
+            android:text="Drag the map to position your store exactly under the red pin."
+            android:textSize="12sp"
             android:textColor="#636E72"
             android:lineSpacingMultiplier="1.4"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/tvAddress"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="12sp"
-            android:textColor="#27AE60"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_surface_section"
+            android:padding="10dp">
+            
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location"
+                app:tint="#27AE60"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Detecting location..."
+                android:textSize="12sp"
+                android:textColor="#2D3436"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+            
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerifyExternal"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Verify"
+                android:textSize="11sp"
+                android:textColor="#27AE60"
+                app:icon="@drawable/google"
+                app:iconTint="@null"
+                app:iconSize="14dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingHorizontal="8dp"/>
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -128,19 +199,21 @@
         android:layout_gravity="bottom"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#EEFFFFFF"
-        android:elevation="8dp">
+        android:background="@drawable/bg_card_top_rounded"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="12dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirmPin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Confirm Store Location"
+            android:text="This is my exact store location"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:backgroundTint="#27AE60"
-            app:cornerRadius="12dp"/>
+            app:cornerRadius="16dp"
+            app:elevation="4dp"/>
 
     </LinearLayout>
 

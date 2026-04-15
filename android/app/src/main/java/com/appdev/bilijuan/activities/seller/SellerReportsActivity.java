@@ -1,5 +1,6 @@
 package com.appdev.bilijuan.activities.seller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +39,7 @@ public class SellerReportsActivity extends AppCompatActivity {
     private String sellerId;
     private SalesAdapter salesAdapter;
     private final List<Order> salesHistory = new ArrayList<>();
+    private String currentRange = "Today";
 
     private final String[] DATE_RANGES = {
             "Today", "This Week", "This Month", "This Year", "All Time"
@@ -56,6 +59,8 @@ public class SellerReportsActivity extends AppCompatActivity {
         
         setupRecyclerView();
         setupDateRangePicker();
+
+        binding.btnGenerateReport.setOnClickListener(v -> shareReport());
     }
 
     private void setupRecyclerView() {
@@ -74,7 +79,7 @@ public class SellerReportsActivity extends AppCompatActivity {
                 if (v instanceof TextView) {
                     TextView tv = (TextView) v;
                     tv.setText(DATE_RANGES[position]);
-                    tv.setTextColor(0xFFFFFFFF);
+                    tv.setTextColor(0xFF27AE60); // Changed to green for white background
                     tv.setPadding(0, 0, 0, 0);
                 }
                 return v;
@@ -90,7 +95,8 @@ public class SellerReportsActivity extends AppCompatActivity {
         binding.spinnerRange.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                loadReport(DATE_RANGES[pos]);
+                currentRange = DATE_RANGES[pos];
+                loadReport(currentRange);
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
@@ -235,6 +241,38 @@ public class SellerReportsActivity extends AppCompatActivity {
                 break;
         }
         return c;
+    }
+
+    private void shareReport() {
+        if (salesHistory.isEmpty()) {
+            Toast.makeText(this, "No data to export", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("BiliJuan Business Report - ").append(currentRange).append("\n");
+        report.append("==============================\n\n");
+        report.append("Total Revenue: ").append(binding.tvRevenue.getText()).append("\n");
+        report.append("Completed Orders: ").append(binding.tvOrderCount.getText()).append("\n");
+        report.append("Cancelled Orders: ").append(binding.tvCancelledCount.getText()).append("\n");
+        report.append("Completion Rate: ").append(binding.tvCompletionRate.getText()).append("\n");
+        report.append("Average Rating: ").append(binding.tvAvgRating.getText()).append("\n");
+        report.append("Best Selling Item: ").append(binding.tvBestSeller.getText()).append("\n\n");
+        
+        report.append("Sales Breakdown:\n");
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        for (Order o : salesHistory) {
+            String date = o.getCreatedAt() != null ? df.format(o.getCreatedAt()) : "N/A";
+            String product = o.getProductName() != null ? o.getProductName() : "Bulk Order";
+            report.append("- ").append(date).append(": ").append(product)
+                    .append(" (₱").append(o.getTotalAmount()).append(")\n");
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "BiliJuan Sales Report (" + currentRange + ")");
+        intent.putExtra(Intent.EXTRA_TEXT, report.toString());
+        startActivity(Intent.createChooser(intent, "Share Report via"));
     }
 
     private class SalesAdapter extends RecyclerView.Adapter<SalesAdapter.VH> {

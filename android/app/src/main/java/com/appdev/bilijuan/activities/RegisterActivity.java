@@ -8,11 +8,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Patterns;
@@ -23,12 +21,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.activities.customer.HomeActivity;
 import com.appdev.bilijuan.activities.seller.SellerDashboardActivity;
 import com.appdev.bilijuan.activities.seller.SellerPinRegistrationActivity;
@@ -61,6 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
     // Seller store pin — must be set before registration is allowed
     private double storeLat = 0;
     private double storeLng = 0;
+    private String storeAddress = "";
 
     // ── Image picker ──────────────────────────────────────────────────────────
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -258,6 +255,10 @@ public class RegisterActivity extends AppCompatActivity {
         binding.btnPinStoreLocation.setEnabled(true);
         binding.tvPinStoreStatus.setText("✓ Location Pinned");
         binding.tvPinStoreStatus.setTextColor(Color.parseColor("#27AE60"));
+        if (!TextUtils.isEmpty(storeAddress)) {
+            binding.tvPinCoords.setVisibility(View.VISIBLE);
+            binding.tvPinCoords.setText(storeAddress);
+        }
     }
 
     @Override
@@ -284,6 +285,7 @@ public class RegisterActivity extends AppCompatActivity {
                 && data != null) {
             storeLat = data.getDoubleExtra("lat", 0);
             storeLng = data.getDoubleExtra("lng", 0);
+            storeAddress = data.getStringExtra("address");
             if (storeLat != 0 && storeLng != 0) {
                 enforceSellerPinState();
                 Toast.makeText(this, "Store location pinned ✓",
@@ -453,16 +455,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveGoogleUserToFirestore(String uid, String email) {
-        String name, phone;
+        String name, phone, address;
         if ("customer".equals(selectedRole)) {
             name  = getText(binding.etName);
             phone = getText(binding.etPhone);
+            address = "";
         } else {
             name  = getText(binding.etStoreName);
             phone = getText(binding.etSellerPhone);
+            address = storeAddress;
         }
 
-        User user = new User(uid, name, email, selectedRole, phone, "");
+        User user = new User(uid, name, email, selectedRole, phone, address);
 
         if ("seller".equals(selectedRole)) {
             user.setStoreImageBase64(base64Image);
@@ -493,16 +497,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveUserToFirestore(String uid, String email) {
-        String name, phone;
+        String name, phone, address;
         if ("customer".equals(selectedRole)) {
             name  = getText(binding.etName);
             phone = getText(binding.etPhone);
+            address = "";
         } else {
             name  = getText(binding.etStoreName);
             phone = getText(binding.etSellerPhone);
+            address = storeAddress;
         }
 
-        User user = new User(uid, name, email, selectedRole, phone, "");
+        User user = new User(uid, name, email, selectedRole, phone, address);
 
         if ("seller".equals(selectedRole)) {
             user.setStoreImageBase64(base64Image);

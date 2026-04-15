@@ -89,8 +89,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
         binding.btnNotification.setOnClickListener(
                 v -> NotificationUIHelper.showNotificationSheet(this));
 
-        binding.btnEditStoreLocation.setOnClickListener(v -> autoSaveSellerLocation());
-        
         binding.btnGoToOrders.setOnClickListener(v -> switchTab("orders"));
 
         loadSellerProfile();

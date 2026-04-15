@@ -123,14 +123,42 @@
         app:hintTextColor="#27AE60"
         android:textColorHint="#636E72"
         app:cursorColor="#27AE60"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="8dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEditAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPostalAddress"
-            android:textColor="#2D3436"/>
+            android:textColor="#2D3436"
+            android:enabled="false"/>
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Note: Your pinned location represents the real-world address of your store. Please ensure this is accurate to help customers and riders find you."
+        android:textSize="11sp"
+        android:textColor="#B2BEC3"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="4dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUpdateLocation"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Update Store Pin"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#27AE60"
+        android:backgroundTint="#FFFFFF"
+        app:strokeColor="#27AE60"
+        app:strokeWidth="1dp"
+        app:cornerRadius="16dp"
+        app:icon="@drawable/ic_location"
+        app:iconTint="#27AE60"
+        app:iconGravity="textStart"
+        android:layout_marginBottom="24dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSaveProfile"

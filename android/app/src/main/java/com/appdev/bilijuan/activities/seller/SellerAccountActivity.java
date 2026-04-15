@@ -1,5 +1,6 @@
 package com.appdev.bilijuan.activities.seller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -46,6 +48,11 @@ public class SellerAccountActivity extends AppCompatActivity {
 
     private String encodedImage;
     private ImageView ivEditAvatar;
+    private TextInputEditText etEditAddress;
+    
+    private double updatedLat = 0;
+    private double updatedLng = 0;
+    private String updatedAddress = "";
 
     private final ActivityResultLauncher<String> pickerLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -56,6 +63,22 @@ public class SellerAccountActivity extends AppCompatActivity {
                     ivEditAvatar.setPadding(0, 0, 0, 0);
                     ivEditAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ivEditAvatar.setImageTintList(null);
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> pinMapLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    updatedLat = result.getData().getDoubleExtra("lat", 0);
+                    updatedLng = result.getData().getDoubleExtra("lng", 0);
+                    updatedAddress = result.getData().getStringExtra("address");
+                    
+                    if (etEditAddress != null && !TextUtils.isEmpty(updatedAddress)) {
+                        etEditAddress.setText(updatedAddress);
+                    }
+                    Toast.makeText(this, "Location updated. Don't forget to save!", Toast.LENGTH_LONG).show();
                 }
             }
     );
@@ -138,13 +161,19 @@ public class SellerAccountActivity extends AppCompatActivity {
         TextView btnChangePhoto = view.findViewById(R.id.btnChangePhoto);
         TextInputEditText etName = view.findViewById(R.id.etEditName);
         TextInputEditText etPhone = view.findViewById(R.id.etEditPhone);
-        TextInputEditText etAddress = view.findViewById(R.id.etEditAddress);
+        etEditAddress = view.findViewById(R.id.etEditAddress);
+        View btnUpdatePin = view.findViewById(R.id.btnUpdateLocation);
         View btnSave = view.findViewById(R.id.btnSaveProfile);
+
+        // Reset temporary update state
+        updatedLat = currentUser.getLatitude();
+        updatedLng = currentUser.getLongitude();
+        updatedAddress = currentUser.getAddress();
 
         // Populate
         etName.setText(currentUser.getName());
         etPhone.setText(currentUser.getPhone());
-        etAddress.setText(currentUser.getAddress());
+        etEditAddress.setText(currentUser.getAddress());
         encodedImage = currentUser.getStoreImageBase64();
 
         if (!TextUtils.isEmpty(encodedImage)) {
@@ -159,10 +188,21 @@ public class SellerAccountActivity extends AppCompatActivity {
 
         btnChangePhoto.setOnClickListener(v -> pickerLauncher.launch("image/*"));
 
+        btnUpdatePin.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Repin Store Location")
+                    .setMessage("This will open the map. Your pinned location should accurately represent your physical store address.")
+                    .setPositiveButton("Open Map", (d, w) -> {
+                        Intent intent = new Intent(this, SellerPinRegistrationActivity.class);
+                        pinMapLauncher.launch(intent);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+
         btnSave.setOnClickListener(v -> {
             String newName = etName.getText().toString().trim();
             String newPhone = etPhone.getText().toString().trim();
-            String newAddress = etAddress.getText().toString().trim();
 
             if (TextUtils.isEmpty(newName)) {
                 etName.setError("Name is required");
@@ -174,7 +214,9 @@ public class SellerAccountActivity extends AppCompatActivity {
             Map<String, Object> updates = new HashMap<>();
             updates.put("name", newName);
             updates.put("phone", newPhone);
-            updates.put("address", newAddress);
+            updates.put("address", updatedAddress);
+            updates.put("latitude", updatedLat);
+            updates.put("longitude", updatedLng);
             updates.put("storeImageBase64", encodedImage);
 
             FirebaseHelper.getDb().collection("users").document(sellerId)
@@ -182,7 +224,9 @@ public class SellerAccountActivity extends AppCompatActivity {
                     .addOnSuccessListener(aVoid -> {
                         currentUser.setName(newName);
                         currentUser.setPhone(newPhone);
-                        currentUser.setAddress(newAddress);
+                        currentUser.setAddress(updatedAddress);
+                        currentUser.setLatitude(updatedLat);
+                        currentUser.setLongitude(updatedLng);
                         currentUser.setStoreImageBase64(encodedImage);
                         updateUI();
                         dialog.dismiss();

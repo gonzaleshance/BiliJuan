@@ -45,34 +45,57 @@
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     android:layout_marginStart="8dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGenerateReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="Export"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#27AE60"
+                    android:backgroundTint="#FFFFFF"
+                    app:cornerRadius="18dp"
+                    app:icon="@drawable/ic_receipt"
+                    app:iconTint="#27AE60"
+                    app:iconSize="16dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:elevation="4dp"/>
             </LinearLayout>
 
-            <!-- Period Picker -->
-            <LinearLayout
+            <!-- Period Picker (Pill Design) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_white_circle"
-                android:backgroundTint="#33FFFFFF"
-                android:paddingHorizontal="16dp">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
                 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_home"
-                    app:tint="#FFFFFF"
-                    android:alpha="0.8"/>
-                
-                <Spinner
-                    android:id="@+id/spinnerRange"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:overlapAnchor="false"
-                    android:spinnerMode="dropdown"/>
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+                    
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chart"
+                        app:tint="#27AE60"
+                        android:alpha="0.8"/>
+                    
+                    <Spinner
+                        android:id="@+id/spinnerRange"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:overlapAnchor="false"
+                        android:spinnerMode="dropdown"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -89,15 +112,14 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- 1. Revenue Hero Card -->
+            <!-- 1. Revenue Hero Card (Vibrant Green with White Text) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:strokeWidth="1dp"
-                app:strokeColor="#F1F2F6"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="#27AE60"
+                app:strokeWidth="0dp"
                 android:layout_marginBottom="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -112,7 +134,7 @@
                         android:text="TOTAL REVENUE"
                         android:textSize="11sp"
                         android:textStyle="bold"
-                        android:textColor="#B2BEC3"
+                        android:textColor="#CCFFFFFF"
                         android:letterSpacing="0.1"/>
                     <TextView
                         android:id="@+id/tvRevenue"
@@ -121,25 +143,70 @@
                         android:text="₱0"
                         android:textSize="40sp"
                         android:textStyle="bold"
-                        android:textColor="#27AE60"
+                        android:textColor="#FFFFFF"
                         android:layout_marginTop="8dp"/>
                     
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F2F6" android:layout_marginVertical="20dp"/>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#33FFFFFF" android:layout_marginVertical="24dp"/>
                     
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <!-- Sales -->
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                            <TextView android:id="@+id/tvOrderCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#2D3436"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sales" android:textSize="11sp" android:textColor="#636E72"/>
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#33FFFFFF"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_bag"
+                                    app:tint="#FFFFFF"/>
+                            </com.google.android.material.card.MaterialCardView>
+                            <TextView android:id="@+id/tvOrderCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="18sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sales" android:textSize="11sp" android:textColor="#CCFFFFFF" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <View android:layout_width="1dp" android:layout_height="32dp" android:background="#F1F2F6"/>
+
+                        <!-- Canceled -->
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                            <TextView android:id="@+id/tvCancelledCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="20sp" android:textStyle="bold" android:textColor="#EB4D4B"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Canceled" android:textSize="11sp" android:textColor="#636E72"/>
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#33FFFFFF"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_delete"
+                                    app:tint="#FFFFFF"/>
+                            </com.google.android.material.card.MaterialCardView>
+                            <TextView android:id="@+id/tvCancelledCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="18sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Canceled" android:textSize="11sp" android:textColor="#CCFFFFFF" android:layout_marginTop="4dp"/>
                         </LinearLayout>
-                        <View android:layout_width="1dp" android:layout_height="32dp" android:background="#F1F2F6"/>
+
+                        <!-- Rating -->
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                            <TextView android:id="@+id/tvAvgRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0" android:textSize="20sp" android:textStyle="bold" android:textColor="#F1C40F"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rating" android:textSize="11sp" android:textColor="#636E72"/>
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp"
+                                app:cardBackgroundColor="#33FFFFFF"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#FFFFFF"/>
+                            </com.google.android.material.card.MaterialCardView>
+                            <TextView android:id="@+id/tvAvgRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0" android:textSize="18sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rating" android:textSize="11sp" android:textColor="#CCFFFFFF" android:layout_marginTop="4dp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -184,7 +251,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 3. Sales Breakdown List (The "Sales Function") -->
+            <!-- 3. Sales Breakdown List (The "Sales History") -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

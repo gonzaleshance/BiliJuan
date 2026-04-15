@@ -6,186 +6,244 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <!-- OSMDroid MapView — full screen -->
+    <!-- Full-screen OSMDroid map -->
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"/>
 
-    <!-- Fixed Center Pin (Green) -->
-    <ImageView
-        android:id="@+id/ivCenterPin"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+    <!-- Fixed Center Pointer (Optimized UX Pointer) -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_location"
-        app:tint="@color/primary"
-        android:translationY="-24dp"
-        android:elevation="10dp"/>
+        android:paddingBottom="48dp"
+        android:elevation="12dp">
+        
+        <!-- Outer Circle / Target area -->
+        <View
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_white_circle"
+            android:backgroundTint="#3327AE60"
+            android:alpha="0.5"/>
 
-    <!-- Search Section -->
+        <!-- The Pin -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_location"
+            app:tint="@color/primary" />
+            
+        <!-- Precise tip dot -->
+        <View
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_white_circle"
+            android:backgroundTint="@color/primary"/>
+    </FrameLayout>
+
+    <!-- TOP SECTION: Merged Search, Instruction, and Address (Seller-Style Consistency) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:orientation="vertical"
-        android:layout_margin="16dp">
+        android:layout_margin="12dp"
+        android:background="@drawable/bg_card_white"
+        android:backgroundTint="#EEFFFFFF"
+        android:padding="14dp"
+        android:elevation="6dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="8dp"
-            app:strokeColor="@color/primary"
-            app:cardBackgroundColor="@color/surface">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/primary" />
-
-                <EditText
-                    android:id="@+id/etSearchLocation"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="Search street or area..."
-                    android:imeOptions="actionSearch"
-                    android:inputType="textPostalAddress"
-                    android:maxLines="1"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp" />
-
-                <ProgressBar
-                    android:id="@+id/progressSearch"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:indeterminateTint="@color/primary"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Suggestions List -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardSuggestions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:strokeWidth="0dp"
-            android:visibility="gone">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvSuggestions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="250dp"/>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <!-- My Location FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnMyLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:layout_marginBottom="220dp"
-        app:srcCompat="@drawable/ic_location"
-        app:backgroundTint="@color/surface"
-        app:tint="@color/primary"
-        app:fabSize="normal"
-        app:elevation="6dp"
-        android:contentDescription="My Location"/>
-
-    <!-- Map Orientation / Compass Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnCompass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:layout_marginTop="100dp"
-        app:srcCompat="@drawable/ic_search"
-        android:rotation="45"
-        app:backgroundTint="@color/surface"
-        app:tint="@color/text_secondary"
-        app:fabSize="mini"
-        android:visibility="gone"/>
-
-    <!-- Bottom action buttons -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:cardCornerRadius="32dp"
-        android:layout_marginBottom="-32dp"
-        app:cardElevation="16dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="@color/surface">
-
+        <!-- Back + title row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="64dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="@android:color/transparent"
+                app:tint="@color/primary"
+                android:layout_marginEnd="10dp"/>
 
             <TextView
-                android:id="@+id/tvInstruction"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Move the map to align the pin"
-                android:textSize="14sp"
+                android:layout_weight="1"
+                android:text="Set Delivery Location"
+                android:textSize="16sp"
                 android:textStyle="bold"
+                android:textColor="@color/text_primary"/>
+
+            <!-- My Location button -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnMyLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location"
+                app:fabSize="mini"
+                app:backgroundTint="@color/primary"
+                app:tint="@color/on_primary"
+                app:elevation="2dp"/>
+        </LinearLayout>
+
+        <!-- Search Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_search_white"
+            android:backgroundTint="#F1F2F6"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/text_secondary"/>
+
+            <EditText
+                android:id="@+id/etSearchLocation"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Search street or landmark"
+                android:textSize="14sp"
                 android:textColor="@color/text_primary"
-                android:gravity="center"
-                android:layout_marginBottom="8dp"/>
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
+                android:inputType="textPostalAddress"
+                android:layout_marginStart="10dp"
+                android:paddingEnd="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressSearch"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/primary"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvInstruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drag the map to position your exact delivery spot under the pin."
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Detected Address Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_surface_section"
+            android:padding="10dp">
+            
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location"
+                app:tint="@color/primary"
+                android:layout_marginEnd="8dp"/>
 
             <TextView
                 android:id="@+id/tvCurrentAddress"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Detecting location..."
                 android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:layout_marginBottom="24dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConfirmPin"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="Confirm Pin"
-                android:textSize="16sp"
+                android:textColor="@color/text_primary"
                 android:textStyle="bold"
-                android:textColor="@color/on_primary"
-                android:backgroundTint="@color/primary"
-                app:cornerRadius="30dp"
-                android:elevation="4dp"/>
-
+                android:maxLines="2"
+                android:ellipsize="end"/>
+            
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSkipPin"
+                android:id="@+id/btnVerifyExternal"
                 style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Back"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="8dp"/>
-
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Verify"
+                android:textSize="11sp"
+                android:textColor="@color/primary"
+                app:icon="@drawable/google"
+                app:iconTint="@null"
+                app:iconSize="14dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingHorizontal="8dp"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <!-- Suggestions List (Floating below the top card) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardSuggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp"
+        android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSuggestions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="250dp"/>
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- BOTTOM SECTION: Confirm Pin -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/bg_card_top_rounded"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmPin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Deliver to this location"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/on_primary"
+            android:backgroundTint="@color/primary"
+            app:cornerRadius="30dp"
+            app:elevation="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSkipPin"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Cancel"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
