@@ -43,7 +43,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-messaging")
 
-    // Google Sign-In
+    // Google Sign-In (REQUIRED for Google Authentication)
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
     // OSMDroid — open source maps (no API key needed)

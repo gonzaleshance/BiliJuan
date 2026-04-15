@@ -2,6 +2,8 @@ package com.appdev.bilijuan.activities.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -28,7 +30,12 @@ public class AdminSellersActivity extends AppCompatActivity {
 
     private ActivityAdminSellersBinding binding;
     private AdminUsersAdapter sellersAdapter;
-    private final List<User> sellers = new ArrayList<>();
+
+    // allSellers holds every seller from Firestore
+    // displayedSellers is the filtered subset shown in the RecyclerView
+    private final List<User> allSellers       = new ArrayList<>();
+    private final List<User> displayedSellers = new ArrayList<>();
+
     private ListenerRegistration sellersListener, notifListener;
 
     @Override
@@ -39,35 +46,31 @@ public class AdminSellersActivity extends AppCompatActivity {
 
         setupBottomNav();
         setupRecyclerView();
+        setupSearch();
         loadSellers();
         listenForNotifications();
 
-        binding.btnNotification.setOnClickListener(v -> NotificationUIHelper.showNotificationSheet(this));
+        binding.btnNotification.setOnClickListener(
+                v -> NotificationUIHelper.showNotificationSheet(this));
     }
 
-    private void listenForNotifications() {
-        String uid = FirebaseHelper.getCurrentUid();
-        if (uid == null) return;
-
-        notifListener = FirebaseHelper.getDb().collection("notifications")
-                .whereEqualTo("userId", uid)
-                .whereEqualTo("read", false)
-                .addSnapshotListener((snap, e) -> {
-                    if (e != null || snap == null) return;
-                    binding.notifDot.setVisibility(snap.isEmpty() ? View.GONE : View.VISIBLE);
-                });
-    }
+    // ── Bottom nav ────────────────────────────────────────────────────────────
 
     private void setupBottomNav() {
-        AdminNavHelper.setup(this, binding.adminNav.getRoot(), AdminNavHelper.Tab.SELLERS);
+        AdminNavHelper.setup(this, binding.adminNav.getRoot(),
+                AdminNavHelper.Tab.SELLERS);
     }
 
+    // ── RecyclerView ──────────────────────────────────────────────────────────
+
     private void setupRecyclerView() {
-        sellersAdapter = new AdminUsersAdapter(sellers,
+        sellersAdapter = new AdminUsersAdapter(
+                displayedSellers,
                 this::showActionSheet,
                 user -> {
+                    // Tap → view seller's foods
                     Intent intent = new Intent(this, AdminFoodsActivity.class);
-                    intent.putExtra("sellerId", user.getUid());
+                    intent.putExtra("sellerId",   user.getUid());
                     intent.putExtra("sellerName", user.getName());
                     startActivity(intent);
                 });
@@ -75,44 +78,104 @@ public class AdminSellersActivity extends AppCompatActivity {
         binding.rvSellers.setAdapter(sellersAdapter);
     }
 
+    // ── Search ────────────────────────────────────────────────────────────────
+
+    private void setupSearch() {
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
+            @Override public void afterTextChanged(Editable s) {
+                filterSellers(s.toString().trim());
+            }
+        });
+    }
+
+    private void filterSellers(String query) {
+        displayedSellers.clear();
+        if (query.isEmpty()) {
+            displayedSellers.addAll(allSellers);
+        } else {
+            String lower = query.toLowerCase();
+            for (User u : allSellers) {
+                boolean nameMatch  = u.getName()  != null && u.getName().toLowerCase().contains(lower);
+                boolean phoneMatch = u.getPhone() != null && u.getPhone().contains(lower);
+                boolean statusMatch = u.getStatus() != null && u.getStatus().toLowerCase().contains(lower);
+                if (nameMatch || phoneMatch || statusMatch) displayedSellers.add(u);
+            }
+        }
+        sellersAdapter.notifyDataSetChanged();
+        binding.tvEmpty.setVisibility(displayedSellers.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    // ── Load sellers ──────────────────────────────────────────────────────────
+
     private void loadSellers() {
         sellersListener = FirebaseHelper.getDb().collection("users")
                 .whereEqualTo("role", "seller")
                 .addSnapshotListener((snap, e) -> {
                     if (e != null || snap == null) return;
-                    sellers.clear();
+
+                    allSellers.clear();
                     int openCount = 0;
                     for (QueryDocumentSnapshot d : snap) {
                         User u = d.toObject(User.class);
-                        sellers.add(u);
+                        allSellers.add(u);
                         if (u.isOpen()) openCount++;
                     }
-                    sellersAdapter.notifyDataSetChanged();
-                    
-                    binding.tvTotalSellers.setText(String.valueOf(sellers.size()));
+
+                    // Re-apply current search query
+                    String currentQuery = binding.etSearch.getText() != null
+                            ? binding.etSearch.getText().toString().trim() : "";
+                    filterSellers(currentQuery);
+
+                    binding.tvTotalSellers.setText(String.valueOf(allSellers.size()));
                     binding.tvOpenSellers.setText(String.valueOf(openCount));
-                    
-                    binding.tvEmpty.setVisibility(sellers.isEmpty() ? View.VISIBLE : View.GONE);
+                    binding.tvEmpty.setVisibility(
+                            displayedSellers.isEmpty() ? View.VISIBLE : View.GONE);
                 });
     }
 
+    // ── Action sheet ──────────────────────────────────────────────────────────
+
     private void showActionSheet(User user) {
         BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
-        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_admin_action, null);
+        View v = LayoutInflater.from(this).inflate(
+                R.layout.bottom_sheet_admin_action, null);
         sheet.setContentView(v);
         ((TextView) v.findViewById(R.id.tvUserName)).setText(user.getName());
         v.findViewById(R.id.btnArchive).setOnClickListener(btn -> {
             sheet.dismiss();
-            FirebaseHelper.getDb().collection("users").document(user.getUid()).update("status", "archived")
-                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "User archived", Toast.LENGTH_SHORT).show());
+            FirebaseHelper.getDb().collection("users")
+                    .document(user.getUid())
+                    .update("status", "archived")
+                    .addOnSuccessListener(aVoid ->
+                            Toast.makeText(this, "User archived",
+                                    Toast.LENGTH_SHORT).show());
         });
         sheet.show();
     }
+
+    // ── Notifications ─────────────────────────────────────────────────────────
+
+    private void listenForNotifications() {
+        String uid = FirebaseHelper.getCurrentUid();
+        if (uid == null) return;
+        notifListener = FirebaseHelper.getDb().collection("notifications")
+                .whereEqualTo("userId", uid)
+                .whereEqualTo("read", false)
+                .addSnapshotListener((snap, e) -> {
+                    if (e != null || snap == null) return;
+                    binding.notifDot.setVisibility(
+                            snap.isEmpty() ? View.GONE : View.VISIBLE);
+                });
+    }
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (sellersListener != null) sellersListener.remove();
-        if (notifListener != null) notifListener.remove();
+        if (notifListener   != null) notifListener.remove();
     }
 }

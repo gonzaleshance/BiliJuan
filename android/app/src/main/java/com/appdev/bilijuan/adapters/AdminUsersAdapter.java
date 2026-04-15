@@ -1,5 +1,6 @@
 package com.appdev.bilijuan.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,8 @@ import java.util.List;
 
 public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.VH> {
 
-    public interface ActionListener  { void onAction(User user); }
-    public interface DetailListener  { void onDetail(User user); }
+    public interface ActionListener { void onAction(User user); }
+    public interface DetailListener { void onDetail(User user); }
 
     private final List<User>   users;
     private final ActionListener actionListener;
@@ -40,24 +41,24 @@ public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.VH
     @Override
     public void onBindViewHolder(@NonNull VH h, int position) {
         User u = users.get(position);
-        h.tvName.setText(u.getName());
-        h.tvEmail.setText(u.getEmail() != null ? u.getEmail() : "");
-        h.tvPhone.setText(u.getPhone() != null ? u.getPhone() : "—");
-        h.tvRole.setText(u.getRole() != null ? u.getRole().toUpperCase() : "");
 
-        // Status badge
+        h.tvName.setText(u.getName());
+        h.tvEmail.setText(u.getEmail()  != null ? u.getEmail()  : "");
+        h.tvPhone.setText(u.getPhone()  != null ? u.getPhone()  : "—");
+        h.tvRole.setText(u.getRole()    != null ? u.getRole().toUpperCase() : "");
+
+        // ── Status badge ──────────────────────────────────────────────────────
         String status = u.getStatus();
         h.tvStatus.setText(status != null ? status : "active");
         int statusColor;
         switch (status != null ? status : "active") {
-            case "disabled": statusColor = R.color.error;   break;
+            case "disabled": statusColor = R.color.error;     break;
             case "archived": statusColor = R.color.text_hint; break;
-            default:         statusColor = R.color.primary; break;
+            default:         statusColor = R.color.primary;   break;
         }
-        h.tvStatus.setTextColor(
-                h.itemView.getContext().getColor(statusColor));
+        h.tvStatus.setTextColor(h.itemView.getContext().getColor(statusColor));
 
-        // Flag count — only for stores
+        // ── Report count flag ─────────────────────────────────────────────────
         if (u.getReportCount() > 0) {
             h.tvFlagCount.setVisibility(View.VISIBLE);
             h.tvFlagCount.setText(u.getReportCount() + " reports");
@@ -65,10 +66,36 @@ public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.VH
             h.tvFlagCount.setVisibility(View.GONE);
         }
 
-        // Tap card → detail
-        h.itemView.setOnClickListener(v -> detailListener.onDetail(u));
+        // ── No-location warning (sellers only) ────────────────────────────────
+        // If a seller's latitude is 0.0, they registered before mandatory pinning
+        // was enforced. Highlight the card in amber and show a warning label so
+        // the admin can identify and contact them.
+        boolean isSeller       = "seller".equals(u.getRole());
+        boolean missingLocation = isSeller && !u.hasLocation();
 
-        // Tap action button → action sheet
+        if (missingLocation) {
+            // Amber left border tint + warning label
+            h.itemView.setBackgroundColor(Color.parseColor("#FFFBF0"));
+            if (h.tvFlagCount.getVisibility() == View.GONE) {
+                h.tvFlagCount.setVisibility(View.VISIBLE);
+            }
+            // Append location warning to flag text (or set it if no reports)
+            String existingFlag = h.tvFlagCount.getText().toString();
+            if (existingFlag.isEmpty() || existingFlag.equals("0 reports")) {
+                h.tvFlagCount.setText("⚠️ No location set");
+            } else {
+                h.tvFlagCount.setText(existingFlag + " · ⚠️ No location");
+            }
+            h.tvFlagCount.setTextColor(Color.parseColor("#E67E22")); // amber
+        } else {
+            // Reset to default card background
+            h.itemView.setBackgroundColor(Color.WHITE);
+            // Reset flag text color
+            h.tvFlagCount.setTextColor(Color.parseColor("#EB4D4B")); // red for reports
+        }
+
+        // ── Tap handlers ──────────────────────────────────────────────────────
+        h.itemView.setOnClickListener(v -> detailListener.onDetail(u));
         h.btnAction.setOnClickListener(v -> actionListener.onAction(u));
     }
 
@@ -76,17 +103,17 @@ public class AdminUsersAdapter extends RecyclerView.Adapter<AdminUsersAdapter.VH
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tvName, tvEmail, tvPhone, tvRole, tvStatus, tvFlagCount;
-        View btnAction;
+        View     btnAction;
 
         VH(@NonNull View v) {
             super(v);
-            tvName     = v.findViewById(R.id.tvName);
-            tvEmail    = v.findViewById(R.id.tvEmail);
-            tvPhone    = v.findViewById(R.id.tvPhone);
-            tvRole     = v.findViewById(R.id.tvRole);
-            tvStatus   = v.findViewById(R.id.tvStatus);
+            tvName      = v.findViewById(R.id.tvName);
+            tvEmail     = v.findViewById(R.id.tvEmail);
+            tvPhone     = v.findViewById(R.id.tvPhone);
+            tvRole      = v.findViewById(R.id.tvRole);
+            tvStatus    = v.findViewById(R.id.tvStatus);
             tvFlagCount = v.findViewById(R.id.tvFlagCount);
-            btnAction  = v.findViewById(R.id.btnAction);
+            btnAction   = v.findViewById(R.id.btnAction);
         }
     }
 }

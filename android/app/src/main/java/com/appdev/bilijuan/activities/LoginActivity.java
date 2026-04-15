@@ -7,7 +7,10 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.appdev.bilijuan.activities.admin.AdminDashboardActivity;
 import com.appdev.bilijuan.activities.customer.HomeActivity;
@@ -16,10 +19,24 @@ import com.appdev.bilijuan.databinding.ActivityLoginBinding;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.NetworkHelper;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthException;
 
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
+
+    // ── Google Sign-In Activity Result Launcher ──────────────────────────────
+    private final ActivityResultLauncher<Intent> googleSignInLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            handleGoogleSignInResult(result.getData());
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,58 +48,88 @@ public class LoginActivity extends AppCompatActivity {
         binding.tvRegister.setOnClickListener(v ->
                 startActivity(new Intent(this, RegisterActivity.class)));
         binding.tvForgotPassword.setOnClickListener(v -> handleForgotPassword());
+        binding.btnGoogle.setOnClickListener(v -> initiateGoogleSignIn());
     }
 
-    private void attemptLogin() {
+    // ── Google Sign-In Flow ───────────────────────────────────────────────────
 
-        // Example usage in any Activity:
+    private void initiateGoogleSignIn() {
         if (!NetworkHelper.isOnline(this)) {
             NetworkHelper.showOfflineToast(this);
             return;
         }
 
-        String email    = getText(binding.etEmail);
-        String password = getText(binding.etPassword);
-
-        if (TextUtils.isEmpty(email)) {
-            binding.etEmail.setError("Email is required");
-            binding.etEmail.requestFocus(); return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Enter a valid email address");
-            binding.etEmail.requestFocus(); return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            binding.etPassword.setError("Password is required");
-            binding.etPassword.requestFocus(); return;
-        }
-        if (password.length() < 6) {
-            binding.etPassword.setError("Password must be at least 6 characters");
-            binding.etPassword.requestFocus(); return;
-        }
-
         setLoading(true);
+        Intent signInIntent = FirebaseHelper.getGoogleSignInClient(this).getSignInIntent();
+        googleSignInLauncher.launch(signInIntent);
+    }
 
-        FirebaseHelper.getAuth()
-                .signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> {
-                    String uid = result.getUser().getUid();
-                    fetchUserAndRoute(uid);
+    private void handleGoogleSignInResult(Intent data) {
+        try {
+            // Get the Google account from the result
+            GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult();
+            if (account != null && account.getIdToken() != null) {
+                authenticateWithFirebase(account);
+            } else {
+                setLoading(false);
+                Toast.makeText(this, "Google Sign-In failed. Please try again.",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            setLoading(false);
+            Toast.makeText(this, "Error: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void authenticateWithFirebase(GoogleSignInAccount account) {
+        AuthCredential credential = FirebaseHelper.getGoogleAuthCredential(account.getIdToken());
+
+        FirebaseHelper.getAuth().signInWithCredential(credential)
+                .addOnSuccessListener(authResult -> {
+                    String uid = authResult.getUser().getUid();
+                    String email = authResult.getUser().getEmail();
+                    String displayName = authResult.getUser().getDisplayName();
+
+                    // Check if user already exists
+                    checkAndCreateGoogleUser(uid, email, displayName);
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    String msg = e.getMessage() != null ? e.getMessage() : "";
-                    if (msg.contains("password") || msg.contains("credential")) {
-                        Toast.makeText(this, "Incorrect email or password.",
-                                Toast.LENGTH_LONG).show();
-                    } else if (msg.contains("no user")) {
-                        Toast.makeText(this, "No account found with that email.",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "Login failed. Please try again.",
-                                Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(this, "Authentication failed: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void checkAndCreateGoogleUser(String uid, String email, String displayName) {
+        // Check if user document exists in Firestore
+        FirebaseHelper.getDb().collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        // User already exists, proceed to login
+                        setLoading(false);
+                        fetchUserAndRoute(uid);
+                    } else {
+                        // New user from Google Sign-In, proceed to role selection
+                        navigateToGoogleRegister(uid, email, displayName);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    Toast.makeText(this, "Could not verify account. Please try again.",
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void navigateToGoogleRegister(String uid, String email, String displayName) {
+        // Pass user data to RegisterActivity for role selection
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.putExtra("isGoogleSignIn", true);
+        intent.putExtra("googleUid", uid);
+        intent.putExtra("googleEmail", email);
+        intent.putExtra("googleDisplayName", displayName != null ? displayName : "User");
+        startActivity(intent);
+        finish();
     }
 
     private void fetchUserAndRoute(String uid) {
@@ -133,6 +180,71 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    // ── Email/Password Login ──────────────────────────────────────────────────
+
+    private void attemptLogin() {
+
+        if (!NetworkHelper.isOnline(this)) {
+            NetworkHelper.showOfflineToast(this);
+            return;
+        }
+
+        String email = getText(binding.etEmail).trim();
+        String password = getText(binding.etPassword).trim();
+
+        // Clear old errors
+        binding.etEmail.setError(null);
+        binding.etPassword.setError(null);
+
+        boolean isValid = true;
+
+        if (TextUtils.isEmpty(email)) {
+            binding.etEmail.setError("Email is required");
+            binding.etEmail.requestFocus();
+            isValid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.setError("Invalid email format");
+            binding.etEmail.requestFocus();
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            binding.etPassword.setError("Password is required");
+            binding.etPassword.requestFocus();
+            isValid = false;
+        } else if (password.length() < 6) {
+            binding.etPassword.setError("Minimum 6 characters");
+            binding.etPassword.requestFocus();
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        setLoading(true);
+
+        FirebaseHelper.getAuth()
+                .signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result -> {
+                    String uid = result.getUser().getUid();
+                    fetchUserAndRoute(uid);
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+
+                    if (msg.contains("password") || msg.contains("credential")) {
+                        Toast.makeText(this, "Incorrect email or password.",
+                                Toast.LENGTH_LONG).show();
+                    } else if (msg.contains("no user")) {
+                        Toast.makeText(this, "No account found with that email.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Login failed. Please try again.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
     private void routeByRole(String role) {
         Class<?> dest;
         if (role == null) { dest = HomeActivity.class; }
@@ -173,6 +285,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setLoading(boolean loading) {
         binding.btnLogin.setEnabled(!loading);
+        binding.btnGoogle.setEnabled(!loading);
         binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 }

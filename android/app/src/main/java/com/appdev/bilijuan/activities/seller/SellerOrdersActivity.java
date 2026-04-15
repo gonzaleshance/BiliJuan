@@ -40,7 +40,8 @@ public class SellerOrdersActivity extends AppCompatActivity {
     private final List<Order> filteredOrders = new ArrayList<>();
     private ListenerRegistration listener;
     private String sellerId;
-    private double sellerLat, sellerLng;
+    private double sellerLat = 0;
+    private double sellerLng = 0;
     private String activeFilter = "Active";
 
     @Override
@@ -60,24 +61,27 @@ public class SellerOrdersActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        adapter = new SellerOrdersAdapter(filteredOrders, new SellerOrdersAdapter.ActionListener() {
-            @Override
-            public void onAdvance(Order order) {
-                SellerOrdersActivity.this.onAdvanceStatus(order);
-            }
+        adapter = new SellerOrdersAdapter(filteredOrders,
+                new SellerOrdersAdapter.ActionListener() {
+                    @Override
+                    public void onAdvance(Order order) {
+                        onAdvanceStatus(order);
+                    }
 
-            @Override
-            public void onViewMap(Order order) {
-                Intent intent = new Intent(SellerOrdersActivity.this, SellerDeliveryMapActivity.class);
-                intent.putExtra("orderId", order.getOrderId());
-                startActivity(intent);
-            }
+                    @Override
+                    public void onViewMap(Order order) {
+                        Intent intent = new Intent(
+                                SellerOrdersActivity.this,
+                                SellerDeliveryMapActivity.class);
+                        intent.putExtra("orderId", order.getOrderId());
+                        startActivity(intent);
+                    }
 
-            @Override
-            public void onViewDetails(Order order) {
-                showOrderDetailsSheet(order);
-            }
-        });
+                    @Override
+                    public void onViewDetails(Order order) {
+                        showOrderDetailsSheet(order);
+                    }
+                });
 
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(this));
         binding.rvOrders.setAdapter(adapter);
@@ -124,10 +128,22 @@ public class SellerOrdersActivity extends AppCompatActivity {
                     if (!doc.exists()) return;
                     Double lat = doc.getDouble("latitude");
                     Double lng = doc.getDouble("longitude");
-                    sellerLat = lat != null ? lat : 0;
-                    sellerLng = lng != null ? lng : 0;
+                    sellerLat  = lat != null ? lat : 0;
+                    sellerLng  = lng != null ? lng : 0;
+
+                    if (sellerLat == 0 || sellerLng == 0) {
+                        showNoLocationWarning();
+                    }
                     listenOrders();
                 });
+    }
+
+    private void showNoLocationWarning() {
+        binding.emptyOrders.setVisibility(View.VISIBLE);
+        binding.emptyOrders.setText("⚠️ Your shop location is not set.\nGo to Account → Edit Profile to pin your store location.\nDelivery distances may be inaccurate until this is fixed.");
+        binding.emptyOrders.setTextColor(getColor(R.color.error));
+        binding.emptyOrders.setBackgroundColor(0xFFFFF9E6); 
+        binding.emptyOrders.setPadding(32, 24, 32, 24);
     }
 
     private void listenOrders() {
@@ -150,8 +166,8 @@ public class SellerOrdersActivity extends AppCompatActivity {
         if ("Active".equals(activeFilter)) {
             for (Order o : allOrders) if (o.isActive()) filteredOrders.add(o);
             Collections.sort(filteredOrders, (a, b) -> {
-                double dA = DeliveryUtils.haversineKm(sellerLat, sellerLng, a.getCustomerLat(), a.getCustomerLng());
-                double dB = DeliveryUtils.haversineKm(sellerLat, sellerLng, b.getCustomerLat(), b.getCustomerLng());
+                double dA = safeDistance(sellerLat, sellerLng, a.getCustomerLat(), a.getCustomerLng());
+                double dB = safeDistance(sellerLat, sellerLng, b.getCustomerLat(), b.getCustomerLng());
                 return Double.compare(dA, dB);
             });
         } else {
@@ -162,25 +178,38 @@ public class SellerOrdersActivity extends AppCompatActivity {
             });
         }
         adapter.notifyDataSetChanged();
-        binding.emptyOrders.setVisibility(filteredOrders.isEmpty() ? View.VISIBLE : View.GONE);
+        
+        boolean hasOrders = !filteredOrders.isEmpty();
+        boolean hasWarning = sellerLat == 0 || sellerLng == 0;
+        if (hasOrders) {
+            if (!hasWarning) binding.emptyOrders.setVisibility(View.GONE);
+        } else {
+            if (!hasWarning) {
+                binding.emptyOrders.setVisibility(View.VISIBLE);
+                binding.emptyOrders.setText("No orders yet.");
+                binding.emptyOrders.setTextColor(getColor(R.color.text_secondary));
+                binding.emptyOrders.setBackgroundColor(0x00000000);
+            }
+        }
+    }
+
+    private double safeDistance(double lat1, double lng1, double lat2, double lng2) {
+        if (lat1 == 0 || lng1 == 0 || lat2 == 0 || lng2 == 0) return 9999;
+        double dist = DeliveryUtils.haversineKm(lat1, lng1, lat2, lng2);
+        return dist > 100 ? 9999 : dist;
     }
 
     private void onAdvanceStatus(Order order) {
         String next = nextStatus(order.getStatus());
         if (next == null) return;
-
         Map<String, Object> update = new HashMap<>();
         update.put("status", next);
         if (Order.STATUS_DELIVERED.equals(next)) update.put("active", false);
-
         FirebaseHelper.getDb().collection("orders").document(order.getOrderId()).update(update)
                 .addOnSuccessListener(v -> {
                     Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
-                    // FIXED: Added missing customerId argument
-                    NotificationHelper.notifyStatusChange(
-                            order.getOrderId(), next, order.getProductName(), order.getCustomerId());
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+                    NotificationHelper.notifyStatusChange(order.getOrderId(), next, order.getProductName(), order.getCustomerId());
+                });
     }
 
     private String nextStatus(String current) {
@@ -197,7 +226,6 @@ public class SellerOrdersActivity extends AppCompatActivity {
         BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_order_details, null);
         sheet.setContentView(v);
-
         TextView tvOrderId = v.findViewById(R.id.tvOrderId);
         TextView tvOrderDate = v.findViewById(R.id.tvOrderDate);
         TextView tvCustomerName = v.findViewById(R.id.tvCustomerName);
@@ -210,12 +238,10 @@ public class SellerOrdersActivity extends AppCompatActivity {
 
         String shortId = order.getOrderId().length() > 6 ? order.getOrderId().substring(0, 6).toUpperCase() : order.getOrderId();
         tvOrderId.setText("Order #" + shortId);
-        
         if (order.getCreatedAt() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy • h:mm a", Locale.getDefault());
             tvOrderDate.setText("Placed on " + sdf.format(order.getCreatedAt()));
         }
-
         tvCustomerName.setText(order.getCustomerName());
         tvCustomerPhone.setText(order.getCustomerPhone());
         tvCustomerAddress.setText(order.getCustomerAddress());
@@ -227,25 +253,23 @@ public class SellerOrdersActivity extends AppCompatActivity {
             items = new ArrayList<>();
             items.add(new CartItem(order.getProductId(), order.getProductName(), order.getProductPrice(), order.getQuantity(), order.getSellerId(), order.getSellerName(), order.getProductImageBase64()));
         }
-
         for (CartItem item : items) {
             View itemView = LayoutInflater.from(this).inflate(R.layout.item_order_summary_product, layoutItems, false);
-            ((TextView)itemView.findViewById(R.id.tvProductName)).setText(item.getProductName());
-            ((TextView)itemView.findViewById(R.id.tvProductQty)).setText("x" + item.getQuantity());
-            ((TextView)itemView.findViewById(R.id.tvProductPrice)).setText(String.format(Locale.getDefault(), "₱%.0f", item.getPrice() * item.getQuantity()));
+            ((TextView) itemView.findViewById(R.id.tvProductName)).setText(item.getProductName());
+            ((TextView) itemView.findViewById(R.id.tvProductQty)).setText("x" + item.getQuantity());
+            ((TextView) itemView.findViewById(R.id.tvProductPrice)).setText(String.format(Locale.getDefault(), "₱%.0f", item.getPrice() * item.getQuantity()));
             layoutItems.addView(itemView);
             subtotal += (item.getPrice() * item.getQuantity());
         }
-
         tvSubtotal.setText(String.format(Locale.getDefault(), "₱%.0f", subtotal));
         tvDeliveryFee.setText(String.format(Locale.getDefault(), "₱%.0f", order.getDeliveryFee()));
         tvTotalAmount.setText(String.format(Locale.getDefault(), "₱%.0f", order.getTotalAmount()));
-
         v.findViewById(R.id.btnClose).setOnClickListener(view -> sheet.dismiss());
         sheet.show();
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         if (listener != null) listener.remove();
     }

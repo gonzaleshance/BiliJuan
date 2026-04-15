@@ -1,6 +1,7 @@
 package com.appdev.bilijuan.activities.seller;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,7 +43,7 @@ public class SellerAccountActivity extends AppCompatActivity {
     private ListenerRegistration menuListener;
     private String sellerId;
     private User currentUser;
-    
+
     private String encodedImage;
     private ImageView ivEditAvatar;
 
@@ -52,6 +53,9 @@ public class SellerAccountActivity extends AppCompatActivity {
                 if (uri != null && ivEditAvatar != null) {
                     encodedImage = ImageHelper.uriToBase64(this, uri);
                     ivEditAvatar.setImageURI(uri);
+                    ivEditAvatar.setPadding(0, 0, 0, 0);
+                    ivEditAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    ivEditAvatar.setImageTintList(null);
                 }
             }
     );
@@ -112,10 +116,15 @@ public class SellerAccountActivity extends AppCompatActivity {
         binding.tvStoreName.setText(currentUser.getName());
         binding.tvPhone.setText(!TextUtils.isEmpty(currentUser.getPhone()) ? currentUser.getPhone() : "Not set");
         binding.tvAddress.setText(!TextUtils.isEmpty(currentUser.getAddress()) ? currentUser.getAddress() : "Address not set");
-        
+
         if (!TextUtils.isEmpty(currentUser.getStoreImageBase64())) {
-            binding.ivStoreAvatar.setImageBitmap(ImageHelper.base64ToBitmap(currentUser.getStoreImageBase64()));
-            binding.ivStoreAvatar.setPadding(0, 0, 0, 0);
+            Bitmap bitmap = ImageHelper.base64ToBitmap(currentUser.getStoreImageBase64());
+            if (bitmap != null) {
+                binding.ivStoreAvatar.setImageBitmap(bitmap);
+                binding.ivStoreAvatar.setPadding(0, 0, 0, 0);
+                binding.ivStoreAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                binding.ivStoreAvatar.setImageTintList(null);
+            }
         }
     }
 
@@ -137,10 +146,15 @@ public class SellerAccountActivity extends AppCompatActivity {
         etPhone.setText(currentUser.getPhone());
         etAddress.setText(currentUser.getAddress());
         encodedImage = currentUser.getStoreImageBase64();
-        
+
         if (!TextUtils.isEmpty(encodedImage)) {
-            ivEditAvatar.setImageBitmap(ImageHelper.base64ToBitmap(encodedImage));
-            ivEditAvatar.setPadding(0, 0, 0, 0);
+            Bitmap bitmap = ImageHelper.base64ToBitmap(encodedImage);
+            if (bitmap != null) {
+                ivEditAvatar.setImageBitmap(bitmap);
+                ivEditAvatar.setPadding(0, 0, 0, 0);
+                ivEditAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                ivEditAvatar.setImageTintList(null);
+            }
         }
 
         btnChangePhoto.setOnClickListener(v -> pickerLauncher.launch("image/*"));
