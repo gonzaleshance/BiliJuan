@@ -13,6 +13,7 @@ public class Order {
     public static final String STATUS_ON_THE_WAY = "Out for delivery";
     public static final String STATUS_DELIVERED  = "Delivered";
     public static final String STATUS_CANCELLED  = "Cancelled";
+    public static final String STATUS_REJECTED   = "Rejected";
 
     private String orderId;
     private String customerId;
@@ -48,6 +49,8 @@ public class Order {
     private boolean reviewed;       
     private String lastNotificationStatus;
     private String lastNotificationMessage;
+    
+    private String rejectionNote;
 
     @ServerTimestamp
     private Date createdAt;
@@ -112,6 +115,7 @@ public class Order {
     public boolean isReviewed()             { return reviewed; }
     public String getLastNotificationStatus()  { return lastNotificationStatus; }
     public String getLastNotificationMessage() { return lastNotificationMessage; }
+    public String getRejectionNote()        { return rejectionNote; }
     public Date   getCreatedAt()            { return createdAt; }
 
     public void setOrderId(String orderId)                      { this.orderId = orderId; }
@@ -141,6 +145,7 @@ public class Order {
     public void setReviewed(boolean reviewed)                   { this.reviewed = reviewed; }
     public void setLastNotificationStatus(String s)             { this.lastNotificationStatus = s; }
     public void setLastNotificationMessage(String m)            { this.lastNotificationMessage = m; }
+    public void setRejectionNote(String note)                   { this.rejectionNote = note; }
     public void setCreatedAt(Date createdAt)                    { this.createdAt = createdAt; }
 
     public boolean canCustomerCancel() {
@@ -148,6 +153,6 @@ public class Order {
     }
 
     public boolean isActive() {
-        return !STATUS_DELIVERED.equals(status) && !STATUS_CANCELLED.equals(status);
+        return !STATUS_DELIVERED.equals(status) && !STATUS_CANCELLED.equals(status) && !STATUS_REJECTED.equals(status);
     }
 }

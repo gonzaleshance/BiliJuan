@@ -2,8 +2,10 @@ package com.appdev.bilijuan.activities.seller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +68,11 @@ public class SellerOrdersActivity extends AppCompatActivity {
                     @Override
                     public void onAdvance(Order order) {
                         onAdvanceStatus(order);
+                    }
+
+                    @Override
+                    public void onReject(Order order) {
+                        showRejectOrderSheet(order);
                     }
 
                     @Override
@@ -209,6 +216,43 @@ public class SellerOrdersActivity extends AppCompatActivity {
                 .addOnSuccessListener(v -> {
                     Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
                     NotificationHelper.notifyStatusChange(order.getOrderId(), next, order.getProductName(), order.getCustomerId());
+                });
+    }
+
+    private void showRejectOrderSheet(Order order) {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_reject_order, null);
+        sheet.setContentView(v);
+
+        EditText etNote = v.findViewById(R.id.etRejectionNote);
+        View btnConfirm = v.findViewById(R.id.btnConfirmReject);
+        View btnCancel = v.findViewById(R.id.btnCancelReject);
+
+        btnConfirm.setOnClickListener(view -> {
+            String note = etNote.getText().toString().trim();
+            if (TextUtils.isEmpty(note)) {
+                etNote.setError("Please provide a reason");
+                return;
+            }
+            sheet.dismiss();
+            rejectOrder(order, note);
+        });
+
+        btnCancel.setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
+    }
+
+    private void rejectOrder(Order order, String note) {
+        Map<String, Object> update = new HashMap<>();
+        update.put("status", Order.STATUS_REJECTED);
+        update.put("rejectionNote", note);
+        update.put("active", false);
+
+        FirebaseHelper.getDb().collection("orders").document(order.getOrderId())
+                .update(update)
+                .addOnSuccessListener(v -> {
+                    Toast.makeText(this, "Order rejected", Toast.LENGTH_SHORT).show();
+                    NotificationHelper.notifyStatusChange(order.getOrderId(), Order.STATUS_REJECTED, order.getProductName(), order.getCustomerId());
                 });
     }
 

@@ -35,7 +35,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_location"
-            app:tint="#EB4D4B" />
+            app:tint="#27AE60" />
             
         <!-- Precise tip dot -->
         <View
@@ -44,7 +44,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_white_circle"
-            android:backgroundTint="#EB4D4B"/>
+            android:backgroundTint="#27AE60"/>
     </FrameLayout>
 
     <!-- Top card: back button + Search + instruction -->
@@ -141,7 +141,7 @@
             android:id="@+id/tvInstruction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Drag the map to position your store exactly under the red pin."
+            android:text="Drag the map to position your store exactly under the red pin. Use 'Verify' to check Google Maps for accuracy."
             android:textSize="12sp"
             android:textColor="#636E72"
             android:lineSpacingMultiplier="1.4"

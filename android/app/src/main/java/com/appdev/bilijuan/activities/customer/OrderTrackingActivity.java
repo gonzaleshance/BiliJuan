@@ -69,7 +69,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
                     order.setOrderId(snap.getId());
 
                     updateHeader(order);
-                    updateProgressSteps(order.getStatus());
+                    updateStatusView(order);
                     updateOrderDetails(order);
                     updateAddress(order);
                     updateContactInfo(order);
@@ -80,7 +80,15 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private void updateHeader(Order order) {
         binding.tvCurrentStatus.setText(order.getStatus());
         
-        // Accurate ETA Calculation
+        if (Order.STATUS_REJECTED.equals(order.getStatus())) {
+            binding.tvEta.setText("--");
+            binding.ivStatusIcon.setImageResource(R.drawable.ic_delete);
+            binding.layoutHeaderStatus.setBackgroundColor(ContextCompat.getColor(this, R.color.error));
+            return;
+        }
+
+        binding.layoutHeaderStatus.setBackgroundColor(ContextCompat.getColor(this, R.color.primary));
+
         if (Order.STATUS_DELIVERED.equals(order.getStatus())) {
             binding.tvEta.setText("Delivered");
             binding.ivStatusIcon.setImageResource(R.drawable.ic_check_circle);
@@ -92,15 +100,13 @@ public class OrderTrackingActivity extends AppCompatActivity {
         
         if (lat != 0 && order.getCustomerLat() != 0) {
             double dist = DeliveryUtils.haversineKm(lat, lng, order.getCustomerLat(), order.getCustomerLng());
-            
-            int travelTimeMin = (int) Math.ceil(dist * 4); // 4 mins per km (slower for traffic/motorcycle)
+            int travelTimeMin = (int) Math.ceil(dist * 4);
             int prepTimeMin = 0;
 
-            // Add prep time based on status
             if (Order.STATUS_PENDING.equals(order.getStatus())) prepTimeMin = 15;
             else if (Order.STATUS_CONFIRMED.equals(order.getStatus())) prepTimeMin = 12;
             else if (Order.STATUS_PREPARING.equals(order.getStatus())) prepTimeMin = 8;
-            else prepTimeMin = 2; // Buffer for on the way
+            else prepTimeMin = 2;
 
             int totalEta = travelTimeMin + prepTimeMin;
             
@@ -120,9 +126,19 @@ public class OrderTrackingActivity extends AppCompatActivity {
         }
     }
 
+    private void updateStatusView(Order order) {
+        if (Order.STATUS_REJECTED.equals(order.getStatus())) {
+            binding.cardProgress.setVisibility(View.GONE);
+            binding.cardRejection.setVisibility(View.VISIBLE);
+            binding.tvRejectionReason.setText("Reason: " + (order.getRejectionNote() != null ? order.getRejectionNote() : "No reason provided"));
+        } else {
+            binding.cardProgress.setVisibility(View.VISIBLE);
+            binding.cardRejection.setVisibility(View.GONE);
+            updateProgressSteps(order.getStatus());
+        }
+    }
+
     private void updateProgressSteps(String status) {
-        // Status flow: Pending -> Confirmed -> Preparing -> Out for delivery -> Delivered
-        
         boolean preparingDone = isDone(status, Order.STATUS_PREPARING);
         boolean preparingActive = Order.STATUS_PREPARING.equals(status) || Order.STATUS_CONFIRMED.equals(status);
         boolean pendingActive = Order.STATUS_PENDING.equals(status);
@@ -199,7 +215,6 @@ public class OrderTrackingActivity extends AppCompatActivity {
                 addItemToLayout(item.getProductName(), item.getQuantity(), item.getPrice(), item.getImageBase64());
             }
         } else {
-            // Fallback for legacy single-item orders
             addItemToLayout(order.getProductName(), order.getQuantity(), order.getProductPrice(), order.getProductImageBase64());
         }
 

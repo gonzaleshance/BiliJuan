@@ -22,6 +22,7 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
 
     public interface ActionListener {
         void onAdvance(Order order);
+        void onReject(Order order);
         void onViewMap(Order order);
         void onViewDetails(Order order);
     }
@@ -85,8 +86,17 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
             h.btnAdvance.setVisibility(View.VISIBLE);
             h.btnAdvance.setText(label);
             h.btnAdvance.setOnClickListener(v -> listener.onAdvance(o));
+            
+            // Show Reject only for Pending orders
+            if (Order.STATUS_PENDING.equals(o.getStatus())) {
+                h.btnReject.setVisibility(View.VISIBLE);
+                h.btnReject.setOnClickListener(v -> listener.onReject(o));
+            } else {
+                h.btnReject.setVisibility(View.GONE);
+            }
         } else {
             h.btnAdvance.setVisibility(View.GONE);
+            h.btnReject.setVisibility(View.GONE);
         }
 
         // Track Location button (matches customer Track Order style)
@@ -128,7 +138,7 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tvCustomer, tvProduct, tvAmount, tvAddress, tvDistance, tvTime, chipStatus;
-        MaterialButton btnAdvance;
+        MaterialButton btnAdvance, btnReject;
         View btnViewMap;
 
         VH(@NonNull View v) {
@@ -141,6 +151,7 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
             tvTime     = v.findViewById(R.id.tvTime);
             chipStatus = v.findViewById(R.id.chipStatus);
             btnAdvance = v.findViewById(R.id.btnAdvance);
+            btnReject  = v.findViewById(R.id.btnReject);
             btnViewMap = v.findViewById(R.id.btnViewMap);
         }
     }
