@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F8F9FA">
 
-    <!-- Premium Seller Header -->
+    <!-- Premium Seller Header (Hardcoded background to fix scroll glitch) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="48dp"
-            android:paddingHorizontal="24dp">
+            android:paddingHorizontal="24dp"
+            android:background="#27AE60">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,6 +128,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F8F9FA"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- 1. OVERVIEW SECTION -->
@@ -134,6 +136,7 @@
             android:id="@+id/sectionOverview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#F8F9FA"
             android:clipToPadding="false"
             android:paddingBottom="100dp"
             android:visibility="visible">
@@ -142,7 +145,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="20dp"
+                android:background="#F8F9FA">
 
                 <!-- Priority 1: Today's Summary -->
                 <com.google.android.material.card.MaterialCardView
@@ -361,6 +365,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:background="#F8F9FA"
             android:visibility="gone">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddItem"
@@ -387,6 +392,7 @@
                 android:textColor="#B2BEC3"
                 android:gravity="center"
                 android:paddingVertical="48dp"
+                android:background="#F8F9FA"
                 android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -395,7 +401,8 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingHorizontal="16dp"
-                android:paddingBottom="100dp"/>
+                android:paddingBottom="100dp"
+                android:background="#F8F9FA"/>
         </LinearLayout>
 
         <!-- ORDERS SECTION (Tab) -->
@@ -404,7 +411,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:background="#F8F9FA"
             android:visibility="gone">
+
+            <TextView
+                android:id="@+id/emptyOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No active orders yet."
+                android:textSize="14sp"
+                android:textColor="#B2BEC3"
+                android:gravity="center"
+                android:paddingVertical="64dp"
+                android:background="#F8F9FA"
+                android:visibility="gone"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvActiveOrders2"
                 android:layout_width="match_parent"
@@ -412,7 +433,8 @@
                 android:clipToPadding="false"
                 android:paddingHorizontal="16dp"
                 android:paddingTop="12dp"
-                android:paddingBottom="100dp"/>
+                android:paddingBottom="100dp"
+                android:background="#F8F9FA"/>
         </LinearLayout>
     </FrameLayout>
 

@@ -35,6 +35,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
     private ListenerRegistration orderListener;
     private String orderId;
     private Marker riderMarker, customerMarker;
+    private boolean isInitialLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,10 @@ public class OrderTrackingActivity extends AppCompatActivity {
         if (orderId == null) { finish(); return; }
 
         binding.btnBack.setOnClickListener(v -> finish());
+        
+        // Show loading initially
+        binding.layoutLoading.setVisibility(View.VISIBLE);
+        
         setupMap();
         listenOrder();
     }
@@ -63,7 +68,10 @@ public class OrderTrackingActivity extends AppCompatActivity {
                 .collection("orders")
                 .document(orderId)
                 .addSnapshotListener((snap, e) -> {
-                    if (e != null || snap == null || !snap.exists()) return;
+                    if (e != null || snap == null || !snap.exists()) {
+                        binding.layoutLoading.setVisibility(View.GONE);
+                        return;
+                    }
                     Order order = snap.toObject(Order.class);
                     if (order == null) return;
                     order.setOrderId(snap.getId());
@@ -74,6 +82,15 @@ public class OrderTrackingActivity extends AppCompatActivity {
                     updateAddress(order);
                     updateContactInfo(order);
                     updateMapVisibility(order);
+                    
+                    // Hide loading after first successful data fetch
+                    if (isInitialLoad) {
+                        isInitialLoad = false;
+                        binding.layoutLoading.animate()
+                                .alpha(0f)
+                                .setDuration(500)
+                                .withEndAction(() -> binding.layoutLoading.setVisibility(View.GONE));
+                    }
                 });
     }
 
@@ -120,7 +137,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
         }
 
         if (Order.STATUS_ON_THE_WAY.equals(order.getStatus())) {
-            binding.ivStatusIcon.setImageResource(R.drawable.ic_delivery_dining);
+            binding.ivStatusIcon.setImageResource(R.drawable.ic_rider);
         } else {
             binding.ivStatusIcon.setImageResource(R.drawable.ic_restaurant);
         }
@@ -165,7 +182,7 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
         boolean onWayDone = isDone(status, Order.STATUS_ON_THE_WAY);
         boolean onWayActive = Order.STATUS_ON_THE_WAY.equals(status);
-        setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay, "Out for Delivery", onWayDone, onWayActive, null, R.drawable.ic_delivery_dining);
+        setStep(binding.stepOnTheWay.getRoot(), binding.lineOnTheWay, "Out for Delivery", onWayDone, onWayActive, null, R.drawable.ic_rider);
 
         boolean deliveredDone = Order.STATUS_DELIVERED.equals(status);
         setStep(binding.stepDelivered.getRoot(), null, "Delivered", deliveredDone, deliveredDone, null, R.drawable.ic_check_circle);
@@ -293,13 +310,16 @@ public class OrderTrackingActivity extends AppCompatActivity {
 
         if (riderMarker == null) {
             riderMarker = new Marker(binding.mapView);
-            riderMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_delivery_dining));
+            riderMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_rider));
+            riderMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             binding.mapView.getOverlays().add(riderMarker);
         }
         riderMarker.setPosition(riderPoint);
 
         if (customerMarker == null) {
             customerMarker = new Marker(binding.mapView);
+            customerMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location));
+            customerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             binding.mapView.getOverlays().add(customerMarker);
         }
         customerMarker.setPosition(customerPoint);

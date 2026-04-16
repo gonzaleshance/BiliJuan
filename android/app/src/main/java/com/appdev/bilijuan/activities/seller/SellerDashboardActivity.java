@@ -61,6 +61,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
     private SellerOrdersAdapter ordersAdapter;
 
     private final List<Order>   allOrders    = new ArrayList<>();
+    private final List<Order>   activeOrders = new ArrayList<>();
     private final List<Product> menuItems    = new ArrayList<>();
 
     private ListenerRegistration ordersListener;
@@ -178,7 +179,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
         binding.rvMenu.setLayoutManager(new LinearLayoutManager(this));
         binding.rvMenu.setAdapter(menuAdapter);
 
-        ordersAdapter = new SellerOrdersAdapter(allOrders, new SellerOrdersAdapter.ActionListener() {
+        ordersAdapter = new SellerOrdersAdapter(activeOrders, new SellerOrdersAdapter.ActionListener() {
             @Override
             public void onAdvance(Order order) { showAdvanceStatusModal(order); }
             @Override
@@ -222,7 +223,8 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     if (e != null || snap == null) return;
 
                     allOrders.clear();
-                    double totalSales = 0, todaySales = 0;
+                    activeOrders.clear();
+                    double todaySales = 0;
                     int todayCount = 0;
                     Map<Integer, Double> weekSales = new HashMap<>();
                     Calendar today = Calendar.getInstance();
@@ -232,8 +234,11 @@ public class SellerDashboardActivity extends AppCompatActivity {
                         o.setOrderId(doc.getId());
                         allOrders.add(o);
 
+                        if (o.isActive()) {
+                            activeOrders.add(o);
+                        }
+
                         if (Order.STATUS_DELIVERED.equals(o.getStatus())) {
-                            totalSales += o.getTotalAmount();
                             if (o.getCreatedAt() != null) {
                                 Calendar oCal = Calendar.getInstance();
                                 oCal.setTime(o.getCreatedAt());
@@ -249,18 +254,17 @@ public class SellerDashboardActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Logistics Sorting: Active first, then Newest
-                    Collections.sort(allOrders, (a, b) -> {
-                        if (a.isActive() != b.isActive()) return a.isActive() ? -1 : 1;
+                    // Sort Active Orders: Pending first, then newest
+                    Collections.sort(activeOrders, (a, b) -> {
+                        if (a.getStatus().equals(Order.STATUS_PENDING) && !b.getStatus().equals(Order.STATUS_PENDING)) return -1;
+                        if (!a.getStatus().equals(Order.STATUS_PENDING) && b.getStatus().equals(Order.STATUS_PENDING)) return 1;
                         if (a.getCreatedAt() == null || b.getCreatedAt() == null) return 0;
                         return b.getCreatedAt().compareTo(a.getCreatedAt());
                     });
 
                     int pendingCount = 0;
-                    int activeCount = 0;
-                    for (Order o : allOrders) {
+                    for (Order o : activeOrders) {
                         if (Order.STATUS_PENDING.equals(o.getStatus())) pendingCount++;
-                        if (o.isActive()) activeCount++;
                     }
 
                     if (previousOrderCount >= 0 && pendingCount > previousOrderCount) {
@@ -270,6 +274,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     previousOrderCount = pendingCount;
                     if (pendingCount == 0) stopNewOrderAlert();
 
+                    int activeCount = activeOrders.size();
                     binding.tvActionMessage.setText(activeCount > 0 ? activeCount + " active orders require your attention" : "You have no active orders");
                     binding.tvActionSubMessage.setText(activeCount > 0 ? "Tap here to manage and track orders" : "Tap here to view order history");
 
@@ -277,6 +282,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
                     binding.tvTodayOrders.setText(String.valueOf(todayCount));
                     
                     ordersAdapter.notifyDataSetChanged();
+                    binding.emptyOrders.setVisibility(activeOrders.isEmpty() ? View.VISIBLE : View.GONE);
                     updateWeeklyChart(weekSales);
                 });
     }
@@ -320,7 +326,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
     private void updateOrderStatus(Order order, String next) {
         Map<String, Object> update = new HashMap<>();
         update.put("status", next);
-        if (Order.STATUS_DELIVERED.equals(next)) update.put("active", false);
+        
         FirebaseHelper.getDb().collection("orders").document(order.getOrderId()).update(update)
                 .addOnSuccessListener(v -> {
                     Toast.makeText(this, "Order updated", Toast.LENGTH_SHORT).show();
@@ -370,7 +376,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
             case Order.STATUS_PENDING:    return Order.STATUS_CONFIRMED;
             case Order.STATUS_CONFIRMED:  return Order.STATUS_PREPARING;
             case Order.STATUS_PREPARING:  return Order.STATUS_ON_THE_WAY;
-            case Order.STATUS_ON_THE_WAY: return Order.STATUS_DELIVERED;
             default: return null;
         }
     }
@@ -416,7 +421,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
             ((TextView)itemView.findViewById(R.id.tvProductName)).setText(item.getProductName());
             ((TextView)itemView.findViewById(R.id.tvProductQty)).setText("x" + item.getQuantity());
             ((TextView)itemView.findViewById(R.id.tvProductPrice)).setText(String.format("₱%.0f", item.getPrice() * item.getQuantity()));
-            // Image is optional in this view, but you could load it using ImageHelper if needed
             layoutItems.addView(itemView);
             subtotal += (item.getPrice() * item.getQuantity());
         }

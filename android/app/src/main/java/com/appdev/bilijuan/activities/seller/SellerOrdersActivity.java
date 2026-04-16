@@ -58,7 +58,6 @@ public class SellerOrdersActivity extends AppCompatActivity {
         setupRecyclerView();
         setupStoreNav();
         setupFilterChips();
-        binding.btnBack.setOnClickListener(v -> finish());
         loadSellerLocation();
     }
 
@@ -209,12 +208,32 @@ public class SellerOrdersActivity extends AppCompatActivity {
     private void onAdvanceStatus(Order order) {
         String next = nextStatus(order.getStatus());
         if (next == null) return;
+
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_advance_status, null);
+        sheet.setContentView(v);
+
+        TextView tvTitle = v.findViewById(R.id.tvAdvanceTitle);
+        TextView tvMsg = v.findViewById(R.id.tvAdvanceMessage);
+        
+        if (tvTitle != null) tvTitle.setText("Update to " + next + "?");
+        if (tvMsg != null) tvMsg.setText("Are you sure you want to move this order to " + next + "? The customer will be notified.");
+
+        v.findViewById(R.id.btnConfirmAdvance).setOnClickListener(view -> {
+            sheet.dismiss();
+            updateOrderStatus(order, next);
+        });
+        v.findViewById(R.id.btnCancelAdvance).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
+    }
+
+    private void updateOrderStatus(Order order, String next) {
         Map<String, Object> update = new HashMap<>();
         update.put("status", next);
         if (Order.STATUS_DELIVERED.equals(next)) update.put("active", false);
         FirebaseHelper.getDb().collection("orders").document(order.getOrderId()).update(update)
                 .addOnSuccessListener(v -> {
-                    Toast.makeText(this, "Order → " + next, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Order updated", Toast.LENGTH_SHORT).show();
                     NotificationHelper.notifyStatusChange(order.getOrderId(), next, order.getProductName(), order.getCustomerId());
                 });
     }

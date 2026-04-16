@@ -54,7 +54,6 @@ public class SellerReportsActivity extends AppCompatActivity {
         sellerId = FirebaseHelper.getCurrentUid();
         if (sellerId == null) { finish(); return; }
 
-        binding.btnBack.setOnClickListener(v -> finish());
         StoreNavHelper.setup(this, binding.storeNav.getRoot(), StoreNavHelper.Tab.REPORTS);
         
         setupRecyclerView();

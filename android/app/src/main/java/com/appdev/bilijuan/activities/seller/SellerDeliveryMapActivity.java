@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -18,9 +19,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,9 +44,8 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.ListenerRegistration;
-
-
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -57,12 +57,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 /**
  * SellerDeliveryMapActivity
  *
- * Updated to handle Google Play Services Location settings (asking to turn on GPS).
+ * Fixed "Failed to update order" bug and lifecycle crashes.
  */
 public class SellerDeliveryMapActivity extends AppCompatActivity {
 
@@ -111,14 +109,18 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        binding.mapView.onResume();
+        if (binding != null && binding.mapView != null) {
+            binding.mapView.onResume();
+        }
         checkLocationSettingsAndStartUpdates();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        binding.mapView.onPause();
+        if (binding != null && binding.mapView != null) {
+            binding.mapView.onPause();
+        }
         stopLocationUpdates();
     }
 
@@ -127,16 +129,21 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
         super.onDestroy();
         stopLocationUpdates();
         if (orderListener != null) orderListener.remove();
-        binding.mapView.onDetach();
+        if (binding != null && binding.mapView != null) {
+            binding.mapView.onDetach();
+        }
+        binding = null;
     }
 
     private void setupMap() {
+        if (binding == null) return;
         binding.mapView.setTileSource(TileSourceFactory.MAPNIK);
         binding.mapView.setMultiTouchControls(true);
         binding.mapView.getController().setZoom(DEFAULT_ZOOM);
     }
 
     private void setupButtons() {
+        if (binding == null) return;
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnCallCustomer.setOnClickListener(v -> {
             if (order == null || order.getCustomerPhone() == null) return;
@@ -144,13 +151,37 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
         });
         binding.btnOpenGoogleMaps.setOnClickListener(v -> {
             if (order == null) return;
-            Uri geoUri = Uri.parse("google.navigation:q=" + order.getCustomerLat() + "," + order.getCustomerLng() + "&mode=d");
-            Intent navIntent = new Intent(Intent.ACTION_VIEW, geoUri);
-            navIntent.setPackage("com.google.android.apps.maps");
-            if (navIntent.resolveActivity(getPackageManager()) != null) startActivity(navIntent);
-            else startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/?api=1&destination=" + order.getCustomerLat() + "," + order.getCustomerLng())));
+            double lat = order.getCustomerLat();
+            double lng = order.getCustomerLng();
+            
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + lat + "," + lng + "(Customer Delivery Spot)");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            
+            try {
+                startActivity(mapIntent);
+            } catch (ActivityNotFoundException e) {
+                Uri webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
+                startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+            }
         });
-        binding.btnMarkDelivered.setOnClickListener(v -> advanceToDelivered());
+        binding.btnMarkDelivered.setOnClickListener(v -> showConfirmDeliveredSheet());
+    }
+
+    private void showConfirmDeliveredSheet() {
+        if (isFinishing() || isDestroyed() || binding == null) return;
+
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_confirm_delivered, null);
+        sheet.setContentView(v);
+
+        v.findViewById(R.id.btnFinalConfirm).setOnClickListener(view -> {
+            sheet.dismiss();
+            advanceToDelivered();
+        });
+
+        v.findViewById(R.id.btnCancel).setOnClickListener(view -> sheet.dismiss());
+        sheet.show();
     }
 
     private void setupLocationClient() {
@@ -162,6 +193,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult result) {
+                if (isFinishing() || isDestroyed()) return;
                 Location loc = result.getLastLocation();
                 if (loc != null) onRiderLocationUpdated(loc);
             }
@@ -181,6 +213,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
         task.addOnSuccessListener(this, locationSettingsResponse -> startLocationUpdates());
 
         task.addOnFailureListener(this, e -> {
+            if (isFinishing() || isDestroyed()) return;
             if (e instanceof ResolvableApiException) {
                 try {
                     ResolvableApiException resolvable = (ResolvableApiException) e;
@@ -204,6 +237,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     private void listenOrder() {
         orderListener = FirebaseHelper.getDb().collection("orders").document(orderId)
                 .addSnapshotListener((snap, e) -> {
+                    if (isFinishing() || isDestroyed() || binding == null) return;
                     if (e != null || snap == null || !snap.exists()) return;
                     order = snap.toObject(Order.class);
                     if (order == null) return;
@@ -215,6 +249,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     }
 
     private void updateOrderCard() {
+        if (binding == null) return;
         binding.tvOrderId.setText(shortOrderId());
         binding.tvCustomerName.setText(order.getCustomerName());
         binding.tvCustomerAddress.setText(order.getCustomerAddress());
@@ -224,6 +259,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     }
 
     private void placeCustomerMarker() {
+        if (binding == null || order == null) return;
         double lat = order.getCustomerLat();
         double lng = order.getCustomerLng();
         if (lat == 0 && lng == 0) return;
@@ -233,6 +269,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
             customerMarker.setTitle(order.getCustomerName());
             customerMarker.setSubDescription(order.getCustomerAddress());
             customerMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_location));
+            customerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         }
         customerMarker.setPosition(customerPoint);
         if (!binding.mapView.getOverlays().contains(customerMarker)) binding.mapView.getOverlays().add(customerMarker);
@@ -245,17 +282,20 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     }
 
     private void updateDeliveredButtonVisibility() {
+        if (binding == null || order == null) return;
         binding.btnMarkDelivered.setVisibility(Order.STATUS_ON_THE_WAY.equals(order.getStatus()) ? View.VISIBLE : View.GONE);
     }
 
     private void onRiderLocationUpdated(Location loc) {
+        if (binding == null) return;
         double lat = loc.getLatitude();
         double lng = loc.getLongitude();
         GeoPoint riderPoint = new GeoPoint(lat, lng);
         if (riderMarker == null) {
             riderMarker = new Marker(binding.mapView);
             riderMarker.setTitle("You (Rider)");
-            riderMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_delivery_dining));
+            riderMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_rider));
+            riderMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         }
         riderMarker.setPosition(riderPoint);
         if (!binding.mapView.getOverlays().contains(riderMarker)) binding.mapView.getOverlays().add(riderMarker);
@@ -291,6 +331,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
                     routePoints.add(new GeoPoint(point.getDouble(1), point.getDouble(0)));
                 }
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed() || binding == null) return;
                     if (routeLine == null) {
                         routeLine = new Polyline();
                         routeLine.getOutlinePaint().setColor(android.graphics.Color.parseColor("#2E7D32"));
@@ -302,6 +343,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed() || binding == null) return;
                     if (routeLine == null) {
                         routeLine = new Polyline();
                         routeLine.getOutlinePaint().setColor(android.graphics.Color.RED);
@@ -316,6 +358,7 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     }
 
     private void pushRiderLocationToFirestore(double lat, double lng) {
+        if (orderId == null) return;
         Map<String, Object> update = new HashMap<>();
         update.put("riderLat", lat);
         update.put("riderLng", lng);
@@ -341,14 +384,25 @@ public class SellerDeliveryMapActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) checkLocationSettingsAndStartUpdates();
-        else Toast.makeText(this, "Location permission needed", Toast.LENGTH_LONG).show();
     }
 
     private void advanceToDelivered() {
+        if (orderId == null || binding == null) return;
         binding.btnMarkDelivered.setEnabled(false);
-        FirebaseHelper.getDb().collection("orders").document(orderId).update("status", Order.STATUS_DELIVERED)
-                .addOnSuccessListener(v -> { Toast.makeText(this, "Delivered!", Toast.LENGTH_SHORT).show(); finish(); })
-                .addOnFailureListener(e -> { binding.btnMarkDelivered.setEnabled(true); Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show(); });
+        
+        // Use document(orderId).update("status", ...) instead of passing a whole Map
+        // This is safer and less prone to schema validation issues
+        FirebaseHelper.getDb().collection("orders").document(orderId)
+                .update("status", Order.STATUS_DELIVERED)
+                .addOnSuccessListener(v -> { 
+                    if (isFinishing() || isDestroyed()) return;
+                    Toast.makeText(this, "Delivered!", Toast.LENGTH_SHORT).show(); 
+                    finish(); 
+                })
+                .addOnFailureListener(e -> { 
+                    if (binding != null) binding.btnMarkDelivered.setEnabled(true); 
+                    Toast.makeText(this, "Failed to update: " + e.getMessage(), Toast.LENGTH_LONG).show(); 
+                });
     }
 
     private String shortOrderId() {

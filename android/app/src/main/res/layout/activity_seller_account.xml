@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F8F9FA">
 
-    <!-- Premium Header (Matches Customer Style) -->
+    <!-- Premium Header (Hardcoded background to fix scroll glitch) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,11 +20,13 @@
             android:paddingTop="48dp"
             android:paddingBottom="40dp"
             android:paddingHorizontal="24dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="#27AE60">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#27AE60">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSettings"
                     android:layout_width="wrap_content"
@@ -70,7 +72,8 @@
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:layout_marginTop="16dp"
-                android:letterSpacing="-0.01"/>
+                android:letterSpacing="-0.01"
+                android:background="#27AE60"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,6 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="-32dp"
+        android:background="#F8F9FA"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -122,8 +126,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#F1F2F6"
+                app:strokeWidth="0dp"
                 app:cardBackgroundColor="#FFFFFF"
                 android:layout_marginBottom="32dp">
 
@@ -131,13 +134,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="24dp"
+                    android:background="#FFFFFF">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:background="#FFFFFF">
                         <ImageView
                             android:layout_width="22dp"
                             android:layout_height="22dp"
@@ -167,7 +172,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="top">
+                        android:gravity="top"
+                        android:background="#FFFFFF">
                         <ImageView
                             android:layout_width="22dp"
                             android:layout_height="22dp"
@@ -240,14 +246,16 @@
                 android:textColor="#B2BEC3"
                 android:gravity="center"
                 android:paddingVertical="32dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:background="#F8F9FA"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginBottom="32dp"
+                android:background="#F8F9FA"/>
 
             <!-- Profile Actions -->
             <com.google.android.material.button.MaterialButton

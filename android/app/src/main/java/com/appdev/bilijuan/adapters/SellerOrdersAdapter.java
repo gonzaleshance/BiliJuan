@@ -128,7 +128,8 @@ public class SellerOrdersAdapter extends RecyclerView.Adapter<SellerOrdersAdapte
             case Order.STATUS_PENDING:    return "Accept Order";
             case Order.STATUS_CONFIRMED:  return "Start Cooking";
             case Order.STATUS_PREPARING:  return "Out for Delivery";
-            case Order.STATUS_ON_THE_WAY: return "Mark Delivered";
+            // Removed STATUS_ON_THE_WAY -> "Mark Delivered" to prevent accidental clicks
+            // This action should only be available in the Delivery Map screen.
             default: return null;
         }
     }
