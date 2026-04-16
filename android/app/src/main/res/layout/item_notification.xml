@@ -9,7 +9,8 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/surface_variant">
+    app:strokeColor="#F1F2F6"
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:id="@+id/layoutContent"
@@ -29,7 +30,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_notifications"
-                app:tint="@color/primary"/>
+                app:tint="#27AE60"/>
         </FrameLayout>
 
         <LinearLayout
@@ -45,14 +46,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
+                android:textColor="#2D3436"/>
 
             <TextView
                 android:id="@+id/tvMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="#636E72"
                 android:layout_marginTop="2dp"/>
 
             <TextView
@@ -60,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
-                android:textColor="@color/text_hint"
+                android:textColor="#B2BEC3"
                 android:layout_marginTop="4dp"/>
         </LinearLayout>
 
@@ -71,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="Read"
             android:textSize="12sp"
-            android:textColor="@color/primary"
+            android:textColor="#27AE60"
             android:padding="0dp"
             android:minWidth="0dp"
             android:minHeight="0dp"/>
