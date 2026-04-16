@@ -23,6 +23,7 @@ import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.CustomerNavHelper;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.google.android.material.chip.Chip;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -37,11 +38,14 @@ public class SearchActivity extends AppCompatActivity {
     private FoodListingAdapter adapter;
     private StoreCircleAdapter storeAdapter;
     private StoreCircleAdapter searchStoresAdapter;
+    
     private final List<Product> results = new ArrayList<>();
     private final List<Product> allProducts = new ArrayList<>();
     private final List<User> suggestedStores = new ArrayList<>();
     private final List<User> allStores = new ArrayList<>();
     private final List<User> filteredStores = new ArrayList<>();
+    
+    private ListenerRegistration productsListener, storesListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,8 @@ public class SearchActivity extends AppCompatActivity {
         setupBottomNav();
         setupListeners();
         
-        loadAllProducts();
-        loadAllStores();
+        listenToProducts();
+        listenToStores();
         
         setupDefaultCategories();
     }
@@ -93,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerViews() {
-        // Results Adapter (Products)
+        // Main Results (Products)
         adapter = new FoodListingAdapter(results, product -> {
             Intent intent = new Intent(this, ProductDetailActivity.class);
             intent.putExtra("productId", product.getProductId());
@@ -101,9 +105,8 @@ public class SearchActivity extends AppCompatActivity {
         });
         binding.rvResults.setLayoutManager(new LinearLayoutManager(this));
         binding.rvResults.setAdapter(adapter);
-        binding.rvResults.setNestedScrollingEnabled(false);
 
-        // Store Suggestions Adapter (Horizontal)
+        // Popular Stores (Suggestions)
         storeAdapter = new StoreCircleAdapter(suggestedStores, store -> {
             Intent intent = new Intent(this, StoreDetailActivity.class);
             intent.putExtra("sellerId", store.getUid());
@@ -111,9 +114,8 @@ public class SearchActivity extends AppCompatActivity {
         });
         binding.rvStoreSuggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.rvStoreSuggestions.setAdapter(storeAdapter);
-        binding.rvStoreSuggestions.setNestedScrollingEnabled(false);
 
-        // Filtered Stores Adapter (Horizontal, shown during search)
+        // Matching Stores (Search Mode)
         searchStoresAdapter = new StoreCircleAdapter(filteredStores, store -> {
             Intent intent = new Intent(this, StoreDetailActivity.class);
             intent.putExtra("sellerId", store.getUid());
@@ -121,7 +123,6 @@ public class SearchActivity extends AppCompatActivity {
         });
         binding.rvSearchStores.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.rvSearchStores.setAdapter(searchStoresAdapter);
-        binding.rvSearchStores.setNestedScrollingEnabled(false);
     }
 
     private void setupDefaultCategories() {
@@ -129,56 +130,49 @@ public class SearchActivity extends AppCompatActivity {
         setupCategoryChips(new HashSet<>(Arrays.asList(cats)));
     }
 
-    private void loadAllProducts() {
-        FirebaseHelper.getDb().collection("products")
+    private void listenToProducts() {
+        if (productsListener != null) productsListener.remove();
+        productsListener = FirebaseHelper.getDb().collection("products")
                 .whereEqualTo("available", true)
-                .get()
-                .addOnSuccessListener(snap -> {
+                .addSnapshotListener((snap, e) -> {
+                    if (e != null || snap == null) return;
                     allProducts.clear();
                     for (QueryDocumentSnapshot doc : snap) {
                         Product p = doc.toObject(Product.class);
                         p.setProductId(doc.getId());
                         allProducts.add(p);
                     }
-                    
-                    // Re-filter if user already typed something (avoids race condition)
-                    String query = binding.etSearch.getText().toString().trim();
-                    if (!query.isEmpty()) filterSearch(query);
-                })
-                .addOnFailureListener(e -> Log.e("SearchActivity", "Error loading products", e));
+                    // Refresh current search
+                    filterSearch(binding.etSearch.getText().toString().trim());
+                });
     }
 
-    private void loadAllStores() {
-        FirebaseHelper.getDb().collection("users")
+    private void listenToStores() {
+        if (storesListener != null) storesListener.remove();
+        storesListener = FirebaseHelper.getDb().collection("users")
                 .whereEqualTo("role", "seller")
-                .get()
-                .addOnSuccessListener(snap -> {
+                .addSnapshotListener((snap, e) -> {
+                    if (e != null || snap == null) return;
                     allStores.clear();
                     suggestedStores.clear();
-                    if (snap != null) {
-                        for (QueryDocumentSnapshot doc : snap) {
-                            User user = doc.toObject(User.class);
-                            user.setUid(doc.getId());
-                            if (user.isActive()) {
-                                allStores.add(user);
-                                if (suggestedStores.size() < 15) suggestedStores.add(user);
-                            }
+                    for (QueryDocumentSnapshot doc : snap) {
+                        User user = doc.toObject(User.class);
+                        user.setUid(doc.getId());
+                        if (user.isActive()) {
+                            allStores.add(user);
+                            if (suggestedStores.size() < 15) suggestedStores.add(user);
                         }
                     }
                     storeAdapter.notifyDataSetChanged();
                     
-                    boolean hasStores = !suggestedStores.isEmpty();
-                    binding.layoutPopularStores.setVisibility(hasStores ? View.VISIBLE : View.GONE);
-                    
-                    // Re-filter if user already typed something (avoids race condition)
                     String query = binding.etSearch.getText().toString().trim();
-                    if (!query.isEmpty()) {
-                        filterSearch(query);
-                    } else {
+                    if (query.isEmpty()) {
                         binding.layoutSuggestions.setVisibility(View.VISIBLE);
+                        binding.layoutPopularStores.setVisibility(suggestedStores.isEmpty() ? View.GONE : View.VISIBLE);
+                    } else {
+                        filterSearch(query);
                     }
-                })
-                .addOnFailureListener(e -> Log.e("SearchActivity", "Error loading stores", e));
+                });
     }
 
     private void setupCategoryChips(Set<String> categories) {
@@ -216,35 +210,30 @@ public class SearchActivity extends AppCompatActivity {
         
         String lower = query.toLowerCase();
         
-        // Identify store IDs that match by product info (name, category, or sellerName)
-        Set<String> storesWithMatches = new HashSet<>();
+        // Match Stores
+        Set<String> storesWithMatchingProducts = new HashSet<>();
         for (Product p : allProducts) {
-            boolean pMatches = (p.getName() != null && p.getName().toLowerCase().contains(lower)) ||
-                              (p.getSellerName() != null && p.getSellerName().toLowerCase().contains(lower)) ||
-                              (p.getCategory() != null && p.getCategory().toLowerCase().contains(lower));
-            if (pMatches) {
-                storesWithMatches.add(p.getSellerId());
+            if ((p.getName() != null && p.getName().toLowerCase().contains(lower)) ||
+                (p.getCategory() != null && p.getCategory().toLowerCase().contains(lower))) {
+                storesWithMatchingProducts.add(p.getSellerId());
             }
         }
 
-        // Filter Stores: match by store name OR if they have matching products
         filteredStores.clear();
         for (User store : allStores) {
-            boolean storeNameMatches = store.getName() != null && store.getName().toLowerCase().contains(lower);
-            boolean hasMatchingInfo = storesWithMatches.contains(store.getUid());
-            
-            if (storeNameMatches || hasMatchingInfo) {
+            boolean nameMatches = store.getName() != null && store.getName().toLowerCase().contains(lower);
+            boolean sellsMatches = storesWithMatchingProducts.contains(store.getUid());
+            if (nameMatches || sellsMatches) {
                 filteredStores.add(store);
             }
         }
 
-        // Filter Products (Standard matching)
+        // Match Products
         results.clear();
         for (Product p : allProducts) {
-            boolean matchesName = p.getName() != null && p.getName().toLowerCase().contains(lower);
-            boolean matchesSeller = p.getSellerName() != null && p.getSellerName().toLowerCase().contains(lower);
-            boolean matchesCategory = p.getCategory() != null && p.getCategory().toLowerCase().contains(lower);
-            if (matchesName || matchesSeller || matchesCategory) {
+            if ((p.getName() != null && p.getName().toLowerCase().contains(lower)) ||
+                (p.getSellerName() != null && p.getSellerName().toLowerCase().contains(lower)) ||
+                (p.getCategory() != null && p.getCategory().toLowerCase().contains(lower))) {
                 results.add(p);
             }
         }
@@ -269,5 +258,12 @@ public class SearchActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (productsListener != null) productsListener.remove();
+        if (storesListener != null) storesListener.remove();
     }
 }
