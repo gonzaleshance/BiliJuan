@@ -2,8 +2,6 @@ package com.appdev.bilijuan.activities.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,18 +25,11 @@ public class CategoryActivity extends AppCompatActivity {
 
     private ActivityCategoryBinding binding;
     private FoodListingAdapter foodAdapter;
-    private List<Product> allProducts = new ArrayList<>();
     private ListenerRegistration foodListener;
     private String selectedCategory = null;
 
     private static final String[] CATEGORY_EMOJIS = {
-            "🍱", // Ulam
-            "🍚", // Rice Meals
-            "🥟", // Meryenda
-            "🍻", // Pulutan
-            "🍰", // Panghimagas
-            "🍢", // Street Food
-            "🎈"  // Specialty/Celebration
+            "🍱", "🍚", "🥟", "🍻", "🍰", "🍢", "🎈"
     };
 
     private static final String[] CATEGORY_SUBTITLES = {
@@ -61,17 +52,10 @@ public class CategoryActivity extends AppCompatActivity {
         setupBottomNav();
         setupCategories();
         setupFoodList();
-        setupSearch();
     }
 
     private void setupUI() {
-        binding.btnBack.setOnClickListener(v -> {
-            if (selectedCategory != null) {
-                closeCategory();
-            } else {
-                finish();
-            }
-        });
+        binding.btnBack.setOnClickListener(v -> closeCategory());
     }
 
     private void setupBottomNav() {
@@ -91,11 +75,7 @@ public class CategoryActivity extends AppCompatActivity {
             ));
         }
 
-        CategoryAdapter adapter = new CategoryAdapter(items, item -> {
-            openCategory(item.name);
-        });
-
-        // UI IMPROVEMENT: Changed to Rows (LinearLayoutManager) instead of Grid
+        CategoryAdapter adapter = new CategoryAdapter(items, item -> openCategory(item.name));
         binding.rvCategories.setLayoutManager(new LinearLayoutManager(this));
         binding.rvCategories.setAdapter(adapter);
     }
@@ -110,19 +90,10 @@ public class CategoryActivity extends AppCompatActivity {
         binding.rvFoodList.setAdapter(foodAdapter);
     }
 
-    private void setupSearch() {
-        binding.etSearch.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterFood(s.toString());
-            }
-            @Override public void afterTextChanged(Editable s) {}
-        });
-    }
-
     private void openCategory(String category) {
         selectedCategory = category;
         binding.tvHeaderTitle.setText(category);
+        binding.btnBack.setVisibility(View.VISIBLE);
         binding.rvCategories.setVisibility(View.GONE);
         binding.rvFoodList.setVisibility(View.VISIBLE);
         binding.shimmer.setVisibility(View.VISIBLE);
@@ -131,7 +102,8 @@ public class CategoryActivity extends AppCompatActivity {
 
     private void closeCategory() {
         selectedCategory = null;
-        binding.tvHeaderTitle.setText("Categories");
+        binding.tvHeaderTitle.setText("Explore Categories");
+        binding.btnBack.setVisibility(View.GONE);
         binding.rvCategories.setVisibility(View.VISIBLE);
         binding.rvFoodList.setVisibility(View.GONE);
         binding.tvEmpty.setVisibility(View.GONE);
@@ -149,53 +121,15 @@ public class CategoryActivity extends AppCompatActivity {
             binding.shimmer.setVisibility(View.GONE);
             if (e != null || snap == null) return;
             
-            allProducts.clear();
+            List<Product> list = new ArrayList<>();
             for (QueryDocumentSnapshot doc : snap) {
                 Product p = doc.toObject(Product.class);
                 p.setProductId(doc.getId());
-                allProducts.add(p);
+                list.add(p);
             }
-            filterFood(binding.etSearch.getText().toString());
+            foodAdapter.setProducts(list);
+            binding.tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
         });
-    }
-
-    private void filterFood(String query) {
-        if (selectedCategory == null && query.isEmpty()) return;
-
-        if (selectedCategory == null && !query.isEmpty()) {
-            binding.rvCategories.setVisibility(View.GONE);
-            binding.rvFoodList.setVisibility(View.VISIBLE);
-            binding.tvHeaderTitle.setText("Search Results");
-            loadSearchResults(query);
-            return;
-        }
-
-        List<Product> filtered = new ArrayList<>();
-        for (Product p : allProducts) {
-            if (p.getName().toLowerCase().contains(query.toLowerCase())) {
-                filtered.add(p);
-            }
-        }
-        foodAdapter.setProducts(filtered);
-        binding.tvEmpty.setVisibility(filtered.isEmpty() ? View.VISIBLE : View.GONE);
-    }
-
-    private void loadSearchResults(String query) {
-        FirebaseHelper.getDb().collection("products")
-                .whereEqualTo("available", true)
-                .get()
-                .addOnSuccessListener(snap -> {
-                    allProducts.clear();
-                    for (QueryDocumentSnapshot doc : snap) {
-                        Product p = doc.toObject(Product.class);
-                        p.setProductId(doc.getId());
-                        if (p.getName().toLowerCase().contains(query.toLowerCase())) {
-                            allProducts.add(p);
-                        }
-                    }
-                    foodAdapter.setProducts(allProducts);
-                    binding.tvEmpty.setVisibility(allProducts.isEmpty() ? View.VISIBLE : View.GONE);
-                });
     }
 
     @Override

@@ -21,6 +21,7 @@ public class CustomerOrdersAdapter extends RecyclerView.Adapter<CustomerOrdersAd
         void onTrack(Order order);
         void onReorder(Order order);
         void onCancel(Order order);
+        void onClick(Order order);
     }
 
     private final List<Order> orders;
@@ -108,6 +109,7 @@ public class CustomerOrdersAdapter extends RecyclerView.Adapter<CustomerOrdersAd
         holder.btnCancel.setVisibility(o.canCustomerCancel() ? View.VISIBLE : View.GONE);
 
         // Listeners
+        holder.itemView.setOnClickListener(v -> listener.onClick(o));
         holder.btnTrack.setOnClickListener(v -> listener.onTrack(o));
         holder.btnReorder.setOnClickListener(v -> listener.onReorder(o));
         holder.btnCancel.setOnClickListener(v -> listener.onCancel(o));

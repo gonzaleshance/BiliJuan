@@ -1,7 +1,5 @@
 package com.appdev.bilijuan.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.models.User;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -43,11 +43,17 @@ public class StoreCircleAdapter extends RecyclerView.Adapter<StoreCircleAdapter.
         User store = stores.get(position);
         holder.tvName.setText(store.getName());
 
-        if (store.getStoreImageBase64() != null && !store.getStoreImageBase64().isEmpty()) {
+        String base64Image = store.getStoreImageBase64();
+        if (base64Image != null && !base64Image.isEmpty()) {
             try {
-                byte[] bytes = Base64.decode(store.getStoreImageBase64(), Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                holder.ivStore.setImageBitmap(bitmap);
+                byte[] bytes = Base64.decode(base64Image, Base64.DEFAULT);
+                Glide.with(holder.itemView.getContext())
+                        .asBitmap()
+                        .load(bytes)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.ic_person)
+                        .error(R.drawable.ic_person)
+                        .into(holder.ivStore);
             } catch (Exception e) {
                 holder.ivStore.setImageResource(R.drawable.ic_person);
             }

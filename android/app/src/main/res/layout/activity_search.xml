@@ -45,6 +45,17 @@
                     android:paddingHorizontal="16dp">
 
                     <ImageView
+                        android:id="@+id/btnBackSearch"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_back"
+                        android:padding="2dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:tint="#636E72"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/ivSearchIcon"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_search"
@@ -69,6 +80,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -79,31 +91,41 @@
             android:orientation="vertical"
             android:paddingTop="16dp">
 
-            <!-- Suggestions Section -->
+            <!-- Suggestions State Section -->
             <LinearLayout
                 android:id="@+id/layoutSuggestions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Popular Stores"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2D3436"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginBottom="12dp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvStoreSuggestions"
+                <!-- Popular Stores -->
+                <LinearLayout
+                    android:id="@+id/layoutPopularStores"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingHorizontal="12dp"
-                    android:orientation="horizontal"/>
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Popular Stores"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2D3436"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvStoreSuggestions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="12dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"/>
+                </LinearLayout>
+
+                <!-- Categories -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,7 +134,7 @@
                     android:textStyle="bold"
                     android:textColor="#2D3436"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"/>
 
                 <com.google.android.material.chip.ChipGroup
@@ -120,7 +142,52 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    app:singleSelection="true"/>
+                    app:singleSelection="true"
+                    android:layout_marginBottom="24dp"/>
+            </LinearLayout>
+
+            <!-- Search Results Section -->
+            <LinearLayout
+                android:id="@+id/layoutSearchResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Matching Stores -->
+                <LinearLayout
+                    android:id="@+id/layoutSearchStores"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Matching Stores"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#636E72"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvSearchStores"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="12dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingBottom="100dp"/>
             </LinearLayout>
 
             <TextView
@@ -132,14 +199,6 @@
                 android:textColor="#636E72"
                 android:gravity="center"
                 android:paddingVertical="64dp"
-                android:visibility="gone"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvResults"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="100dp"
                 android:visibility="gone"/>
 
         </LinearLayout>

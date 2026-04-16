@@ -11,19 +11,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="32dp"
-        android:paddingTop="64dp"
+        android:paddingTop="48dp"
         android:paddingBottom="48dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BiliJuan"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#27AE60"
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/bjlogoo"
             android:layout_gravity="center_horizontal"
-            android:letterSpacing="-0.02"
-            android:layout_marginBottom="64dp"/>
+            android:layout_marginBottom="32dp"/>
 
         <TextView
             android:layout_width="wrap_content"

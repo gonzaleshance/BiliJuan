@@ -5,19 +5,23 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.databinding.ActivityAddProductBinding;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.ImageHelper;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class AddProductActivity extends AppCompatActivity {
 
@@ -58,8 +62,11 @@ public class AddProductActivity extends AppCompatActivity {
     private void setupCategoryDropdown() {
         String[] categories = getResources().getStringArray(
                 com.appdev.bilijuan.R.array.product_categories);
+        
+        // Using a custom layout for the dropdown items to ensure they are light-themed
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line, categories);
+                this, R.layout.item_dropdown_category, categories);
+        
         binding.spinnerCategory.setAdapter(adapter);
         binding.spinnerCategory.setThreshold(0);
         binding.spinnerCategory.setOnClickListener(v -> binding.spinnerCategory.showDropDown());
@@ -136,9 +143,6 @@ public class AddProductActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(name)) {
             binding.etName.setError("Name is required"); binding.etName.requestFocus(); return;
         }
-        if (TextUtils.isEmpty(desc)) {
-            binding.etDescription.setError("Description is required"); binding.etDescription.requestFocus(); return;
-        }
         if (TextUtils.isEmpty(priceStr)) {
             binding.etPrice.setError("Price is required"); binding.etPrice.requestFocus(); return;
         }
@@ -165,7 +169,10 @@ public class AddProductActivity extends AppCompatActivity {
                             "price", price,
                             "category", category,
                             "imageBase64", selectedImageBase64)
-                    .addOnSuccessListener(v -> { setLoading(false); finish(); })
+                    .addOnSuccessListener(v -> {
+                        setLoading(false);
+                        showSuccessSheet(true);
+                    })
                     .addOnFailureListener(e -> { setLoading(false);
                         Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show(); });
         } else {
@@ -178,12 +185,29 @@ public class AddProductActivity extends AppCompatActivity {
                     .addOnSuccessListener(ref -> {
                         ref.update("productId", ref.getId());
                         setLoading(false);
-                        Toast.makeText(this, "Item posted!", Toast.LENGTH_SHORT).show();
-                        finish();
+                        showSuccessSheet(false);
                     })
                     .addOnFailureListener(e -> { setLoading(false);
                         Toast.makeText(this, "Post failed. Try again.", Toast.LENGTH_SHORT).show(); });
         }
+    }
+
+    private void showSuccessSheet(boolean isEdit) {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_post_success, null);
+        sheet.setContentView(v);
+        sheet.setCancelable(false);
+
+        if (isEdit) {
+            ((TextView) v.findViewById(R.id.tvSuccessTitle)).setText("Product Updated!");
+            ((TextView) v.findViewById(R.id.tvSuccessMessage)).setText("Your changes have been saved successfully.");
+        }
+
+        v.findViewById(R.id.btnDone).setOnClickListener(btn -> {
+            sheet.dismiss();
+            finish();
+        });
+        sheet.show();
     }
 
     private void setLoading(boolean loading) {

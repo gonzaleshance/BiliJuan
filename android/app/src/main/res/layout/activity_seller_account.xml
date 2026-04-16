@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     android:background="#F8F9FA">
 
-    <!-- Premium Header (Hardcoded background to fix scroll glitch) -->
+    <!-- Premium Header (Hardcoded background and liftOnScroll=false to fix scroll glitch) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#27AE60"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <LinearLayout
             android:layout_width="match_parent"

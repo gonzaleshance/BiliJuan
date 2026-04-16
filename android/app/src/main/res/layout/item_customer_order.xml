@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="0dp"
     android:layout_marginVertical="8dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
@@ -26,12 +26,12 @@
             android:gravity="center_vertical">
 
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:background="@drawable/bg_primary_light_circle">
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_bag"
                     app:tint="#27AE60"/>
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Order #1001"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="#2D3436"/>
                 <TextView
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Product Names..."
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textColor="#636E72"
                     android:layout_marginTop="2dp"
                     android:maxLines="1"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Preparing"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="#27AE60"/>
         </LinearLayout>
@@ -89,7 +89,7 @@
                 android:text="₱350"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#27AE60"/>
+                android:textColor="#2D3436"/>
 
             <TextView
                 android:id="@+id/tvEta"
@@ -100,50 +100,42 @@
                 android:textColor="#636E72"/>
         </LinearLayout>
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F1F2F6"
-            android:layout_marginTop="16dp"/>
-
         <!-- Progress Section (Visible for Active Orders) -->
         <LinearLayout
             android:id="@+id/layoutProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:visibility="visible">
 
-            <LinearLayout
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/indicatorProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:progress="60"
+                app:indicatorColor="#27AE60"
+                app:trackColor="#F1F2F6"
+                app:trackThickness="6dp"
+                app:trackCornerRadius="3dp"/>
 
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/indicatorProgress"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:progress="60"
-                    app:indicatorColor="#27AE60"
-                    app:trackColor="#EAFAF1"
-                    app:trackThickness="6dp"
-                    app:trackCornerRadius="3dp"/>
-
-                <TextView
-                    android:id="@+id/tvSecondaryStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="On the way!"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="#27AE60"
-                    android:layout_marginStart="16dp"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvSecondaryStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="On the way!"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#27AE60"
+                android:gravity="end"
+                android:layout_marginTop="8dp"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F1F2F6"
+            android:layout_marginTop="16dp"/>
 
         <!-- Bottom Action Layout -->
         <LinearLayout
@@ -151,45 +143,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:gravity="center_vertical">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="44dp"
                 android:text="Cancel Order"
                 android:textColor="#E74C3C"
                 android:textSize="13sp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:visibility="gone"/>
 
             <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTrack"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:foreground="?attr/selectableItemBackground">
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Track Order"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#27AE60"/>
-                
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_arrow_back"
-                    android:rotation="180"
-                    app:tint="#27AE60"
-                    android:layout_marginStart="4dp"/>
-            </LinearLayout>
+                android:layout_height="44dp"
+                android:text="Track Order"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#27AE60"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="end"
+                app:iconSize="16dp"
+                app:iconTint="#27AE60"/>
         </LinearLayout>
 
         <!-- History Actions (Hidden for Active) -->
@@ -198,20 +183,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:visibility="gone">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReorder"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:text="Order Again"
                 android:textStyle="bold"
                 android:textColor="#27AE60"
                 android:backgroundTint="#FFFFFF"
                 app:strokeColor="#27AE60"
                 app:strokeWidth="1dp"
-                app:cornerRadius="24dp"/>
+                app:cornerRadius="26dp"
+                app:elevation="0dp"/>
         </LinearLayout>
 
     </LinearLayout>

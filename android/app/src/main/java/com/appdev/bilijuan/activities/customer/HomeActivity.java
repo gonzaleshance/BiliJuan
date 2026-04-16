@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     private FoodListingAdapter listingsAdapter;
     private FoodListingAdapter searchResultsAdapter;
     private StoreAdapter storeAdapter;
-    private ListenerRegistration popularListener, listingsListener, notifListener;
+    private ListenerRegistration popularListener, listingsListener, storesListener, notifListener;
     private String activeTab = "Food";
     private String activeCategory = null;
     private List<Product> allProductsForSearch = new ArrayList<>();
@@ -206,6 +206,7 @@ public class HomeActivity extends AppCompatActivity {
             updatePopularVisibility(false);
             loadPopular();
             loadFood(null);
+            loadStores();
             binding.swipeRefresh.postDelayed(() -> binding.swipeRefresh.setRefreshing(false), 1500);
         });
 
@@ -325,42 +326,40 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadStores() {
-        if (listingsListener != null) listingsListener.remove();
-        listingsListener = FirebaseHelper.getDb().collection("products")
-                .whereEqualTo("available", true)
+        if (storesListener != null) storesListener.remove();
+        storesListener = FirebaseHelper.getDb().collection("users")
+                .whereEqualTo("role", "seller")
+                .whereEqualTo("status", "active")
                 .addSnapshotListener((snap, e) -> {
                     if (e != null || snap == null) return;
-                    Map<String, StoreAdapter.StoreItem> map = new LinkedHashMap<>();
-                    List<String> sellerIds = new ArrayList<>();
+                    List<StoreAdapter.StoreItem> list = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : snap) {
-                        Product p = doc.toObject(Product.class);
-                        String sid = p.getSellerId();
-                        if (!map.containsKey(sid)) {
-                            sellerIds.add(sid);
-                            map.put(sid, new StoreAdapter.StoreItem(
-                                    sid, p.getSellerName(),
-                                    p.getImageBase64(), null, // Banner from product, Logo fetched below
-                                    p.getCategory(), (float)p.getStars(), 1));
-                        } else {
-                            map.get(sid).itemCount++;
-                            map.get(sid).rating = (map.get(sid).rating + (float)p.getStars()) / 2f;
-                        }
+                        User u = doc.toObject(User.class);
+                        u.setUid(doc.getId());
+                        list.add(new StoreAdapter.StoreItem(
+                                u.getUid(), u.getName(),
+                                null, u.getStoreImageBase64(),
+                                "Available", 0, 0)); // Rating/count handled separately or later
                     }
-                    
-                    List<StoreAdapter.StoreItem> list = new ArrayList<>(map.values());
                     storeAdapter.setStores(list);
                     binding.emptyStores.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
 
-                    for (String sid : sellerIds) {
-                        FirebaseHelper.getDb().collection("users").document(sid).get().addOnSuccessListener(userDoc -> {
-                            if (userDoc.exists()) {
-                                String logo = userDoc.getString("storeImageBase64");
-                                if (logo != null && map.containsKey(sid)) {
-                                    map.get(sid).logoBase64 = logo;
+                    // Optional: Fetch item count and average rating for each store
+                    for (StoreAdapter.StoreItem item : list) {
+                        FirebaseHelper.getDb().collection("products")
+                                .whereEqualTo("sellerId", item.sellerId)
+                                .whereEqualTo("available", true)
+                                .get()
+                                .addOnSuccessListener(pSnap -> {
+                                    if (pSnap.isEmpty()) return;
+                                    item.itemCount = pSnap.size();
+                                    float totalStars = 0;
+                                    for (QueryDocumentSnapshot pDoc : pSnap) {
+                                        totalStars += pDoc.getDouble("stars");
+                                    }
+                                    item.rating = totalStars / pSnap.size();
                                     storeAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        });
+                                });
                     }
                 });
     }
@@ -397,6 +396,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (popularListener != null) popularListener.remove();
         if (listingsListener != null) listingsListener.remove();
+        if (storesListener != null) storesListener.remove();
         if (notifListener != null) notifListener.remove();
     }
 }

@@ -3,6 +3,8 @@ package com.appdev.bilijuan.activities.customer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,16 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.adapters.CustomerOrdersAdapter;
 import com.appdev.bilijuan.databinding.ActivityMyOrdersBinding;
+import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.utils.CustomerNavHelper;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class MyOrdersActivity extends AppCompatActivity {
 
@@ -45,8 +51,6 @@ public class MyOrdersActivity extends AppCompatActivity {
         setupBottomNav();
         setupTabs();
         
-        // Back button removed from XML for better UX in tab-based navigation
-        
         listenOrders();
         checkForPendingReview();
     }
@@ -67,9 +71,99 @@ public class MyOrdersActivity extends AppCompatActivity {
             public void onCancel(Order order) {
                 onCancelOrder(order);
             }
+
+            @Override
+            public void onClick(Order order) {
+                showOrderDetails(order);
+            }
         });
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(this));
         binding.rvOrders.setAdapter(adapter);
+    }
+
+    private void showOrderDetails(Order order) {
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_order_details, null);
+        dialog.setContentView(view);
+
+        TextView tvOrderId = view.findViewById(R.id.tvOrderId);
+        TextView tvOrderDate = view.findViewById(R.id.tvOrderDate);
+        TextView tvCustomerName = view.findViewById(R.id.tvCustomerName);
+        TextView tvCustomerPhone = view.findViewById(R.id.tvCustomerPhone);
+        TextView tvCustomerAddress = view.findViewById(R.id.tvCustomerAddress);
+        LinearLayout layoutOrderItems = view.findViewById(R.id.layoutOrderItems);
+        TextView tvSubtotal = view.findViewById(R.id.tvSubtotal);
+        TextView tvDeliveryFee = view.findViewById(R.id.tvDeliveryFee);
+        TextView tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
+        View btnClose = view.findViewById(R.id.btnClose);
+
+        // Progress components
+        View layoutProgress = view.findViewById(R.id.layoutProgress);
+        TextView tvSecondaryStatus = view.findViewById(R.id.tvSecondaryStatus);
+        TextView tvEta = view.findViewById(R.id.tvEta);
+        LinearProgressIndicator indicatorProgress = view.findViewById(R.id.indicatorProgress);
+
+        String shortId = order.getOrderId().length() > 8 ? order.getOrderId().substring(0, 8).toUpperCase() : order.getOrderId();
+        tvOrderId.setText("Order #" + shortId);
+
+        if (order.getCreatedAt() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy • h:mm a", Locale.getDefault());
+            tvOrderDate.setText("Placed on " + sdf.format(order.getCreatedAt()));
+        }
+
+        // Setup Progress logic
+        if (order.isActive()) {
+            layoutProgress.setVisibility(View.VISIBLE);
+            String eta = "40-45 mins";
+            int progress = 10;
+            String msg = "Waiting for store...";
+
+            switch (order.getStatus()) {
+                case Order.STATUS_CONFIRMED:
+                    eta = "30-40 mins"; progress = 25; msg = "Order accepted!"; break;
+                case Order.STATUS_PREPARING:
+                    eta = "20-30 mins"; progress = 50; msg = "Cooking your meal!"; break;
+                case Order.STATUS_ON_THE_WAY:
+                    eta = "10-15 mins"; progress = 75; msg = "Rider is on the way!"; break;
+            }
+            tvEta.setText("ETA: " + eta);
+            tvSecondaryStatus.setText(msg);
+            indicatorProgress.setProgress(progress);
+        } else {
+            layoutProgress.setVisibility(View.GONE);
+        }
+
+        tvCustomerName.setText(order.getCustomerName());
+        tvCustomerPhone.setText(order.getCustomerPhone());
+        tvCustomerAddress.setText(order.getCustomerAddress());
+
+        layoutOrderItems.removeAllViews();
+        double subtotal = 0;
+
+        if (order.getItems() != null && !order.getItems().isEmpty()) {
+            for (CartItem item : order.getItems()) {
+                View itemView = getLayoutInflater().inflate(R.layout.item_order_detail, layoutOrderItems, false);
+                ((TextView) itemView.findViewById(R.id.tvItemName)).setText(item.getProductName());
+                ((TextView) itemView.findViewById(R.id.tvItemQty)).setText("x" + item.getQuantity());
+                ((TextView) itemView.findViewById(R.id.tvItemPrice)).setText(String.format("₱%.0f", item.getPrice() * item.getQuantity()));
+                layoutOrderItems.addView(itemView);
+                subtotal += item.getPrice() * item.getQuantity();
+            }
+        } else {
+            View itemView = getLayoutInflater().inflate(R.layout.item_order_detail, layoutOrderItems, false);
+            ((TextView) itemView.findViewById(R.id.tvItemName)).setText(order.getProductName());
+            ((TextView) itemView.findViewById(R.id.tvItemQty)).setText("x" + order.getQuantity());
+            ((TextView) itemView.findViewById(R.id.tvItemPrice)).setText(String.format("₱%.0f", order.getProductPrice() * order.getQuantity()));
+            layoutOrderItems.addView(itemView);
+            subtotal = order.getProductPrice() * order.getQuantity();
+        }
+
+        tvSubtotal.setText(String.format("₱%.0f", subtotal));
+        tvDeliveryFee.setText(String.format("₱%.0f", order.getDeliveryFee()));
+        tvTotalAmount.setText(String.format("₱%.0f", order.getTotalAmount()));
+
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void checkForPendingReview() {
@@ -188,15 +282,11 @@ public class MyOrdersActivity extends AppCompatActivity {
     }
 
     private void onReorderOrder(Order order) {
-        // "Order Again" logic: Jumps straight to Summary with the previous details
-        // Users like this because it saves time pinning the same address again.
         Intent intent = new Intent(this, OrderSummaryActivity.class);
         intent.putExtra("productId", order.getProductId());
         intent.putExtra("pinnedAddress", order.getCustomerAddress());
         intent.putExtra("pinnedLat", order.getCustomerLat());
         intent.putExtra("pinnedLng", order.getCustomerLng());
-        // We can also pre-pass the quantity if we want, but Summary currently defaults to 1.
-        // Let's pass it so they don't have to adjust it again.
         intent.putExtra("quantity", order.getQuantity());
         startActivity(intent);
     }

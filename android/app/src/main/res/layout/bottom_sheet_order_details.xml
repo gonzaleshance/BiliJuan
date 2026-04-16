@@ -38,7 +38,49 @@
             android:text="Placed on Dec 12, 2023"
             android:textSize="13sp"
             android:textColor="#B2BEC3"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Progress Section -->
+        <LinearLayout
+            android:id="@+id/layoutProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/tvSecondaryStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cooking now!"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#27AE60"/>
+                <TextView
+                    android:id="@+id/tvEta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ETA: 20-30 mins"
+                    android:textSize="12sp"
+                    android:textColor="#636E72"/>
+            </LinearLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/indicatorProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:trackThickness="8dp"
+                app:trackCornerRadius="4dp"
+                app:trackColor="#F1F2F6"
+                app:indicatorColor="#27AE60"
+                android:progress="50"/>
+        </LinearLayout>
 
         <!-- Customer Section -->
         <TextView

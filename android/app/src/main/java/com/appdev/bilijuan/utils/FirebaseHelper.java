@@ -40,6 +40,11 @@ public class FirebaseHelper {
         getAuth().signOut();
     }
 
+    public static void signOut(Context context) {
+        getAuth().signOut();
+        getGoogleSignInClient(context).signOut();
+    }
+
     // ── Firestore ────────────────────────────────────────────────────────────
     public static FirebaseFirestore getDb() {
         if (db == null) db = FirebaseFirestore.getInstance();

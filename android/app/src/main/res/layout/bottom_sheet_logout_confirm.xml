@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="40dp"
+    android:gravity="center_horizontal">
+
+    <!-- Handle -->
+    <View
+        android:layout_width="48dp"
+        android:layout_height="5dp"
+        android:background="#DFE6E9"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#DFE6E9"/>
+
+    <ImageView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/ic_logout"
+        app:tint="#E74C3C"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_primary_light_circle"
+        android:backgroundTint="#FDEDEC"
+        android:padding="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#2D3436"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to log out of your BiliJuan account?"
+        android:textSize="14sp"
+        android:textColor="#636E72"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmLogout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Yes, Log Me Out"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#E74C3C"
+        app:cornerRadius="28dp"
+        app:elevation="0dp"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelLogout"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Not Now"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#636E72"
+        app:cornerRadius="28dp"/>
+
+</LinearLayout>

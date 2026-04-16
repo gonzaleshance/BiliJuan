@@ -326,8 +326,8 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
 
-            if (pass.length() < 6) {
-                binding.etPassword.setError("Minimum 6 characters");
+            if (pass.length() < 8) {
+                binding.etPassword.setError("Minimum 8 characters");
                 binding.etPassword.requestFocus();
                 return false;
             }
@@ -340,6 +340,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (!pass.matches(".*[0-9].*")) {
                 binding.etPassword.setError("Must contain at least 1 number");
+                binding.etPassword.requestFocus();
+                return false;
+            }
+
+            if (!pass.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
+                binding.etPassword.setError("Must contain at least 1 special character");
                 binding.etPassword.requestFocus();
                 return false;
             }
@@ -370,8 +376,14 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
 
-            if (!name.matches("^[a-zA-Z ]+$")) {
-                binding.etName.setError("Only letters and spaces allowed");
+            if (name.length() > 50) {
+                binding.etName.setError("Name too long (max 50)");
+                binding.etName.requestFocus();
+                return false;
+            }
+
+            if (!name.matches("^[a-zA-Z\\s\\-'.]+$")) {
+                binding.etName.setError("Name contains invalid characters");
                 binding.etName.requestFocus();
                 return false;
             }
@@ -392,6 +404,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (TextUtils.isEmpty(storeName)) {
                 binding.etStoreName.setError("Store name is required");
+                binding.etStoreName.requestFocus();
+                return false;
+            }
+
+            if (storeName.length() > 50) {
+                binding.etStoreName.setError("Store name too long (max 50)");
                 binding.etStoreName.requestFocus();
                 return false;
             }

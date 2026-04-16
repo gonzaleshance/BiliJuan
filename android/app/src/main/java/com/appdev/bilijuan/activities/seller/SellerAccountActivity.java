@@ -121,7 +121,25 @@ public class SellerAccountActivity extends AppCompatActivity {
     private void setupClickListeners() {
         binding.btnSettings.setOnClickListener(v -> showEditProfileModal());
         binding.btnAddItem.setOnClickListener(v -> startActivity(new Intent(this, AddProductActivity.class)));
-        binding.btnLogout.setOnClickListener(v -> logout());
+        binding.btnLogout.setOnClickListener(v -> showLogoutConfirmation());
+    }
+
+    private void showLogoutConfirmation() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_logout_confirm, null);
+        dialog.setContentView(view);
+
+        view.findViewById(R.id.btnConfirmLogout).setOnClickListener(v -> {
+            dialog.dismiss();
+            FirebaseHelper.signOut(this);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        view.findViewById(R.id.btnCancelLogout).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void loadProfile() {
@@ -291,14 +309,6 @@ public class SellerAccountActivity extends AppCompatActivity {
                 .setTitle("Delete Item").setMessage("Remove \"" + product.getName() + "\"?")
                 .setPositiveButton("Delete", (d, w) -> FirebaseHelper.getDb().collection("products").document(product.getProductId()).delete())
                 .setNegativeButton("Cancel", null).show();
-    }
-
-    private void logout() {
-        FirebaseHelper.signOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override

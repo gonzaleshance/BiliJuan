@@ -22,6 +22,7 @@ import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.StoreNavHelper;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
@@ -55,11 +56,28 @@ public class SellerReportsActivity extends AppCompatActivity {
         if (sellerId == null) { finish(); return; }
 
         StoreNavHelper.setup(this, binding.storeNav.getRoot(), StoreNavHelper.Tab.REPORTS);
+        binding.storeNav.fabPost.setOnClickListener(v -> showPostBottomSheet());
         
         setupRecyclerView();
         setupDateRangePicker();
 
         binding.btnGenerateReport.setOnClickListener(v -> shareReport());
+    }
+
+    private void showPostBottomSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_post, null);
+        sheet.setContentView(v);
+        v.findViewById(R.id.btnNewItem).setOnClickListener(btn -> {
+            sheet.dismiss();
+            startActivity(new Intent(this, AddProductActivity.class));
+        });
+        v.findViewById(R.id.btnEditExisting).setOnClickListener(btn -> {
+            sheet.dismiss();
+            // Go to dashboard products tab
+            startActivity(new Intent(this, SellerDashboardActivity.class).putExtra("openTab", "products"));
+        });
+        sheet.show();
     }
 
     private void setupRecyclerView() {

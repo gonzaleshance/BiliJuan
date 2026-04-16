@@ -1,107 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="#F8F9FA">
 
-    <LinearLayout
+    <!-- Premium Header -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_above="@id/customerNav">
+        android:layout_height="wrap_content"
+        android:background="#27AE60"
+        app:elevation="0dp">
 
-        <!-- Green Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/primary"
-            android:paddingHorizontal="20dp"
             android:paddingTop="48dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="40dp"
+            android:paddingHorizontal="24dp"
+            android:gravity="center">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:text="Explore Categories"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"/>
 
-                <ImageButton
-                    android:id="@+id/btnBack"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_arrow_back"
-                    android:background="@android:color/transparent"
-                    app:tint="@color/on_primary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discover local flavors by category"
+                android:textSize="14sp"
+                android:textColor="#CCFFFFFF"
+                android:layout_marginTop="4dp"/>
 
-                <TextView
-                    android:id="@+id/tvHeaderTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Categories"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_primary"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
-
-            <!-- Search bar -->
-            <LinearLayout
-                android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_search_white"
-                android:paddingHorizontal="14dp">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/text_hint"
-                    android:layout_marginEnd="10dp"/>
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Search for food..."
-                    android:textSize="13sp"
-                    android:textColor="@color/text_primary"
-                    android:background="@android:color/transparent"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"/>
-            </LinearLayout>
         </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <FrameLayout
+    <!-- Fixed background color on ScrollView to prevent black rendering gaps -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-32dp"
+        android:background="@android:color/transparent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_top_rounded"
+            android:backgroundTint="#F8F9FA"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="100dp">
 
-            <!-- Categories Grid -->
+            <!-- Back Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBack"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back to Categories"
+                android:textSize="13sp"
+                android:textColor="#27AE60"
+                app:icon="@drawable/ic_arrow_back"
+                app:iconTint="#27AE60"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCategories"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:clipToPadding="false"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:visibility="visible"/>
 
-            <!-- Food List (hidden by default) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvFoodList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:clipToPadding="false"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:visibility="gone"/>
-                
-            <!-- Shimmer -->
+
             <LinearLayout
                 android:id="@+id/shimmer"
                 android:layout_width="match_parent"
@@ -112,23 +99,25 @@
                 <include layout="@layout/item_shimmer"/>
             </LinearLayout>
 
-            <!-- Empty State -->
             <TextView
                 android:id="@+id/tvEmpty"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:text="No items found."
+                android:textSize="14sp"
+                android:textColor="#636E72"
+                android:gravity="center"
+                android:paddingVertical="64dp"
                 android:visibility="gone"/>
 
-        </FrameLayout>
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/customerNav"
         layout="@layout/layout_customer_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_gravity="bottom" />
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

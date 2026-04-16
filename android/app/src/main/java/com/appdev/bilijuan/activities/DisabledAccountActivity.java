@@ -46,7 +46,7 @@ public class DisabledAccountActivity extends AppCompatActivity {
         }
 
         binding.btnBackToLogin.setOnClickListener(v -> {
-            FirebaseHelper.signOut();
+            FirebaseHelper.signOut(this);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

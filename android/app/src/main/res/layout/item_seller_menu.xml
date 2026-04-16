@@ -4,10 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#F1F2F6"
     app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
@@ -16,6 +17,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Header: Image and Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,10 +26,10 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivProduct"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
                 android:scaleType="centerCrop"
-                android:background="#F1F2F6"
+                android:background="#F8F9FA"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.BiliJuan.Medium"
                 android:layout_marginEnd="16dp"/>
 
@@ -60,70 +62,79 @@
                     android:id="@+id/tvCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="#636E72"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="4dp"/>
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnToggleAvailability"
-                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:text="Disable"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp"
+                app:cornerRadius="16dp"
                 android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
+                android:paddingVertical="0dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:minHeight="32dp"
-                android:backgroundTint="#EAFAF1"
-                android:textColor="#27AE60"/>
+                android:minHeight="0dp"
+                android:backgroundTint="#E8F5E9"
+                android:textColor="#27AE60"
+                app:rippleColor="#27AE60"
+                app:elevation="0dp"/>
         </LinearLayout>
 
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#F1F2F6"
-            android:layout_marginVertical="12dp"/>
+            android:layout_marginVertical="16dp"/>
 
+        <!-- Footer Actions -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEdit"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Edit Details"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:textColor="#27AE60"
                 app:icon="@drawable/ic_edit"
                 app:iconTint="#27AE60"
                 app:iconSize="18dp"
+                app:iconGravity="textStart"
                 android:layout_marginEnd="8dp"
                 app:cornerRadius="12dp"
-                android:backgroundTint="#F9FEFA"/>
+                android:backgroundTint="#E8F5E9"
+                app:elevation="0dp"
+                app:rippleColor="#27AE60"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Delete"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:textColor="#E74C3C"
                 app:icon="@drawable/ic_delete"
                 app:iconTint="#E74C3C"
                 app:iconSize="18dp"
+                app:iconGravity="textStart"
                 app:cornerRadius="12dp"
-                android:backgroundTint="#FDEDEC"/>
+                android:backgroundTint="#FDEDEC"
+                app:elevation="0dp"
+                app:rippleColor="#E74C3C"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
