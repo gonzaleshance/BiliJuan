@@ -148,6 +148,17 @@ public class SplashActivity extends AppCompatActivity {
                     User user = doc.toObject(User.class);
                     if (user == null) { goTo(LoginActivity.class); return; }
 
+                    if (user.isSuspended()) {
+                        FirebaseHelper.signOut();
+                        Intent intent = new Intent(this, DisabledAccountActivity.class);
+                        intent.putExtra("reason", "Account Suspended");
+                        intent.putExtra("note", user.getSuspensionMessage());
+                        intent.putExtra("type", "suspended");
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+
                     String status = user.getStatus();
                     if ("disabled".equals(status)) {
                         FirebaseHelper.signOut();

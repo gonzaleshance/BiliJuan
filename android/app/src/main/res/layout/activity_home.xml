@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="#27AE60"
-                android:paddingTop="48dp"
+                paddingTop="48dp"
                 android:paddingBottom="32dp"
                 android:paddingHorizontal="24dp">
 
@@ -177,6 +177,32 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:animateLayoutChanges="true">
+
+                <!-- Featured Sellers Section -->
+                <LinearLayout
+                    android:id="@+id/sectionFeatured"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⭐ Featured Stores"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#2D3436"
+                        android:paddingHorizontal="24dp"
+                        android:layout_marginBottom="12dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvFeaturedStores"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="24dp"/>
+                </LinearLayout>
 
                 <!-- FOOD TAB SECTION -->
                 <LinearLayout

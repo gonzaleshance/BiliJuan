@@ -20,6 +20,8 @@ public class User {
     private String disableReason;
     private String disableNote;
     private String disabledBy;      // admin uid who disabled
+    private boolean isSuspended;    // Added for moderation
+    private String suspensionMessage; // Added for moderation
 
     @ServerTimestamp
     private Date disabledAt;
@@ -27,6 +29,7 @@ public class User {
     // ── Store-only fields ─────────────────────────────────────────────────────
     private boolean isOpen;         // store open/closed toggle
     private String storeImageBase64;
+    private boolean isFeatured;     // Promotion toggle
 
     // ── FCM ───────────────────────────────────────────────────────────────────
     private String fcmToken;
@@ -61,6 +64,8 @@ public class User {
         this.isOpen  = true;
         this.approved = true;
         this.reportCount = 0;
+        this.isSuspended = false;
+        this.isFeatured = false;
     }
 
     // Full constructor (legacy support)
@@ -82,6 +87,8 @@ public class User {
         this.isOpen      = true;
         this.approved    = true;
         this.reportCount = 0;
+        this.isSuspended = false;
+        this.isFeatured = false;
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────
@@ -101,6 +108,7 @@ public class User {
     public Date   getDisabledAt()       { return disabledAt; }
     public boolean isOpen()             { return isOpen; }
     public String getStoreImageBase64() { return storeImageBase64; }
+    public boolean isFeatured()         { return isFeatured; }
     public String getFcmToken()         { return fcmToken; }
     public int    getReportCount()      { return reportCount; }
     public String getSubdivision()      { return subdivision; }
@@ -110,6 +118,8 @@ public class User {
     public String getLandmark()         { return landmark; }
     public boolean isApproved()         { return approved; }
     public Date   getCreatedAt()        { return createdAt; }
+    public boolean isSuspended()        { return isSuspended; }
+    public String getSuspensionMessage(){ return suspensionMessage; }
 
     // ── Setters ───────────────────────────────────────────────────────────────
     public void setUid(String uid)                    { this.uid = uid; }
@@ -128,6 +138,7 @@ public class User {
     public void setDisabledAt(Date date)              { this.disabledAt = date; }
     public void setOpen(boolean open)                 { this.isOpen = open; }
     public void setStoreImageBase64(String img)       { this.storeImageBase64 = img; }
+    public void setFeatured(boolean featured)         { this.isFeatured = featured; }
     public void setFcmToken(String token)             { this.fcmToken = token; }
     public void setReportCount(int count)             { this.reportCount = count; }
     public void setSubdivision(String s)              { this.subdivision = s; }
@@ -137,6 +148,8 @@ public class User {
     public void setLandmark(String l)                 { this.landmark = l; }
     public void setApproved(boolean approved)         { this.approved = approved; }
     public void setCreatedAt(Date date)               { this.createdAt = date; }
+    public void setSuspended(boolean suspended)       { isSuspended = suspended; }
+    public void setSuspensionMessage(String message)  { this.suspensionMessage = message; }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     public boolean isAdmin()      { return "admin".equals(role); }
@@ -144,6 +157,6 @@ public class User {
     public boolean isCustomer()   { return "customer".equals(role); }
     public boolean hasLocation()  { return latitude != 0 && longitude != 0; }
     public boolean isActive()     { return "active".equals(getStatus()); }
-    public boolean isDisabled()   { return "disabled".equals(getStatus()); }
+    public boolean isDisabled()   { return "disabled".equals(getStatus()) || isSuspended; }
     public boolean isArchived()   { return "archived".equals(getStatus()); }
 }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,7 +30,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +41,9 @@ public class HomeActivity extends AppCompatActivity {
     private FoodListingAdapter listingsAdapter;
     private FoodListingAdapter searchResultsAdapter;
     private StoreAdapter storeAdapter;
-    private ListenerRegistration popularListener, listingsListener, storesListener, notifListener;
+    private StoreAdapter featuredStoresAdapter;
+
+    private ListenerRegistration popularListener, listingsListener, storesListener, notifListener, featuredListener;
     private String activeTab = "Food";
     private String activeCategory = null;
     private List<Product> allProductsForSearch = new ArrayList<>();
@@ -65,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         listenForNotifications();
         loadUserGreeting();
         updateCartUI();
+        loadFeaturedStores();
         switchTab("Food");
     }
 
@@ -130,7 +131,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if ("Food".equals(tab)) {
             binding.tabFood.setBackgroundResource(R.drawable.bg_tab_active_white);
-            binding.tabFood.setTextColor(getColor(R.color.primary));
+            binding.tabFood.setTextColor(getResources().getColor(R.color.primary));
             binding.sectionFood.setVisibility(View.VISIBLE);
             binding.sectionStore.setVisibility(View.GONE);
             binding.tvListingsLabel.setText("Fresh for you");
@@ -139,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
             loadFood(activeCategory);
         } else {
             binding.tabStore.setBackgroundResource(R.drawable.bg_tab_active_white);
-            binding.tabStore.setTextColor(getColor(R.color.primary));
+            binding.tabStore.setTextColor(getResources().getColor(R.color.primary));
             binding.sectionFood.setVisibility(View.GONE);
             binding.sectionStore.setVisibility(View.VISIBLE);
             showShimmer(false);
@@ -164,7 +165,7 @@ public class HomeActivity extends AppCompatActivity {
         chip.setTypeface(null, android.graphics.Typeface.BOLD);
         chip.setPadding(px16, px8, px16, px8);
         chip.setBackgroundResource(active ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-        chip.setTextColor(getColor(active ? R.color.on_chip_active : R.color.on_chip_inactive));
+        chip.setTextColor(getResources().getColor(active ? R.color.on_chip_active : R.color.on_chip_inactive));
         android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -183,7 +184,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updatePopularVisibility(boolean isFiltering) {
-        View popularHeader = binding.tvSeeAllPopular.getParent() instanceof View ? (View) binding.tvSeeAllPopular.getParent() : null;
+        View popularHeader = binding.layoutPopularHeader;
         if (popularHeader != null) popularHeader.setVisibility(isFiltering ? View.GONE : View.VISIBLE);
         binding.rvPopular.setVisibility(isFiltering ? View.GONE : View.VISIBLE);
         binding.shimmerPopular.setVisibility(isFiltering ? View.GONE : View.VISIBLE);
@@ -194,12 +195,12 @@ public class HomeActivity extends AppCompatActivity {
             TextView chip = (TextView) binding.categoryChipsContainer.getChildAt(i);
             boolean sel = chip == selected;
             chip.setBackgroundResource(sel ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-            chip.setTextColor(getColor(sel ? R.color.on_chip_active : R.color.on_chip_inactive));
+            chip.setTextColor(getResources().getColor(sel ? R.color.on_chip_active : R.color.on_chip_inactive));
         }
     }
 
     private void setupRecyclerViews() {
-        binding.swipeRefresh.setColorSchemeColors(getColor(R.color.primary));
+        binding.swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.primary));
         binding.swipeRefresh.setOnRefreshListener(() -> {
             activeCategory = null;
             refreshChips((TextView) binding.categoryChipsContainer.getChildAt(0));
@@ -207,6 +208,7 @@ public class HomeActivity extends AppCompatActivity {
             loadPopular();
             loadFood(null);
             loadStores();
+            loadFeaturedStores();
             binding.swipeRefresh.postDelayed(() -> binding.swipeRefresh.setRefreshing(false), 1500);
         });
 
@@ -225,6 +227,10 @@ public class HomeActivity extends AppCompatActivity {
         storeAdapter = new StoreAdapter(new ArrayList<>(), this::onStoreClick);
         binding.rvStores.setLayoutManager(new LinearLayoutManager(this));
         binding.rvStores.setAdapter(storeAdapter);
+
+        featuredStoresAdapter = new StoreAdapter(new ArrayList<>(), this::onStoreClick);
+        binding.rvFeaturedStores.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        binding.rvFeaturedStores.setAdapter(featuredStoresAdapter);
     }
 
     private void setupSearch() {
@@ -269,6 +275,26 @@ public class HomeActivity extends AppCompatActivity {
                         String first = u.getName().split(" ")[0];
                         binding.tvGreeting.setText("Kumain na, " + first + "!");
                     }
+                });
+    }
+
+    private void loadFeaturedStores() {
+        if (featuredListener != null) featuredListener.remove();
+        featuredListener = FirebaseHelper.getDb().collection("users")
+                .whereEqualTo("role", "seller")
+                .whereEqualTo("isFeatured", true)
+                .addSnapshotListener((snap, e) -> {
+                    if (e != null || snap == null) return;
+                    List<StoreAdapter.StoreItem> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : snap) {
+                        User u = doc.toObject(User.class);
+                        list.add(new StoreAdapter.StoreItem(
+                                u.getUid(), u.getName(),
+                                null, u.getStoreImageBase64(),
+                                "", 5.0f, 0));
+                    }
+                    featuredStoresAdapter.setStores(list);
+                    binding.sectionFeatured.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
                 });
     }
 
@@ -398,5 +424,6 @@ public class HomeActivity extends AppCompatActivity {
         if (listingsListener != null) listingsListener.remove();
         if (storesListener != null) storesListener.remove();
         if (notifListener != null) notifListener.remove();
+        if (featuredListener != null) featuredListener.remove();
     }
 }

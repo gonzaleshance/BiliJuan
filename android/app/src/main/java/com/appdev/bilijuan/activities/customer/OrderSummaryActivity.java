@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.databinding.ActivityOrderSummaryBinding;
 import com.appdev.bilijuan.models.CartItem;
+import com.appdev.bilijuan.models.GlobalConfig;
 import com.appdev.bilijuan.models.Order;
 import com.appdev.bilijuan.models.Product;
 import com.appdev.bilijuan.models.User;
@@ -55,6 +56,7 @@ public class OrderSummaryActivity extends AppCompatActivity {
     private boolean dataLoaded     = false;
     private boolean customerLoaded = false;
     private boolean sellerLoaded   = false;
+    private boolean configLoaded   = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class OrderSummaryActivity extends AppCompatActivity {
 
         setupClickListeners();
         
+        loadGlobalConfig();
+        
         if (fromCart) {
             loadCartData();
         } else {
@@ -90,6 +94,26 @@ public class OrderSummaryActivity extends AppCompatActivity {
     private void setupClickListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnPlaceOrder.setOnClickListener(v -> placeOrder());
+    }
+
+    private void loadGlobalConfig() {
+        FirebaseHelper.getDb().collection("settings").document("global_config")
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        GlobalConfig config = doc.toObject(GlobalConfig.class);
+                        DeliveryUtils.updateConfig(config);
+                    }
+                    configLoaded = true;
+                    if (sellerLoaded) {
+                        calculateDeliveryFee();
+                        tryRenderTotals();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    configLoaded = true;
+                    tryRenderTotals();
+                });
     }
 
     private void loadCartData() {
@@ -151,8 +175,10 @@ public class OrderSummaryActivity extends AppCompatActivity {
                         if (name != null) sellerName = name;
                     }
 
-                    calculateDeliveryFee();
                     sellerLoaded = true;
+                    if (configLoaded) {
+                        calculateDeliveryFee();
+                    }
                     tryRenderTotals();
                 })
                 .addOnFailureListener(e -> {
@@ -183,7 +209,7 @@ public class OrderSummaryActivity extends AppCompatActivity {
     }
 
     private void tryRenderTotals() {
-        if (dataLoaded && customerLoaded && sellerLoaded) {
+        if (dataLoaded && customerLoaded && sellerLoaded && configLoaded) {
             renderTotals();
         }
     }

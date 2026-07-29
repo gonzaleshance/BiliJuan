@@ -294,7 +294,8 @@
                 android:textColorHint="#636E72"
                 app:startIconDrawable="@drawable/ic_lock"
                 app:startIconTint="#636E72"
-                app:boxBackgroundColor="#FFFFFF">
+                app:boxBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="12dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmPassword"
                     android:layout_width="match_parent"
@@ -304,6 +305,31 @@
                     android:textSize="16sp"
                     android:textColorHint="#636E72"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="8dp">
+                <CheckBox
+                    android:id="@+id/cbTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:buttonTint="#27AE60"/>
+                <TextView
+                    android:id="@+id/tvTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="I agree to the Terms and Conditions"
+                    android:textColor="#27AE60"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Step 3: Profile (Customer) -->

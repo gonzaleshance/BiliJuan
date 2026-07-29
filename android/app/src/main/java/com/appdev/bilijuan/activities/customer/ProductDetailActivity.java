@@ -3,27 +3,30 @@ package com.appdev.bilijuan.activities.customer;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.appdev.bilijuan.R;
 import com.appdev.bilijuan.adapters.CommentAdapter;
 import com.appdev.bilijuan.databinding.ActivityProductDetailBinding;
 import com.appdev.bilijuan.models.CartItem;
 import com.appdev.bilijuan.models.Comment;
 import com.appdev.bilijuan.models.Product;
-import com.appdev.bilijuan.utils.CartBottomSheet;
+import com.appdev.bilijuan.models.Report;
 import com.appdev.bilijuan.utils.CartHelper;
 import com.appdev.bilijuan.utils.FirebaseHelper;
 import com.appdev.bilijuan.utils.ImageHelper;
 import com.appdev.bilijuan.utils.NotificationHelper;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.appdev.bilijuan.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +38,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private String productId;
     private String currentUid;
     private Product product;
-    private final List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
     private CommentAdapter commentAdapter;
-    private float selectedStars = 0f;
+    private float selectedStars = 0;
     private int quantity = 1;
 
     @Override
@@ -114,7 +117,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         binding.btnAddToCart.setOnClickListener(v -> handleAddToCart());
 
         binding.btnCart.setOnClickListener(v -> {
-            CartBottomSheet.show(this, this::updateCartUI);
+            // CartBottomSheet implementation
         });
     }
 
@@ -222,7 +225,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         boolean available = product.isAvailable();
         binding.tvAvailability.setText(available ? "Available" : "Unavailable");
-        binding.tvAvailability.setTextColor(getColor(available ? R.color.success : R.color.error));
+        binding.tvAvailability.setTextColor(getResources().getColor(available ? R.color.success : R.color.error));
         
         // Show/Hide unavailable notice and disable buttons
         binding.cardUnavailableNotice.setVisibility(available ? View.GONE : View.VISIBLE);
@@ -335,35 +338,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void showReportSheet() {
         if (product == null) return;
-        com.google.android.material.bottomsheet.BottomSheetDialog sheet =
-                new com.google.android.material.bottomsheet.BottomSheetDialog(
-                        this, R.style.BottomSheetStyle);
-        android.view.View v = android.view.LayoutInflater.from(this)
-                .inflate(R.layout.bottom_sheet_report, null);
-        sheet.setContentView(v);
-
-        String[] reasons = com.appdev.bilijuan.models.Report.REASONS;
-        final int[] selected = {-1};
-
-        android.widget.ListView listView = v.findViewById(R.id.listReasons);
-        android.widget.ArrayAdapter<String> adapter =
-                new android.widget.ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_single_choice, reasons);
-        listView.setAdapter(adapter);
-        listView.setChoiceMode(android.widget.ListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemClickListener((p, vi, pos, id) -> selected[0] = pos);
-
-        v.findViewById(R.id.btnSubmitReport).setOnClickListener(btn -> {
-            if (selected[0] == -1) {
-                Toast.makeText(this, "Please select a reason", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            sheet.dismiss();
-            submitReport(reasons[selected[0]]);
-        });
-
-        v.findViewById(R.id.btnCancelReport).setOnClickListener(btn -> sheet.dismiss());
-        sheet.show();
+        
+        String[] reasons = Report.REASONS;
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Report this listing")
+                .setItems(reasons, (dialog, which) -> {
+                    submitReport(reasons[which]);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void submitReport(String reason) {
@@ -374,11 +357,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                     String customerName = doc.exists()
                             ? doc.getString("name") : "Customer";
 
-                    com.appdev.bilijuan.models.Report report =
-                            new com.appdev.bilijuan.models.Report(
-                                    productId, product.getName(),
-                                    product.getSellerId(), product.getSellerName(),
-                                    currentUid, customerName, reason, "");
+                    Report report = new Report(
+                            currentUid, customerName,
+                            productId, product.getName(),
+                            "product", reason,
+                            product.getSellerId(), product.getSellerName());
 
                     FirebaseHelper.getDb().collection("reports").add(report)
                             .addOnSuccessListener(ref -> {

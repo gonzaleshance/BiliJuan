@@ -41,6 +41,12 @@
 
         <!-- ── Admin ── -->
         <activity android:name=".activities.admin.AdminDashboardActivity" android:exported="false"/>
+        <activity android:name=".activities.admin.AdminUsersActivity"     android:exported="false"/>
+        <activity android:name=".activities.admin.AdminSellersActivity"   android:exported="false"/>
+        <activity android:name=".activities.admin.AdminOrdersActivity"    android:exported="false"/>
+        <activity android:name=".activities.admin.AdminFoodsActivity"     android:exported="false"/>
+        <activity android:name=".activities.admin.AdminReportsActivity"   android:exported="false"/>
+        <activity android:name=".activities.admin.AdminSettingsActivity"  android:exported="false"/>
         <activity android:name=".activities.DisabledAccountActivity"          android:exported="false"/>
         <activity android:name=".activities.seller.SellerReportsActivity"     android:exported="false"/>
         <activity android:name=".activities.customer.OrderSuccessActivity"    android:exported="false"/>

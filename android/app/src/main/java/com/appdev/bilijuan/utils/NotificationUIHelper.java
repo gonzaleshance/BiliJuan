@@ -3,6 +3,7 @@ package com.appdev.bilijuan.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NotificationUIHelper {
@@ -68,13 +70,16 @@ public class NotificationUIHelper {
         rv.setAdapter(adapter);
 
         // Fetch notifications
+        // NOTE: Removed orderBy temporarily to avoid composite index requirement which often blocks data display
         FirebaseHelper.getDb().collection("notifications")
                 .whereEqualTo("userId", uid)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(20)
                 .addSnapshotListener((snap, e) -> {
                     if (pb != null) pb.setVisibility(View.GONE);
-                    if (e != null || snap == null) return;
+                    if (e != null) {
+                        Log.e("NotifUI", "Error fetching", e);
+                        return;
+                    }
+                    if (snap == null) return;
                     
                     list.clear();
                     for (DocumentSnapshot doc : snap) {
@@ -84,6 +89,13 @@ public class NotificationUIHelper {
                             list.add(n);
                         }
                     }
+                    
+                    // Sort manually in app to avoid index requirement
+                    Collections.sort(list, (a, b) -> {
+                        if (a.getTimestamp() == null || b.getTimestamp() == null) return 0;
+                        return b.getTimestamp().compareTo(a.getTimestamp());
+                    });
+                    
                     adapter.notifyDataSetChanged();
                     if (empty != null) empty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
                 });

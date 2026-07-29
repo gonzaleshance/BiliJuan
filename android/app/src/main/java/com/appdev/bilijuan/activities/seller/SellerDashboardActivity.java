@@ -66,6 +66,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
 
     private ListenerRegistration ordersListener;
     private ListenerRegistration menuListener;
+    private ListenerRegistration notifListener;
 
     private String sellerId;
     private double sellerLat, sellerLng;
@@ -88,6 +89,7 @@ public class SellerDashboardActivity extends AppCompatActivity {
         setupTopTabs();
         setupStoreNav();
         setupRecyclerViews();
+        listenForNotifications();
 
         binding.btnNotification.setOnClickListener(
                 v -> NotificationUIHelper.showNotificationSheet(this));
@@ -95,6 +97,16 @@ public class SellerDashboardActivity extends AppCompatActivity {
         binding.btnGoToOrders.setOnClickListener(v -> switchTab("orders"));
 
         loadSellerProfile();
+    }
+
+    private void listenForNotifications() {
+        notifListener = FirebaseHelper.getDb().collection("notifications")
+                .whereEqualTo("userId", sellerId)
+                .whereEqualTo("read", false)
+                .addSnapshotListener((snap, e) -> {
+                    if (e != null || snap == null) return;
+                    binding.notifDot.setVisibility(snap.isEmpty() ? View.GONE : View.VISIBLE);
+                });
     }
 
     private void autoSaveSellerLocation() {
@@ -503,5 +515,6 @@ public class SellerDashboardActivity extends AppCompatActivity {
         stopNewOrderAlert();
         if (ordersListener != null) ordersListener.remove();
         if (menuListener != null) menuListener.remove();
+        if (notifListener != null) notifListener.remove();
     }
 }

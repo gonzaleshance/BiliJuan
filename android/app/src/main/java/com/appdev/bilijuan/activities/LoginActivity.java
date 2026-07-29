@@ -3,12 +3,15 @@ package com.appdev.bilijuan.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -23,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -147,6 +151,17 @@ public class LoginActivity extends AppCompatActivity {
                     if (user == null) return;
 
                     // ── Status check ──────────────────────────────────────────
+                    if (user.isSuspended()) {
+                        FirebaseHelper.signOut();
+                        Intent intent = new Intent(this, DisabledAccountActivity.class);
+                        intent.putExtra("reason", "Account Suspended");
+                        intent.putExtra("note", user.getSuspensionMessage());
+                        intent.putExtra("type", "suspended");
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+
                     String status = user.getStatus();
                     if ("disabled".equals(status)) {
                         FirebaseHelper.signOut();
@@ -267,16 +282,46 @@ public class LoginActivity extends AppCompatActivity {
     private void handleForgotPassword() {
         String email = getText(binding.etEmail);
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Enter your email first");
-            binding.etEmail.requestFocus(); return;
+            showResetPasswordDialog();
+        } else {
+            sendResetEmail(email);
         }
+    }
+
+    private void showResetPasswordDialog() {
+        EditText etEmail = new EditText(this);
+        etEmail.setHint("Enter your registered email");
+        etEmail.setPadding(60, 40, 60, 40);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Reset Password")
+                .setMessage("We will send a reset link to your email address.")
+                .setView(etEmail)
+                .setPositiveButton("Send Link", (dialog, which) -> {
+                    String email = etEmail.getText().toString().trim();
+                    if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        sendResetEmail(email);
+                    } else {
+                        Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void sendResetEmail(String email) {
         FirebaseHelper.getAuth().sendPasswordResetEmail(email)
                 .addOnSuccessListener(v ->
-                        Toast.makeText(this, "Reset link sent to " + email,
+                        Toast.makeText(this, "Check your email for the reset link!",
                                 Toast.LENGTH_LONG).show())
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to send reset email.",
-                                Toast.LENGTH_LONG).show());
+                .addOnFailureListener(e -> {
+                    Log.e("AuthError", "Reset Error: " + e.getMessage());
+                    if (e instanceof FirebaseAuthInvalidUserException) {
+                        Toast.makeText(this, "This email is not registered.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private String getText(com.google.android.material.textfield.TextInputEditText f) {

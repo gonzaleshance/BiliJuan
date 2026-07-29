@@ -11,7 +11,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
@@ -21,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -38,52 +41,41 @@ import java.io.InputStream;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // ── Request codes ─────────────────────────────────────────────────────────
     private static final int REQUEST_LOCATION_PERMISSION = 4001;
     private static final int REQUEST_PIN_LOCATION        = 4002;
 
-    // ── State ─────────────────────────────────────────────────────────────────
     private ActivityRegisterBinding binding;
     private String selectedRole = "";
     private int    currentStep  = 1;
     private String base64Image  = "";
 
-    // ── Google Sign-In State ───────────────────────────────────────────────────
     private boolean isGoogleSignIn = false;
     private String googleUid = "";
     private String googleEmail = "";
     private String googleDisplayName = "";
 
-    // Seller store pin — must be set before registration is allowed
     private double storeLat = 0;
     private double storeLng = 0;
     private String storeAddress = "";
 
-    // ── Image picker ──────────────────────────────────────────────────────────
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (result.getResultCode() == RESULT_OK
-                                && result.getData() != null) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             Uri imageUri = result.getData().getData();
                             try {
-                                InputStream is = getContentResolver()
-                                        .openInputStream(imageUri);
+                                InputStream is = getContentResolver().openInputStream(imageUri);
                                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                                 binding.ivStoreLogo.setImageBitmap(bitmap);
                                 binding.ivStoreLogo.setPadding(0, 0, 0, 0);
-                                // Clear the tint so the actual image colors show
                                 binding.ivStoreLogo.setImageTintList(null);
                                 base64Image = encodeImage(bitmap);
                             } catch (Exception e) {
-                                Toast.makeText(this, "Failed to load image",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,15 +83,17 @@ public class RegisterActivity extends AppCompatActivity {
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Handle Google Sign-In data if present
         handleGoogleSignInData();
         binding.etEmail.addTextChangedListener(new SimpleTextWatcher(() -> binding.etEmail.setError(null)));
         binding.etPassword.addTextChangedListener(new SimpleTextWatcher(() -> binding.etPassword.setError(null)));
         setupListeners();
         updateStepUI();
+        
+        // Make Terms text underlined to look like a link
+        SpannableString content = new SpannableString("I agree to the Terms and Conditions");
+        content.setSpan(new UnderlineSpan(), 15, content.length(), 0);
+        binding.tvTerms.setText(content);
     }
-
-    // ── Google Sign-In Data Handler ────────────────────────────────────────────
 
     private void handleGoogleSignInData() {
         isGoogleSignIn = getIntent().getBooleanExtra("isGoogleSignIn", false);
@@ -107,27 +101,21 @@ public class RegisterActivity extends AppCompatActivity {
             googleUid = getIntent().getStringExtra("googleUid");
             googleEmail = getIntent().getStringExtra("googleEmail");
             googleDisplayName = getIntent().getStringExtra("googleDisplayName");
-
-            // Pre-fill the email from Google Sign-In
             binding.etEmail.setText(googleEmail);
-            binding.etEmail.setEnabled(false); // Disable email editing for Google users
+            binding.etEmail.setEnabled(false);
         }
     }
-
-    // ── Listeners ─────────────────────────────────────────────────────────────
 
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> handleBack());
         binding.tvLogin.setOnClickListener(v -> finish());
-
         binding.cardCustomer.setOnClickListener(v -> selectRole("customer"));
         binding.cardSeller.setOnClickListener(v -> selectRole("seller"));
 
         binding.btnNext.setOnClickListener(v -> {
             if (currentStep == 1) {
                 if (!selectedRole.isEmpty()) nextStep();
-                else Toast.makeText(this, "Please select a role",
-                        Toast.LENGTH_SHORT).show();
+                else Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
             } else if (currentStep == 2) {
                 if (validateStep2()) nextStep();
             } else if (currentStep == 3) {
@@ -136,37 +124,50 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         binding.btnSelectLogo.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
         });
 
-        // Seller map pin button
         binding.btnPinStoreLocation.setOnClickListener(v -> openPinMap());
+        binding.tvTerms.setOnClickListener(v -> showTermsDialog());
     }
 
-    // ── Role selection ────────────────────────────────────────────────────────
+    private void showTermsDialog() {
+        String terms = "TERMS AND CONDITIONS\n\n" +
+                "Welcome to our platform. By using this system, you agree to the following terms:\n\n" +
+                "1. User Responsibility\n" +
+                "Users must provide accurate and truthful information when registering and using the platform.\n\n" +
+                "2. Food Quality and Listings\n" +
+                "All sellers are responsible for ensuring that the food they list is safe and properly described.\n\n" +
+                "3. Reporting System\n" +
+                "Users may report unsafe food or misleading descriptions. All reports are reviewed by Admin.\n\n" +
+                "4. Account Suspension Policy\n" +
+                "Receiving THREE (3) or more valid reports will result in automatic account suspension.\n\n" +
+                "5. Admin Rights\n" +
+                "Admin has the authority to review reports, suspend accounts, and remove violating listings.\n\n" +
+                "6. Abuse of Reporting\n" +
+                "False reporting may result in account suspension.";
+
+        new AlertDialog.Builder(this)
+                .setTitle("Terms and Conditions")
+                .setMessage(terms)
+                .setPositiveButton("I Accept", (dialog, which) -> binding.cbTerms.setChecked(true))
+                .setNegativeButton("Close", null)
+                .show();
+    }
 
     private void selectRole(String role) {
         selectedRole = role;
-
         int primary = Color.parseColor("#27AE60");
         int grey    = Color.parseColor("#F1F2F6");
         boolean isCustomer = "customer".equals(role);
 
         binding.rbCustomer.setChecked(isCustomer);
         binding.rbSeller.setChecked(!isCustomer);
-
         binding.cardCustomer.setStrokeColor(isCustomer ? primary : grey);
         binding.cardSeller.setStrokeColor(!isCustomer ? primary : grey);
-
-        binding.rbCustomer.setButtonTintList(ColorStateList.valueOf(primary));
-        binding.rbSeller.setButtonTintList(ColorStateList.valueOf(primary));
-
         binding.btnNext.setVisibility(View.VISIBLE);
     }
-
-    // ── Step navigation ───────────────────────────────────────────────────────
 
     private void handleBack() {
         if (currentStep > 1) { currentStep--; updateStepUI(); }
@@ -181,141 +182,55 @@ public class RegisterActivity extends AppCompatActivity {
     private void updateStepUI() {
         binding.btnBack.setVisibility(currentStep > 1 ? View.VISIBLE : View.GONE);
         binding.layoutLogin.setVisibility(currentStep == 1 ? View.VISIBLE : View.GONE);
-
-        if (currentStep == 1) {
-            binding.btnNext.setVisibility(
-                    selectedRole.isEmpty() ? View.GONE : View.VISIBLE);
-        } else {
-            binding.btnNext.setVisibility(View.VISIBLE);
-        }
+        binding.btnNext.setVisibility(currentStep == 1 && selectedRole.isEmpty() ? View.GONE : View.VISIBLE);
 
         binding.step1Role.setVisibility(currentStep == 1 ? View.VISIBLE : View.GONE);
         binding.step2Credentials.setVisibility(currentStep == 2 ? View.VISIBLE : View.GONE);
-        binding.step3Customer.setVisibility(
-                (currentStep == 3 && "customer".equals(selectedRole))
-                        ? View.VISIBLE : View.GONE);
-        binding.step3Seller.setVisibility(
-                (currentStep == 3 && "seller".equals(selectedRole))
-                        ? View.VISIBLE : View.GONE);
+        binding.step3Customer.setVisibility((currentStep == 3 && "customer".equals(selectedRole)) ? View.VISIBLE : View.GONE);
+        binding.step3Seller.setVisibility((currentStep == 3 && "seller".equals(selectedRole)) ? View.VISIBLE : View.GONE);
 
         int progress = (currentStep * 100) / 3;
         binding.stepProgress.setProgress(progress, true);
-        binding.stepProgress.setIndicatorColor(Color.parseColor("#27AE60"));
 
         switch (currentStep) {
-            case 1:
-                binding.tvStepTitle.setText("Choose your role");
-                binding.tvStepSub.setText("Step 1 of 3");
-                binding.btnNext.setText("Continue");
-                break;
-            case 2:
-                binding.tvStepTitle.setText("Account Details");
-                binding.tvStepSub.setText("Step 2 of 3");
-                binding.btnNext.setText("Continue");
-
-                // If Google Sign-In, hide password fields
-                if (isGoogleSignIn) {
-                    binding.tilPassword.setVisibility(View.GONE);
-                    binding.tilConfirmPassword.setVisibility(View.GONE);
-                } else {
-                    binding.tilPassword.setVisibility(View.VISIBLE);
-                    binding.tilConfirmPassword.setVisibility(View.VISIBLE);
-                }
-                break;
-            case 3:
-                binding.tvStepTitle.setText(
-                        "customer".equals(selectedRole) ? "Your Profile" : "Store Details");
-                binding.tvStepSub.setText("Step 3 of 3");
-                binding.btnNext.setText("Create Account");
-                break;
+            case 1: binding.btnNext.setText("Continue"); break;
+            case 2: binding.btnNext.setText("Continue"); 
+                    if (isGoogleSignIn) {
+                        binding.tilPassword.setVisibility(View.GONE);
+                        binding.tilConfirmPassword.setVisibility(View.GONE);
+                    }
+                    break;
+            case 3: binding.btnNext.setText("Create Account"); break;
         }
     }
-
-    // ── Pin Map Handler ───────────────────────────────────────────────────────
 
     private void openPinMap() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
-            checkGpsEnabledAndLaunchMap();
+            startActivityForResult(new Intent(this, SellerPinRegistrationActivity.class), REQUEST_PIN_LOCATION);
         }
     }
 
-    private void checkGpsEnabledAndLaunchMap() {
-        startActivityForResult(
-                new Intent(this, SellerPinRegistrationActivity.class),
-                REQUEST_PIN_LOCATION);
-    }
-
-    private void enforceSellerPinState() {
-        binding.btnPinStoreLocation.setEnabled(true);
-        binding.tvPinStoreStatus.setText("✓ Location Pinned");
-        binding.tvPinStoreStatus.setTextColor(Color.parseColor("#27AE60"));
-        if (!TextUtils.isEmpty(storeAddress)) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PIN_LOCATION && resultCode == Activity.RESULT_OK && data != null) {
+            storeLat = data.getDoubleExtra("lat", 0);
+            storeLng = data.getDoubleExtra("lng", 0);
+            storeAddress = data.getStringExtra("address");
+            binding.tvPinStoreStatus.setText("✓ Location Pinned");
             binding.tvPinCoords.setVisibility(View.VISIBLE);
             binding.tvPinCoords.setText(storeAddress);
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION_PERMISSION
-                && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            checkGpsEnabledAndLaunchMap();
-        } else {
-            Toast.makeText(this,
-                    "Location permission is required to set your store location.",
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_PIN_LOCATION
-                && resultCode == Activity.RESULT_OK
-                && data != null) {
-            storeLat = data.getDoubleExtra("lat", 0);
-            storeLng = data.getDoubleExtra("lng", 0);
-            storeAddress = data.getStringExtra("address");
-            if (storeLat != 0 && storeLng != 0) {
-                enforceSellerPinState();
-                Toast.makeText(this, "Store location pinned ✓",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    // ── Validation ────────────────────────────────────────────────────────────
-
     private boolean validateStep2() {
-
         String email = getText(binding.etEmail).trim();
-
-        binding.etEmail.setError(null);
-        binding.etPassword.setError(null);
-        binding.etConfirmPassword.setError(null);
-
-        if (TextUtils.isEmpty(email)) {
-            binding.etEmail.setError("Email is required");
-            binding.etEmail.requestFocus();
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.setError("Valid email required");
             return false;
         }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.setError("Enter a valid email address");
-            binding.etEmail.requestFocus();
-            return false;
-        }
-
         if (!isGoogleSignIn) {
             String pass = getText(binding.etPassword);
             String confirmPass = getText(binding.etConfirmPassword);
@@ -352,16 +267,17 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (!pass.equals(confirmPass)) {
                 binding.etConfirmPassword.setError("Passwords do not match");
-                binding.etConfirmPassword.requestFocus();
                 return false;
             }
         }
-
+        if (!binding.cbTerms.isChecked()) {
+            Toast.makeText(this, "Please agree to the terms to continue", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 
     private boolean validateStep3() {
-
         if ("customer".equals(selectedRole)) {
 
             String name = getText(binding.etName).trim();
@@ -433,148 +349,36 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         }
-
         return true;
     }
 
-    // ── Registration ──────────────────────────────────────────────────────────
-
     private void attemptRegister() {
         setLoading(true);
-
-        if (isGoogleSignIn) {
-            // Google Sign-In user: skip Firebase auth creation
-            saveGoogleUserToFirestore(googleUid, googleEmail);
-        } else {
-            // Traditional email/password registration
-            String email = getText(binding.etEmail);
-            String pass  = getText(binding.etPassword);
-
-            FirebaseHelper.getAuth()
-                    .createUserWithEmailAndPassword(email, pass)
-                    .addOnSuccessListener(result -> {
-                        String uid = result.getUser().getUid();
-                        saveUserToFirestore(uid, email);
-                    })
-                    .addOnFailureListener(e -> {
-                        setLoading(false);
-                        String msg = e.getMessage() != null ? e.getMessage() : "";
-                        if (msg.contains("already")) {
-                            Toast.makeText(this,
-                                    "An account with this email already exists.",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(this,
-                                    "Registration failed. Please try again.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+        if (isGoogleSignIn) saveUserToFirestore(googleUid, googleEmail);
+        else {
+            FirebaseHelper.getAuth().createUserWithEmailAndPassword(getText(binding.etEmail), getText(binding.etPassword))
+                    .addOnSuccessListener(authResult -> saveUserToFirestore(authResult.getUser().getUid(), getText(binding.etEmail)))
+                    .addOnFailureListener(e -> { setLoading(false); Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show(); });
         }
-    }
-
-    private void saveGoogleUserToFirestore(String uid, String email) {
-        String name, phone, address;
-        if ("customer".equals(selectedRole)) {
-            name  = getText(binding.etName);
-            phone = getText(binding.etPhone);
-            address = "";
-        } else {
-            name  = getText(binding.etStoreName);
-            phone = getText(binding.etSellerPhone);
-            address = storeAddress;
-        }
-
-        User user = new User(uid, name, email, selectedRole, phone, address);
-
-        if ("seller".equals(selectedRole)) {
-            user.setStoreImageBase64(base64Image);
-            user.setLatitude(storeLat);
-            user.setLongitude(storeLng);
-        }
-
-        FirebaseHelper.getDb().collection("users").document(uid)
-                .set(user)
-                .addOnSuccessListener(unused -> {
-                    setLoading(false);
-                    Toast.makeText(this,
-                            "Welcome to BiliJuan, " + name + "!",
-                            Toast.LENGTH_SHORT).show();
-                    if ("seller".equals(selectedRole)) {
-                        startActivity(new Intent(this, SellerDashboardActivity.class));
-                    } else {
-                        startActivity(new Intent(this, HomeActivity.class));
-                    }
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    setLoading(false);
-                    Toast.makeText(this,
-                            "Account setup failed. Please try again.",
-                            Toast.LENGTH_LONG).show();
-                });
     }
 
     private void saveUserToFirestore(String uid, String email) {
-        String name, phone, address;
-        if ("customer".equals(selectedRole)) {
-            name  = getText(binding.etName);
-            phone = getText(binding.etPhone);
-            address = "";
-        } else {
-            name  = getText(binding.etStoreName);
-            phone = getText(binding.etSellerPhone);
-            address = storeAddress;
-        }
-
-        User user = new User(uid, name, email, selectedRole, phone, address);
-
+        String name = "customer".equals(selectedRole) ? getText(binding.etName) : getText(binding.etStoreName);
+        String phone = "customer".equals(selectedRole) ? getText(binding.etPhone) : getText(binding.etSellerPhone);
+        User user = new User(uid, name, email, selectedRole, phone, storeAddress);
         if ("seller".equals(selectedRole)) {
             user.setStoreImageBase64(base64Image);
             user.setLatitude(storeLat);
             user.setLongitude(storeLng);
         }
-
-        FirebaseHelper.getDb().collection("users").document(uid)
-                .set(user)
-                .addOnSuccessListener(unused -> {
-                    setLoading(false);
-                    Toast.makeText(this,
-                            "Welcome to BiliJuan, " + name + "!",
-                            Toast.LENGTH_SHORT).show();
-                    if ("seller".equals(selectedRole)) {
-                        startActivity(new Intent(this, SellerDashboardActivity.class));
-                    } else {
-                        startActivity(new Intent(this, HomeActivity.class));
-                    }
+        FirebaseHelper.getDb().collection("users").document(uid).set(user)
+                .addOnSuccessListener(v -> {
+                    startActivity(new Intent(this, "seller".equals(selectedRole) ? SellerDashboardActivity.class : HomeActivity.class));
                     finish();
-                })
-                .addOnFailureListener(e -> {
-                    setLoading(false);
-                    if (FirebaseHelper.getCurrentUser() != null)
-                        FirebaseHelper.getCurrentUser().delete();
-                    Toast.makeText(this,
-                            "Account setup failed. Please try again.",
-                            Toast.LENGTH_LONG).show();
                 });
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private String getText(
-            com.google.android.material.textfield.TextInputEditText f) {
-        return f.getText() != null ? f.getText().toString().trim() : "";
-    }
-
-    private void setLoading(boolean loading) {
-        binding.btnNext.setEnabled(!loading);
-        binding.btnBack.setEnabled(!loading);
-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-    }
-
-    private String encodeImage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-        byte[] bytes = baos.toByteArray();
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
-    }
+    private String getText(com.google.android.material.textfield.TextInputEditText f) { return f.getText().toString().trim(); }
+    private void setLoading(boolean loading) { binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE); }
+    private String encodeImage(Bitmap b) { ByteArrayOutputStream baos = new ByteArrayOutputStream(); b.compress(Bitmap.CompressFormat.JPEG, 70, baos); return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT); }
 }

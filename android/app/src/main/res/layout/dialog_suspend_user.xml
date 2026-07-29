@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reason for suspension"
+        android:textSize="14sp"
+        android:textColor="#636E72"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etSuspensionMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Explain why this account is suspended..."
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:gravity="top"
+        android:background="@android:drawable/edit_text"/>
+
+</LinearLayout>

@@ -22,9 +22,14 @@ public class DisabledAccountActivity extends AppCompatActivity {
         String reason = getIntent().getStringExtra("reason");
         String note   = getIntent().getStringExtra("note");
 
-        boolean isArchived = "archived".equals(type);
-
-        if (isArchived) {
+        if ("suspended".equals(type)) {
+            binding.tvTitle.setText("Account Suspended");
+            binding.tvMessage.setText("Your account has been suspended for violating platform policies.");
+            binding.tvReason.setText(reason);
+            binding.tvNote.setText(note);
+            binding.tvReason.setVisibility(android.view.View.VISIBLE);
+            binding.tvNote.setVisibility(android.view.View.VISIBLE);
+        } else if ("archived".equals(type)) {
             binding.tvTitle.setText("Account Permanently Closed");
             binding.tvMessage.setText(
                     "This account has been permanently removed from BiliJuan. " +
